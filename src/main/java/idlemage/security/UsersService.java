@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UsersService implements UserDetailsService, InitializingBean {
+public class UsersService implements UserDetailsService {
 	private final ConcurrentHashMap<String, MageUser> users = new ConcurrentHashMap<>();
 
 	@Autowired
@@ -29,17 +29,15 @@ public class UsersService implements UserDetailsService, InitializingBean {
 		return new User(user.name, user.password, emptyList());
 	}
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		// TODO - remove this shit
-		users.put("user", new MageUser("user", passwordEncoder.encode("foobar")));
+	public MageUser getUser(String username) {
+		return users.get(username);
 	}
 
 	public boolean addUser(String username, String password) {
 		return null == users.putIfAbsent(username, new MageUser(username, passwordEncoder.encode(password)));
 	}
 
-	private static final class MageUser {
+	public static final class MageUser {
 		private final String name;
 		private final String password;
 
@@ -48,6 +46,13 @@ public class UsersService implements UserDetailsService, InitializingBean {
 			this.password = password;
 		}
 
+		public String getName() {
+			return name;
+		}
+
+		public String getPassword() {
+			return password;
+		}
 	}
 
 }

@@ -1,12 +1,12 @@
-package idlemage;
+package idlemage.security;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.net.HttpCookie;
 import java.net.URI;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +23,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import idlemage.security.UsersService;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class ApplicationTests {
+public class SecurityTests {
 
 	@LocalServerPort
 	private int port;
@@ -37,11 +35,6 @@ public class ApplicationTests {
 
 	@Autowired
 	private UsersService usersService;
-
-	@Before
-	public void init() {
-		usersService.addUser("testuser", "testpassword");
-	}
 
 	@Test
 	public void homePageLoads() {
@@ -56,19 +49,40 @@ public class ApplicationTests {
 	}
 
 	@Test
-	public void loginSucceeds() {
+	public void register() {
+		assertNull(usersService.getUser("testregister"));
+		loginOrRegister("testregister", "/createuser");
+		assertEquals("testregister", usersService.getUser("testregister").getName());
+	}
+
+	@Test
+	public void login() {
+		usersService.addUser("testuser", "testuser");
+		ResponseEntity<Void> location = loginOrRegister("testuser", "/login");
+		assertEquals("http://localhost:" + port + "/", location.getHeaders().getFirst("Location"));
+	}
+
+	private ResponseEntity<Void> loginOrRegister(String user, String uri) {
 		ResponseEntity<String> response = template.getForEntity("http://localhost:" + port + "/resource", String.class);
 		String csrf = getCsrf(response.getHeaders());
 		MultiValueMap<String, String> form = new LinkedMultiValueMap<String, String>();
-		form.set("username", "testuser");
-		form.set("password", "testpassword");
+		form.set("username", user);
+		form.set("password", user);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("X-XSRF-TOKEN", csrf);
 		headers.put("COOKIE", response.getHeaders().get("Set-Cookie"));
 		RequestEntity<MultiValueMap<String, String>> request = new RequestEntity<MultiValueMap<String, String>>(
-				form, headers, HttpMethod.POST, URI.create("http://localhost:" + port + "/login"));
-		ResponseEntity<Void> location = template.exchange(request, Void.class);
-		assertEquals("http://localhost:" + port + "/", location.getHeaders().getFirst("Location"));
+				form, headers, HttpMethod.POST, URI.create("http://localhost:" + port + uri));
+		return template.exchange(request, Void.class);
+	}
+
+	@Test
+	public void twoLogins() {
+		// if UserDetails with mutable password is used for storage - password
+		// gets erased in login process and second login for the same user is
+		// impossible
+		login();
+		login();
 	}
 
 	private String getCsrf(HttpHeaders headers) {

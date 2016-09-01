@@ -15,24 +15,39 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UsersService implements UserDetailsService, InitializingBean {
-	private final ConcurrentHashMap<String, User> users = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String, MageUser> users = new ConcurrentHashMap<>();
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return users.get(username);
+		MageUser user = users.get(username);
+		if (user == null) {
+			throw new UsernameNotFoundException("User " + username + " not found");
+		}
+		return new User(user.name, user.password, emptyList());
 	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		// TODO - remove this shit
-		users.put("user", new User("user", passwordEncoder.encode("foobar"), emptyList()));
+		users.put("user", new MageUser("user", passwordEncoder.encode("foobar")));
 	}
 
-	public void addUser(String username, String password) {
-		users.put(username, new User(username, passwordEncoder.encode(password), emptyList()));
+	public boolean addUser(String username, String password) {
+		return null == users.putIfAbsent(username, new MageUser(username, passwordEncoder.encode(password)));
+	}
+
+	private static final class MageUser {
+		private final String name;
+		private final String password;
+
+		public MageUser(String name, String password) {
+			this.name = name;
+			this.password = password;
+		}
+
 	}
 
 }

@@ -8,6 +8,10 @@ angular.module('hello', [ 'ngRoute' ]).config(function($routeProvider) {
 		templateUrl : 'login.html',
 		controller : 'navigation',
 		controllerAs: 'controller'
+	}).when('/register', {
+		templateUrl : 'register.html',
+		controller : 'navigation',
+		controllerAs: 'controller'
 	}).otherwise('/');
 
 }).controller('navigation',
@@ -64,6 +68,21 @@ function($rootScope, $http, $location, $route) {
 			self.error = true;
 			$rootScope.authenticated = false;
 		})
+	};
+	
+	self.register = function() {
+		$http.post('createuser', $.param(self.credentials), {
+			headers : {
+				"content-type" : "application/x-www-form-urlencoded"
+			}
+		}).then(function() {
+			self.login();
+		}, function() {
+			console.log("Register failed")
+			$location.path("/register");
+			self.error = true;
+			$rootScope.authenticated = false;
+		});
 	};
 
 	self.logout = function() {

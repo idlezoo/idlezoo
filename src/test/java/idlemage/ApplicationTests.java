@@ -1,4 +1,4 @@
-package demo;
+package idlemage;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,6 +6,7 @@ import java.net.HttpCookie;
 import java.net.URI;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +23,25 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import idlemage.security.UsersService;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ApplicationTests {
-
 
 	@LocalServerPort
 	private int port;
 
 	@Autowired
 	private TestRestTemplate template;
+
+	@Autowired
+	private UsersService usersService;
+
+	@Before
+	public void init() {
+		usersService.addUser("testuser", "testpassword");
+	}
 
 	@Test
 	public void homePageLoads() {
@@ -50,8 +60,8 @@ public class ApplicationTests {
 		ResponseEntity<String> response = template.getForEntity("http://localhost:" + port + "/resource", String.class);
 		String csrf = getCsrf(response.getHeaders());
 		MultiValueMap<String, String> form = new LinkedMultiValueMap<String, String>();
-		form.set("username", "user");
-		form.set("password", "foobar");
+		form.set("username", "testuser");
+		form.set("password", "testpassword");
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("X-XSRF-TOKEN", csrf);
 		headers.put("COOKIE", response.getHeaders().get("Set-Cookie"));

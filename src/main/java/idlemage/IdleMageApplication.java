@@ -1,6 +1,5 @@
 package idlemage;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 @RestController
-public class IgleMageApplication {
+public class IdleMageApplication {
 	@RequestMapping("/resource")
 	public Map<String, Object> home() {
 		Map<String, Object> model = new HashMap<String, Object>();
@@ -22,7 +21,7 @@ public class IgleMageApplication {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(IgleMageApplication.class, args);
+		SpringApplication.run(IdleMageApplication.class, args);
 	}
 
 }

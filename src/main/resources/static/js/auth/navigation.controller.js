@@ -1,20 +1,4 @@
-angular.module('hello', [ 'ngRoute' ]).config(function($routeProvider) {
-
-	$routeProvider.when('/', {
-		templateUrl : 'home.html',
-		controller : 'home',
-		controllerAs: 'controller'
-	}).when('/login', {
-		templateUrl : 'login.html',
-		controller : 'navigation',
-		controllerAs: 'controller'
-	}).when('/register', {
-		templateUrl : 'register.html',
-		controller : 'navigation',
-		controllerAs: 'controller'
-	}).otherwise('/');
-
-}).controller('navigation',
+idlemage.controller('navigation',
 
 function($rootScope, $http, $location, $route) {
 	
@@ -70,7 +54,7 @@ function($rootScope, $http, $location, $route) {
 		})
 	};
 	
-	self.register = function() {
+	self.signup = function() {
 		$http.post('createuser', $.param(self.credentials), {
 			headers : {
 				"content-type" : "application/x-www-form-urlencoded"
@@ -78,8 +62,8 @@ function($rootScope, $http, $location, $route) {
 		}).then(function() {
 			self.login();
 		}, function() {
-			console.log("Register failed")
-			$location.path("/register");
+			console.log("Signup failed")
+			$location.path("/signup");
 			self.error = true;
 			$rootScope.authenticated = false;
 		});
@@ -92,9 +76,4 @@ function($rootScope, $http, $location, $route) {
 		});
 	}
 		
-}).controller('home', function($http) {
-	var self = this;
-	$http.get('/resource/').then(function(response) {
-		self.greeting = response.data;
-	})
 });

@@ -51,9 +51,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.formLogin().and().logout()
-				.and().authorizeRequests()
-				.mvcMatchers("/createuser", "/index.html", "/home.html", "/login.html", "/register.html", "/").permitAll()
+		http.formLogin()
+				.loginPage("/#/login")
+				.loginProcessingUrl("/login")
+				.and().logout()
+				.and().authorizeRequests().antMatchers("/createuser", "/js/*", "/").permitAll()
 				.anyRequest().authenticated()
 				.and().csrf().csrfTokenRepository(csrfTokenRepository())
 				.and().addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);

@@ -19,7 +19,7 @@ public class Building {
 	}
 
 	public double income(int level) {
-		return baseIncome * level * level;
+		return baseIncome + baseIncome * level * level;
 	}
 
 	public double upgradeCost(int level) {

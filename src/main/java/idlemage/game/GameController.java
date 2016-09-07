@@ -15,7 +15,17 @@ public class GameController {
 
 	@RequestMapping("/me")
 	public Mage me(Principal user) {
-		return gameService.getMage(user.getName());
+		return gameService.getMage(user.getName()).updateMana();
+	}
+
+	@RequestMapping("/buy")
+	public Mage buy(Principal user, String building) {
+		return gameService.getMage(user.getName()).buy(building);
+	}
+
+	@RequestMapping("/upgrade")
+	public Mage upgrade(Principal user, String building) {
+		return gameService.getMage(user.getName()).upgrade(building);
 	}
 
 }

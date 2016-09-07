@@ -16,6 +16,8 @@ public class MageBuildings {
 		this.building = building;
 	}
 
+	// Getters for JSON
+
 	public String getName() {
 		return name;
 	}
@@ -32,14 +34,6 @@ public class MageBuildings {
 		return building.upgradeCost(level);
 	}
 
-	public void setLevel(int level) {
-		this.level = level;
-	}
-
-	public void setNumber(int number) {
-		this.number = number;
-	}
-
 	public int getLevel() {
 		return level;
 	}
@@ -47,4 +41,18 @@ public class MageBuildings {
 	public int getNumber() {
 		return number;
 	}
+
+	// Game logic
+	public void upgrade() {
+		this.level++;
+	}
+
+	public void buy() {
+		this.number++;
+	}
+
+	public boolean first() {
+		return number == 1;
+	}
+
 }

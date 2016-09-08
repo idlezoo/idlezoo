@@ -9,6 +9,7 @@ function($rootScope, $http, $location, $route) {
 	};
 
 	var authenticate = function(callback) {
+		console.log('sssss', callback)
 
 		$http.get('user').then(function(response) {
 			if (response.data.name) {

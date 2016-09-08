@@ -13,17 +13,17 @@
 <body ng-app="idlemage" ng-cloak class="ng-cloak">
 	<div ng-controller="navigation as nav" class="container">
 		<ul class="nav nav-pills" role="tablist">
-			<li ng-class="{active:nav.tab('home')}"><a href="#/">home</a></li>
-			<li ng-show="!authenticated" ng-class="{active:nav.tab('navigation')}"><a href="#/login">login</a></li>
-			<li ng-show="!authenticated" ng-class="{active:nav.tab('navigation')}"><a href="#/signup">signup</a></li>			
+			<li ui-sref-active="active" ui-sref="app"><a>home</a></li>
+			<li ng-show="!authenticated" ui-sref-active="active" ui-sref="login"><a>login</a></li>
+			<li ng-show="!authenticated" ui-sref-active="active" ui-sref="signup"><a>signup</a></li>
 			<li ng-show="authenticated"><a href="" ng-click="nav.logout()">logout</a></li>
 		</ul>
 	</div>
-	<div ng-view class="container"></div>
+	<div ui-view class="container"></div>
 	<script src="js/lib/bower_components/jquery/dist/jquery.min.js" type="text/javascript"></script>
     <script src="js/lib/bower_components/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
 	<script src="js/lib/bower_components/angular/angular.min.js" type="text/javascript"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular-route.min.js" type="text/javascript"></script>
+	<script src="js/lib/bower_components/angular-ui-router/release/angular-ui-router.min.js" type="text/javascript"></script>
 	<script src="js/lib/bower_components/angular-cookies/angular-cookies.min.js" type="text/javascript"></script>
 	<script src="js/app.js"></script>
 	<script src="js/routes.js"></script>

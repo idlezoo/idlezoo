@@ -1,11 +1,13 @@
 idlemage.controller('navigation',
 
-function($rootScope, $http, $location, $route) {
+function($rootScope, $http, $state) {
 	
 	var self = this;
 
 	self.tab = function(route) {
-		return $route.current && route === $route.current.controller;
+		console.log('route', route);
+
+		//return $route.current && route === $route.current.controller;
 	};
 
 	var authenticate = function(callback) {
@@ -37,19 +39,19 @@ function($rootScope, $http, $location, $route) {
 			authenticate(function() {
 				if ($rootScope.authenticated) {
 					console.log("Login succeeded")
-					$location.path("/");
+					$state.go('app');
 					self.error = false;
 					$rootScope.authenticated = true;
 				} else {
 					console.log("Login failed with redirect")
-					$location.path("/login");
+					$state.go('login');
 					self.error = true;
 					$rootScope.authenticated = false;
 				}
 			});
 		}, function() {
 			console.log("Login failed")
-			$location.path("/login");
+			$state.go('login');
 			self.error = true;
 			$rootScope.authenticated = false;
 		})
@@ -64,7 +66,7 @@ function($rootScope, $http, $location, $route) {
 			self.login();
 		}, function() {
 			console.log("Signup failed")
-			$location.path("/signup");
+			$state.go('signup');
 			self.error = true;
 			$rootScope.authenticated = false;
 		});
@@ -73,7 +75,7 @@ function($rootScope, $http, $location, $route) {
 	self.logout = function() {
 		$http.post('logout', {}).finally(function() {
 			$rootScope.authenticated = false;
-			$location.path("/");
+			$state.go('app');
 		});
 	}
 		

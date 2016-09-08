@@ -1,8 +1,16 @@
-<h1>Greeting</h1>
+<h1>IdleMage</h1>
 <div ng-show="authenticated">
-	<p>The ID is {{controller.greeting.id}}</p>
-	<p>The content is {{controller.greeting.content}}</p>
+	<p>You have {{controller.mage.mana}} mana</p>
+	<p>You gain {{controller.mage.manaIncome}} mana every second</p>
+	<h3>Your temples:</h3>
+	<div ng-repeat="building in controller.mage.buildings">
+		<p>
+		{{building.number}} {{building.name}} (Level {{building.level}}) produce {{building.income}} mana 
+		<button ng-click="buy(building.name)">Buy for {{building.nextCost}}</button>
+		<button ng-click="upgrade(building.name)">Upgrade for {{building.upgradeCost}}</button>
+		</p>
+	</div>
 </div>
 <div  ng-show="!authenticated">
-	<p>Login to see your greeting</p>
+	<p>Login to see your magical temples!</p>
 </div>

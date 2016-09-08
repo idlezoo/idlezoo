@@ -1,4 +1,4 @@
-idlemage.controller('home', function($scope, $http) {
+idlemage.controller('home', function($scope, $interval, $http) {
 	var self = this;
 	$http.get('/game/me').then(function(response) {
 		self.mage = response.data;
@@ -16,4 +16,24 @@ idlemage.controller('home', function($scope, $http) {
 			self.mage = response.data;
 		})
 	};
+
+	var stop;
+    // Don't start update if it is already defined
+    if ( !angular.isDefined(stop) ) {
+    	stop = $interval(function() {
+    		self.mage.mana += self.mage.manaIncome / 10;
+    	}, 100);
+	}
+
+    $scope.stopUpdate = function() {
+        if (angular.isDefined(stop)) {
+        	$interval.cancel(stop);
+        	stop = undefined;
+        }
+    };
+
+	$scope.$on('$destroy', function() {
+        $scope.stopUpdate();
+    });
+
 });

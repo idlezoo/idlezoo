@@ -24,4 +24,8 @@ public class GameService {
 		return mages.get(username);
 	}
 
+	public ConcurrentHashMap<String, Mage> getMages() {
+		return mages;
+	}
+
 }

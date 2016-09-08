@@ -32,12 +32,11 @@ public class Mage {
 		lastManaUpdate = timer.now();
 	}
 
-	// Getters for JSON
 	public double getMana() {
 		return mana;
 	}
 
-	public double getManaIncome() {
+	public double getIncome() {
 		return buildings.stream().mapToDouble(MageBuildings::getIncome).sum();
 	}
 
@@ -45,11 +44,15 @@ public class Mage {
 		return buildings;
 	}
 
+	public Map<String, MageBuildings> getBuildingsMap() {
+		return buildingsMap;
+	}
+
 	// Logic
 	public synchronized Mage updateMana() {
 		LocalDateTime now = timer.now();
 		long dif = Duration.between(lastManaUpdate, now).getSeconds();
-		mana += dif * getManaIncome();
+		mana += dif * getIncome();
 		lastManaUpdate = now;
 		return this;
 	}

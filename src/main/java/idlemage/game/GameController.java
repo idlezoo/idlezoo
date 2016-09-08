@@ -14,18 +14,23 @@ public class GameController {
 	private GameService gameService;
 
 	@RequestMapping("/me")
-	public Mage me(Principal user) {
-		return gameService.getMage(user.getName()).updateMana();
+	public MageDTO me(Principal user) {
+		return new MageDTO(gameService.getMage(user.getName()).updateMana());
+	}
+	
+	@RequestMapping("/me/mana")
+	public double mana(Principal user) {
+		return me(user).getMana();
 	}
 
 	@RequestMapping("/buy")
-	public Mage buy(Principal user, String building) {
-		return gameService.getMage(user.getName()).buy(building);
+	public MageDTO buy(Principal user, String building) {
+		return new MageDTO(gameService.getMage(user.getName()).buy(building));
 	}
 
 	@RequestMapping("/upgrade")
-	public Mage upgrade(Principal user, String building) {
-		return gameService.getMage(user.getName()).upgrade(building);
+	public MageDTO upgrade(Principal user, String building) {
+		return new MageDTO(gameService.getMage(user.getName()).upgrade(building));
 	}
 
 }

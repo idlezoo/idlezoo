@@ -6,8 +6,8 @@
 	<div ng-repeat="building in controller.mage.buildings">
 		<p>
 		{{building.number}} {{building.name}} (Level {{building.level}}) produce {{building.income}} mana 
-		<button ng-click="buy(building.name)">Buy for {{building.nextCost}}</button>
-		<button ng-click="upgrade(building.name)">Upgrade for {{building.upgradeCost}}</button>
+		<button ng-click="buy(building.name)" ng-disabled="building.nextCost > controller.mage.mana">Buy for {{building.nextCost}}</button>
+		<button ng-click="upgrade(building.name)" ng-disabled="building.upgradeCost > controller.mage.mana">Upgrade for {{building.upgradeCost}}</button>
 		</p>
 	</div>
 </div>

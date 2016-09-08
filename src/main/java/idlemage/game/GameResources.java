@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class GameResources {
 
+	public static double STARTING_MANA = 100D;
 	public static final Map<String, Building> BUILDING_TYPES;
 	public static final Map<String, Building> NEXT_TYPES;
 	public static final Building STARTING_BUILDING;
@@ -17,7 +18,7 @@ public class GameResources {
 
 		Building rats = new Building("Rats", 10, 1, 100);
 		buildingTypes.put(rats.getName(), rats);
-		
+
 		STARTING_BUILDING = rats;
 
 		Building spiders = new Building("Spiders", 50, 3, 600);

@@ -1,6 +1,7 @@
 package idlemage.game;
 
 import static idlemage.game.GameResources.STARTING_BUILDING;
+import static idlemage.game.GameResources.STARTING_MANA;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonMap;
 
@@ -8,24 +9,35 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Mage {
+	private static final Timer DEFAULT_TIMER = () -> LocalDateTime.now(ZoneOffset.UTC);
+
+	private final Timer timer;
 	private final List<MageBuildings> buildings = new ArrayList<>(asList(new MageBuildings(STARTING_BUILDING)));
 	private final Map<String, MageBuildings> buildingsMap = new HashMap<>(
 			singletonMap(STARTING_BUILDING.getName(), buildings.get(0)));
-	private Double mana = 100D;
-	private LocalDateTime lastManaUpdate = LocalDateTime.now(ZoneOffset.UTC);
+	private double mana = STARTING_MANA;
+	private LocalDateTime lastManaUpdate;
+
+	public Mage() {
+		this(DEFAULT_TIMER);
+	}
+
+	Mage(Timer timer) {
+		this.timer = timer;
+		lastManaUpdate = timer.now();
+	}
 
 	// Getters for JSON
-	public Double getMana() {
+	public double getMana() {
 		return mana;
 	}
 
-	public Double getManaIncome() {
+	public double getManaIncome() {
 		return buildings.stream().mapToDouble(MageBuildings::getIncome).sum();
 	}
 
@@ -35,7 +47,7 @@ public class Mage {
 
 	// Logic
 	public synchronized Mage updateMana() {
-		LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+		LocalDateTime now = timer.now();
 		long dif = Duration.between(lastManaUpdate, now).getSeconds();
 		mana += dif * getManaIncome();
 		lastManaUpdate = now;
@@ -77,6 +89,10 @@ public class Mage {
 		mana -= mageBuildings.getUpgradeCost();
 		mageBuildings.upgrade();
 		return this;
+	}
+
+	interface Timer {
+		LocalDateTime now();
 	}
 
 }

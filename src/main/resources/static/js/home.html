@@ -5,9 +5,9 @@
 	<h3>Your temples:</h3>
 	<div ng-repeat="building in controller.mage.buildings">
 		<p>
-		{{building.number}} {{building.name}} (Level {{building.level}}) produce {{building.income}} mana 
-		<button ng-click="buy(building.name)" ng-disabled="building.nextCost > controller.mage.mana">Buy for {{building.nextCost}}</button>
-		<button ng-click="upgrade(building.name)" ng-disabled="building.upgradeCost > controller.mage.mana">Upgrade for {{building.upgradeCost}}</button>
+		{{building.number}} {{building.name}} (Level {{building.level}}) produce {{building.income}} mana ({{building.income / controller.mage.manaIncome * 100}}%)
+		<button type="button" class="btn btn-default" ng-click="buy(building.name)" ng-disabled="building.nextCost > controller.mage.mana">Buy for {{building.nextCost}}</button>
+		<button type="button" class="btn btn-default" ng-click="upgrade(building.name)" ng-disabled="building.upgradeCost > controller.mage.mana">Upgrade for {{building.upgradeCost}}</button>
 		</p>
 	</div>
 </div>

@@ -1,5 +1,6 @@
 var idlemage = angular.module('idlemage', [
-    'ui.router'
+    'ui.router',
+    'ngNumeraljs'
 ]);
 
 

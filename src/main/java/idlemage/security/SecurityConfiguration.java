@@ -55,8 +55,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.loginPage("/#/login")
 				.loginProcessingUrl("/login")
 				.and().logout()
-				.and().authorizeRequests().antMatchers("/createuser", "/js/*", "/").permitAll()
-				.anyRequest().authenticated()
+				.and().authorizeRequests().antMatchers("/game/*").authenticated()
+				.anyRequest().permitAll()
 				.and().csrf().csrfTokenRepository(csrfTokenRepository())
 				.and().addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
 	}

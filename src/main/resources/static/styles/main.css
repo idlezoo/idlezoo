@@ -1,0 +1,29 @@
+.building{
+    height: 100px;
+    width: 100%;
+    border: 1px solid #000;
+    position: relative;
+
+
+}
+.building .text-m{
+    line-height: 100px;
+    display: inline-block;
+    font-size: 25px;
+}
+.building .btn{
+    float: right;
+    height: 100%;
+    background-color: lightblue;
+}
+.building .btn.upgrade{
+    background-color: lightpink;
+}
+.creature{
+    height: 95px;
+    width: 90px;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 50% 50%;
+}

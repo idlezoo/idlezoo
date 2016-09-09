@@ -1,6 +1,8 @@
 package idlemage.game;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,5 +20,16 @@ public class GameResourcesTest {
 	@Test
 	public void test() {
 		assertNotNull(gameResources.startingCreature());
+		assertSame(gameResources.startingCreature(), gameResources.getCreaturesList().get(0));
+		Building previous = gameResources.startingCreature();
+		for (Building creature : gameResources.getCreaturesList()) {
+			if (creature == previous) {
+				continue;
+			}
+			assertTrue(previous.getBaseCost() < creature.getBaseCost());
+			assertTrue(previous.getBaseIncome() < creature.getBaseIncome());
+			assertTrue(previous.getBaseUpgrade() < creature.getBaseUpgrade());
+			previous = creature;
+		}
 	}
 }

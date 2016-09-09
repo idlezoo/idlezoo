@@ -6,11 +6,6 @@ public class MageBuildings {
 	private int level = 0;
 	private int number = 0;
 
-	public MageBuildings(String name) {
-		this.name = name;
-		this.building = GameResources.BUILDING_TYPES.get(name);
-	}
-
 	public MageBuildings(Building building) {
 		this.name = building.getName();
 		this.building = building;

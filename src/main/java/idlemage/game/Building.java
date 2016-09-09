@@ -1,10 +1,13 @@
 package idlemage.game;
 
 public class Building {
-	private final String name;
-	private final double baseCost;
-	private final double baseIncome;
-	private final double baseUpgrade;
+	private String name;
+	private double baseCost;
+	private double baseIncome;
+	private double baseUpgrade;
+
+	public Building() {
+	}
 
 	public Building(String name,
 			double baseCost, double baseIncome, double baseUpgrade) {
@@ -14,10 +17,8 @@ public class Building {
 		this.baseUpgrade = baseUpgrade;
 	}
 
-	public String getName() {
-		return name;
-	}
-
+	// logic start
+	// TODO Lombok all the boilerplate!
 	public double income(int level) {
 		return baseIncome + baseIncome * level * level;
 	}
@@ -29,6 +30,39 @@ public class Building {
 	public double buildCost(int index) {
 		// For now taken from Coockie-clicker
 		return baseCost * Math.pow(1.15, index);
+	}
+	// logic end
+
+	public double getBaseCost() {
+		return baseCost;
+	}
+
+	public double getBaseIncome() {
+		return baseIncome;
+	}
+
+	public double getBaseUpgrade() {
+		return baseUpgrade;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setBaseCost(double baseCost) {
+		this.baseCost = baseCost;
+	}
+
+	public void setBaseIncome(double baseIncome) {
+		this.baseIncome = baseIncome;
+	}
+
+	public void setBaseUpgrade(double baseUpgrade) {
+		this.baseUpgrade = baseUpgrade;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 }

@@ -5,8 +5,8 @@
 	<h3>Your temples:</h3>
 	<div ng-repeat="building in controller.mage.buildings track by $index">
 		<div class="building">
-			<div class="creature" style="background-image: url('../js/images/lvl{{$index+1}}.gif')"></div>
-			<div class="text-m">{{building.number}} {{building.name}} (Level {{building.level}}) produce {{building.income | numeraljs:'0.000a'}} mana ({{(building.income / controller.mage.manaIncome * 100).toFixed(2)}}%)</div>
+			<div class="creature" style="background-image: url('/images/{{building.name}}.png')"></div>
+			<div class="text-m">{{building.number}} {{building.name}}s (Level {{building.level}}) produce {{building.income | numeraljs:'0.000a'}} mana ({{(building.income / controller.mage.manaIncome * 100).toFixed(2)}}%)</div>
 			<button type="button" class="btn btn-default upgrade" ng-click="upgrade(building.name)" ng-disabled="building.upgradeCost > controller.mage.mana">Upgrade for {{building.upgradeCost | numeraljs:'0.000a'}}</button>
 		<button type="button" class="btn btn-default" ng-click="buy(building.name)" ng-disabled="building.nextCost > controller.mage.mana">Buy for {{building.nextCost | numeraljs:'0.000a'}}</button>
 

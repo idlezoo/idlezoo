@@ -1,52 +1,72 @@
 package idlemage.game;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class GameResources {
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-	public static double STARTING_MANA = 100D;
-	public static final Map<String, Building> BUILDING_TYPES;
-	public static final Map<String, Building> NEXT_TYPES;
-	public static final Building STARTING_BUILDING;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
 
-	static {
-		Map<String, Building> buildingTypes = new HashMap<>();
-		Map<String, Building> nextTypes = new HashMap<>();
+@Service
+public class GameResources implements InitializingBean {
 
-		Building rats = new Building("Rats", 10, 1, 100);
-		buildingTypes.put(rats.getName(), rats);
+	@Autowired
+	private ObjectMapper mapper;
 
-		STARTING_BUILDING = rats;
+	private double startingMana = 100D;
+	private List<Building> creaturesList;
+	private Map<String, Building> creaturesTypes = new HashMap<>();
+	private Map<String, Building> nextCreatures = new HashMap<>();
+	private Building startingCreature;
 
-		Building spiders = new Building("Spiders", 50, 3, 600);
-		buildingTypes.put(spiders.getName(), spiders);
-		nextTypes.put(rats.getName(), spiders);
+	@Override
+	public void afterPropertiesSet() throws IOException {
+		try (InputStream creatures = GameResources.class.getResourceAsStream("/creatures/creatures.json")) {
+			CollectionType type = mapper.getTypeFactory().constructCollectionType(List.class, Building.class);
+			creaturesList = unmodifiableList(mapper.readValue(creatures, type));
+			startingCreature = creaturesList.get(0);
 
-		Building wolves = new Building("Wolves", 100, 5, 1000);
-		buildingTypes.put(wolves.getName(), wolves);
-		nextTypes.put(spiders.getName(), wolves);
+			Building previous = null;
+			for (Building creature : creaturesList) {
+				creaturesTypes.put(creature.getName(), creature);
+				if (previous != null) {
+					nextCreatures.put(previous.getName(), creature);
+				}
+				previous = creature;
+			}
+		}
+		creaturesTypes = unmodifiableMap(creaturesTypes);
+		nextCreatures = unmodifiableMap(nextCreatures);
 
-		Building lizards = new Building("Lizards", 1000, 10, 10000);
-		buildingTypes.put(lizards.getName(), lizards);
-		nextTypes.put(wolves.getName(), lizards);
+	}
 
-		Building golems = new Building("Golems", 5000, 30, 600000);
-		buildingTypes.put(golems.getName(), golems);
-		nextTypes.put(lizards.getName(), golems);
+	public double startingMana() {
+		return startingMana;
+	}
 
-		Building medusas = new Building("Medusas", 10000, 50, 1000000);
-		buildingTypes.put(medusas.getName(), medusas);
-		nextTypes.put(golems.getName(), medusas);
+	public Building startingCreature() {
+		return startingCreature;
+	}
 
-		Building dragons = new Building("Dragons", 100000, 100, 10000000);
-		buildingTypes.put(dragons.getName(), dragons);
-		nextTypes.put(medusas.getName(), dragons);
+	public Building nextType(String buildingName) {
+		return nextCreatures.get(buildingName);
+	}
 
-		NEXT_TYPES = unmodifiableMap(nextTypes);
-		BUILDING_TYPES = unmodifiableMap(buildingTypes);
+	public Building type(String typeName) {
+		return creaturesTypes.get(typeName);
+	}
+
+	public List<Building> getCreaturesList() {
+		return creaturesList;
 	}
 
 }

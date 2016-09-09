@@ -1,0 +1,15 @@
+[
+{"name":"Grasshopper", "baseCost":10, "baseIncome":1,"baseUpgrade":100},
+{"name":"Monkey", "baseCost":50, "baseIncome":3,"baseUpgrade":600},
+{"name":"Panda", "baseCost":100, "baseIncome":5,"baseUpgrade":1000},
+{"name":"Leopard", "baseCost":1000, "baseIncome":10,"baseUpgrade":10000},
+{"name":"Lion", "baseCost":5000, "baseIncome":25,"baseUpgrade":100000},
+{"name":"Alligator", "baseCost":10000, "baseIncome":50,"baseUpgrade":5000000},
+{"name":"Rhino", "baseCost":100000, "baseIncome":100,"baseUpgrade":100000000},
+{"name":"Polarbear", "baseCost":1000000, "baseIncome":250,"baseUpgrade":10000000000},
+{"name":"Brontosaurus", "baseCost":10000000, "baseIncome":500,"baseUpgrade":1000000000000},
+{"name":"Ttriceratops", "baseCost":100000000, "baseIncome":1000,"baseUpgrade":100000000000000},
+{"name":"Tyrannosaurus", "baseCost":1000000000, "baseIncome":3000,"baseUpgrade":10000000000000000},
+{"name":"Kraken", "baseCost":10000000000, "baseIncome":5000,"baseUpgrade":1000000000000000000},
+{"name":"Dragon", "baseCost":100000000000, "baseIncome":10000,"baseUpgrade":100000000000000000000}
+]

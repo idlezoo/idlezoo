@@ -13,11 +13,14 @@ public class GameController {
 	@Autowired
 	private GameService gameService;
 
+	@Autowired
+	GameResources gameResources;
+
 	@RequestMapping("/me")
 	public MageDTO me(Principal user) {
 		return new MageDTO(gameService.getMage(user.getName()).updateMana());
 	}
-	
+
 	@RequestMapping("/me/mana")
 	public double mana(Principal user) {
 		return me(user).getMana();
@@ -25,7 +28,7 @@ public class GameController {
 
 	@RequestMapping("/buy")
 	public MageDTO buy(Principal user, String building) {
-		return new MageDTO(gameService.getMage(user.getName()).buy(building));
+		return new MageDTO(gameService.getMage(user.getName()).buy(building, gameResources));
 	}
 
 	@RequestMapping("/upgrade")

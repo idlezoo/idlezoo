@@ -1,23 +1,20 @@
 package idlemage.game;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GameService {
 
+	@Autowired
+	private GameResources gameResources;
+	
 	private final ConcurrentHashMap<String, Mage> mages = new ConcurrentHashMap<>();
 
 	public void createMage(String username) {
-		mages.put(username, new Mage());
+		mages.put(username, new Mage(gameResources));
 	}
 
 	public Mage getMage(String username) {

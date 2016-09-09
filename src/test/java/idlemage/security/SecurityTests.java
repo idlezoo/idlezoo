@@ -43,9 +43,11 @@ public class SecurityTests {
 	}
 
 	@Test
-	public void userEndpointProtected() {
+	public void userEndpoint() {
 		ResponseEntity<String> response = template.getForEntity("http://localhost:" + port + "/user", String.class);
-		assertEquals(HttpStatus.FOUND, response.getStatusCode());
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertNull(response.getBody());
+
 	}
 
 	@Test

@@ -37,14 +37,22 @@ public class Mage {
     lastManaUpdate = timer.now();
   }
 
+  public void setMana(double mana) {
+    this.mana = mana;
+  }
+
   public double getMana() {
     return mana;
   }
 
-  public double getIncome(){
+  public double getIncome() {
     return income;
   }
-  
+
+  public LocalDateTime getLastManaUpdate() {
+    return lastManaUpdate;
+  }
+
   private double computeIncome() {
     return buildings.stream().mapToDouble(MageBuildings::getIncome).sum();
   }

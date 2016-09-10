@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import idlemage.game.GameService;
+import idlemage.game.services.GameService;
 
 @RestController
 public class RegisterController {

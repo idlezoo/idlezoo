@@ -1,4 +1,4 @@
-package idlemage.game;
+package idlemage.game.domain;
 
 import static org.junit.Assert.assertEquals;
 
@@ -10,14 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import idlemage.game.Mage.Timer;
+import idlemage.game.domain.Mage;
+import idlemage.game.domain.Mage.Timer;
+import idlemage.game.services.ResourcesService;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class MageTest {
 
 	@Autowired
-	private GameResources gameResources;
+	private ResourcesService gameResources;
 	
 	@Test
 	public void test() {

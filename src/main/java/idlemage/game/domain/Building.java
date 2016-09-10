@@ -1,4 +1,4 @@
-package idlemage.game;
+package idlemage.game.domain;
 
 public class Building {
 	private String name;

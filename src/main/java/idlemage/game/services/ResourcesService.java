@@ -1,4 +1,4 @@
-package idlemage.game;
+package idlemage.game.services;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
@@ -16,8 +16,10 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
+import idlemage.game.domain.Building;
+
 @Service
-public class GameResources implements InitializingBean {
+public class ResourcesService implements InitializingBean {
 
 	@Autowired
 	private ObjectMapper mapper;
@@ -30,7 +32,7 @@ public class GameResources implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws IOException {
-		try (InputStream creatures = GameResources.class.getResourceAsStream("/creatures/creatures.json")) {
+		try (InputStream creatures = ResourcesService.class.getResourceAsStream("/creatures/creatures.json")) {
 			CollectionType type = mapper.getTypeFactory().constructCollectionType(List.class, Building.class);
 			creaturesList = unmodifiableList(mapper.readValue(creatures, type));
 			startingCreature = creaturesList.get(0);

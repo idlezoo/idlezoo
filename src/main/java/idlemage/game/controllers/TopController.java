@@ -1,4 +1,4 @@
-package idlemage.game;
+package idlemage.game.controllers;
 
 import java.util.Map;
 import java.util.Objects;
@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import idlemage.game.domain.Mage;
+import idlemage.game.domain.MageBuildings;
+import idlemage.game.services.GameService;
 import one.util.streamex.EntryStream;
 
 @RestController

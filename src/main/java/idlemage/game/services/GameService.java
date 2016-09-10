@@ -1,15 +1,17 @@
-package idlemage.game;
+package idlemage.game.services;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import idlemage.game.domain.Mage;
+
 @Service
 public class GameService {
 
 	@Autowired
-	private GameResources gameResources;
+	private ResourcesService gameResources;
 	
 	private final ConcurrentHashMap<String, Mage> mages = new ConcurrentHashMap<>();
 

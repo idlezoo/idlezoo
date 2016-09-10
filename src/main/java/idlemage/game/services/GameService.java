@@ -32,7 +32,7 @@ public class GameService implements InitializingBean {
   public void afterPropertiesSet() throws Exception {
     Mage mage = new Mage(gameResources);
     mage.setMana(1e15);
-    mages.put("moradan", mage);
+    mages.put("admin", mage);
 
   }
 

@@ -85,7 +85,7 @@ public class UsersService implements UserDetailsService, InitializingBean {
   @Override
   public void afterPropertiesSet() throws Exception {
     // just to be safe - this is not my usual password))
-    users.put("moradan", new MageUser("moradan",
+    users.put("admin", new MageUser("admin",
         "$2a$10$zvgMiULuB5SW7zMVzd0Jae6h7NC53oll50lbG6hs5rjWT4bGQVPBO", Collections.singletonList(
             "ADMIN")));
   }

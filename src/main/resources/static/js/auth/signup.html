@@ -8,11 +8,16 @@
 	</div>
 	<div class="form-group">
 		<label for="password">Password:</label> <input type="password"
-			class="form-control" id="password" name="password" ng-model="controller.credentials.password"/>
+			class="form-control"  aria-describedby="passwordHelpBlock" id="password" name="password" ng-model="controller.credentials.password" />
 	</div>
+	<p id="passwordHelpBlock" class="form-text text-muted">
+  No requirements for your password but one - please, do not use your "usual" password for security reasons (Please, PLEASE, P-L-E-A-S-E!!!)
+</p>
+	<!-- 
+	TODO do client-side checking for mathcing password with password2
 	<div class="form-group">
 		<label for="password">Repeat password:</label> <input type="password"
 			class="form-control" id="password2" name="password2" ng-model="controller.credentials.password2"/>
-	</div>
+	</div> -->
 	<button type="submit" class="btn btn-primary">Submit</button>
 </form>

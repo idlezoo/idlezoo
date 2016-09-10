@@ -1,5 +1,8 @@
 package idlemage.game.controllers;
 
+import static java.util.Comparator.*;
+
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -17,27 +20,52 @@ import one.util.streamex.EntryStream;
 @RequestMapping("/top")
 public class TopController {
 
-	@Autowired
-	private GameService gameService;
+  @Autowired
+  private GameService gameService;
 
-	@RequestMapping("/building/{building}")
-	public Map<String, Integer> building(@PathVariable String building) {
-		return EntryStream.of(gameService.getMages())
-				.mapValues(mage -> mage.getBuildingsMap().get(building))
-				.filterValues(Objects::nonNull)
-				.mapValues(MageBuildings::getNumber)
-				.sortedByInt(Map.Entry::getValue)
-				.limit(10)
-				.toMap();
-	}
+  @RequestMapping("/building/{building}")
+  public List<TopEntry<Integer>> building(@PathVariable String building) {
+    return EntryStream.of(gameService.getMages())
+        .mapValues(mage -> mage.getBuildingsMap().get(building))
+        .filterValues(Objects::nonNull)
+        .mapValues(MageBuildings::getNumber)
+        .reverseSorted(comparingInt(Map.Entry::getValue))
+        .limit(10)
+        .map(TopEntry::new)
+        .toList();
+  }
 
-	@RequestMapping("/income")
-	public Map<String, Double> income() {
-		return EntryStream.of(gameService.getMages())
-				.mapValues(Mage::getIncome)
-				.sortedByDouble(Map.Entry::getValue)
-				.limit(10)
-				.toMap();
-	}
+  @RequestMapping("/income")
+  public List<TopEntry<Double>> income() {
+    return EntryStream.of(gameService.getMages())
+        .mapValues(Mage::getIncome)
+        .reverseSorted(comparingDouble(Map.Entry::getValue))
+        .limit(10)
+        .map(TopEntry::new)
+        .toList();
+  }
+
+  public static class TopEntry<V> {
+    private final String name;
+    private final V value;
+
+    public TopEntry(Map.Entry<String, V> entry) {
+      this.name = entry.getKey();
+      this.value = entry.getValue();
+    }
+
+    public TopEntry(String name, V value) {
+      this.name = name;
+      this.value = value;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public V getValue() {
+      return value;
+    }
+  }
 
 }

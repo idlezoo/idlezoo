@@ -15,6 +15,7 @@
 	<div ng-controller="navigation as nav" class="container">
 		<ul class="nav nav-pills" role="tablist">
 			<li ui-sref-active="active" ui-sref="app"><a>home</a></li>
+			<li ui-sref-active="active" ui-sref="top"><a>top</a></li>
 			<li ng-show="!authenticated" ui-sref-active="active" ui-sref="login"><a>login</a></li>
 			<li ng-show="!authenticated" ui-sref-active="active" ui-sref="signup"><a>signup</a></li>
 			<li ng-show="authenticated"><a href="" ng-click="nav.logout()">logout</a></li>
@@ -32,5 +33,6 @@
 	<script src="js/routes.js"></script>
 	<script src="js/auth/navigation.controller.js"></script>
 	<script src="js/home.controller.js"></script>
+	<script src="js/top/top.controller.js"></script>
 </body>
 </html>

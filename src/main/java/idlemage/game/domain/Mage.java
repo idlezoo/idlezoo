@@ -20,6 +20,7 @@ public class Mage {
   private final List<MageBuildings> buildings;
   private final Map<String, MageBuildings> buildingsMap;
   private double mana;
+  private double income;
   private LocalDateTime lastManaUpdate;
 
   public Mage(ResourcesService gameResources) {
@@ -40,7 +41,11 @@ public class Mage {
     return mana;
   }
 
-  public double getIncome() {
+  public double getIncome(){
+    return income;
+  }
+  
+  private double computeIncome() {
     return buildings.stream().mapToDouble(MageBuildings::getIncome).sum();
   }
 
@@ -80,6 +85,7 @@ public class Mage {
         buildingsMap.put(next.getName(), nextBuildings);
       }
     }
+    income = computeIncome();
     return this;
   }
 
@@ -95,6 +101,7 @@ public class Mage {
 
     mana -= mageBuildings.getUpgradeCost();
     mageBuildings.upgrade();
+    income = computeIncome();
     return this;
   }
 

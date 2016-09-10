@@ -1,15 +1,15 @@
 [
 {"name":"Grasshopper", "baseCost":10, "baseIncome":1,"baseUpgrade":100},
 {"name":"Monkey", "baseCost":50, "baseIncome":3,"baseUpgrade":600},
-{"name":"Panda", "baseCost":100, "baseIncome":5,"baseUpgrade":1000},
-{"name":"Leopard", "baseCost":1000, "baseIncome":10,"baseUpgrade":10000},
-{"name":"Lion", "baseCost":5000, "baseIncome":25,"baseUpgrade":100000},
-{"name":"Alligator", "baseCost":10000, "baseIncome":50,"baseUpgrade":5000000},
-{"name":"Rhino", "baseCost":100000, "baseIncome":100,"baseUpgrade":100000000},
-{"name":"Polarbear", "baseCost":1000000, "baseIncome":250,"baseUpgrade":10000000000},
-{"name":"Brontosaurus", "baseCost":10000000, "baseIncome":500,"baseUpgrade":1000000000000},
-{"name":"Ttriceratops", "baseCost":100000000, "baseIncome":1000,"baseUpgrade":100000000000000},
-{"name":"Tyrannosaurus", "baseCost":1000000000, "baseIncome":3000,"baseUpgrade":10000000000000000},
-{"name":"Kraken", "baseCost":10000000000, "baseIncome":5000,"baseUpgrade":1000000000000000000},
-{"name":"Dragon", "baseCost":100000000000, "baseIncome":10000,"baseUpgrade":100000000000000000000}
+{"name":"Panda", "baseCost":100, "baseIncome":5,"baseUpgrade":1e3},
+{"name":"Leopard", "baseCost":1e3, "baseIncome":10,"baseUpgrade":1e5},
+{"name":"Lion", "baseCost":5e3, "baseIncome":25,"baseUpgrade":1e7},
+{"name":"Alligator", "baseCost":1e4, "baseIncome":50,"baseUpgrade":1e9},
+{"name":"Rhino", "baseCost":1e5, "baseIncome":100,"baseUpgrade":1e11},
+{"name":"Polarbear", "baseCost":1e6, "baseIncome":250,"baseUpgrade":1e13},
+{"name":"Brontosaurus", "baseCost":1e7, "baseIncome":500,"baseUpgrade":1e15},
+{"name":"Ttriceratops", "baseCost":1e8, "baseIncome":1000,"baseUpgrade":1e17},
+{"name":"Tyrannosaurus", "baseCost":1e9, "baseIncome":3000,"baseUpgrade":1e19},
+{"name":"Kraken", "baseCost":1e10, "baseIncome":5000,"baseUpgrade":1e21},
+{"name":"Dragon", "baseCost":1e11, "baseIncome":10000,"baseUpgrade":1e22}
 ]

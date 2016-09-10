@@ -16,6 +16,12 @@ idlemage.controller('home', function($scope, $interval, $http) {
 			self.mage = response.data;
 		})
 	};
+	
+	$scope.fight = function(){
+		$http.get('/game/fight').then(function(response){
+			self.mage = response.data;
+		})
+	};
 
 	var stop;
     // Don't start update if it is already defined

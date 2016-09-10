@@ -8,10 +8,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import idlemage.game.services.ResourcesService;
+import one.util.streamex.StreamEx;
 
 public class Mage {
   private static final Timer DEFAULT_TIMER = () -> LocalDateTime.now(ZoneOffset.UTC);
@@ -20,8 +23,10 @@ public class Mage {
   private final List<MageBuildings> buildings;
   private final Map<String, MageBuildings> buildingsMap;
   private double mana;
-  private double income;
   private LocalDateTime lastManaUpdate;
+  private int fightWins;
+  // cached value - trade memory for CPU
+  private double income;
 
   public Mage(ResourcesService gameResources) {
     this(gameResources, DEFAULT_TIMER);
@@ -49,12 +54,16 @@ public class Mage {
     return income;
   }
 
+  public int getFightWins() {
+    return fightWins;
+  }
+
   public LocalDateTime getLastManaUpdate() {
     return lastManaUpdate;
   }
 
-  private double computeIncome() {
-    return buildings.stream().mapToDouble(MageBuildings::getIncome).sum();
+  private void computeIncome() {
+    income = buildings.stream().mapToDouble(MageBuildings::getIncome).sum();
   }
 
   public List<MageBuildings> getBuildings() {
@@ -87,13 +96,13 @@ public class Mage {
     mageBuildings.buy();
     if (mageBuildings.first()) {
       Building next = gameResources.nextType(buildingName);
-      if (next != null) {
+      if (next != null && !buildingsMap.containsKey(next.getName())) {
         MageBuildings nextBuildings = new MageBuildings(next);
         buildings.add(nextBuildings);
         buildingsMap.put(next.getName(), nextBuildings);
       }
     }
-    income = computeIncome();
+    computeIncome();
     return this;
   }
 
@@ -109,8 +118,48 @@ public class Mage {
 
     mana -= mageBuildings.getUpgradeCost();
     mageBuildings.upgrade();
-    income = computeIncome();
+    computeIncome();
     return this;
+  }
+
+  public synchronized void fight(Mage other) {
+    synchronized (other) {
+      Set<String> buildingsSuperSet = new HashSet<>();
+      buildingsSuperSet.addAll(StreamEx.of(buildings).map(MageBuildings::getName).toList());
+      buildingsSuperSet.addAll(StreamEx.of(other.buildings).map(MageBuildings::getName).toList());
+      int thisWins = 0, otherWins = 0;
+      for (String building : buildingsSuperSet) {
+        MageBuildings thisBuildings = buildingsMap.get(building);
+        MageBuildings otherBuildings = other.buildingsMap.get(building);
+
+        if (thisBuildings == null) {
+          otherWins++;
+          continue;
+        }
+
+        if (otherBuildings == null) {
+          thisWins++;
+          continue;
+        }
+
+        if (thisBuildings.getNumber() >= otherBuildings.getNumber()) {
+          thisWins++;
+          otherBuildings.setNumber(0);
+          thisBuildings.setNumber(thisBuildings.getNumber() - otherBuildings.getNumber());
+        } else {
+          otherWins++;
+          thisBuildings.setNumber(0);
+          otherBuildings.setNumber(otherBuildings.getNumber() - thisBuildings.getNumber());
+        }
+      }
+      computeIncome();
+      other.computeIncome();
+      if (thisWins >= otherWins) {
+        fightWins++;
+      } else {
+        other.fightWins++;
+      }
+    }
   }
 
   interface Timer {
@@ -118,6 +167,7 @@ public class Mage {
   }
 
   public static class InsuffisientFundsException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
   }
 
 }

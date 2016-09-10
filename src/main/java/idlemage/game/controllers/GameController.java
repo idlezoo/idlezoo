@@ -14,6 +14,7 @@ import idlemage.game.domain.Mage;
 import idlemage.game.domain.MageBuildings;
 import idlemage.game.domain.Mage.InsuffisientFundsException;
 import idlemage.game.services.ResourcesService;
+import idlemage.game.services.FightService;
 import idlemage.game.services.GameService;
 
 @RestController
@@ -24,7 +25,9 @@ public class GameController {
   private GameService gameService;
 
   @Autowired
-  ResourcesService gameResources;
+  private ResourcesService gameResources;
+  @Autowired
+  private FightService fightService;
 
   @RequestMapping("/me")
   public MageDTO me(Principal user) {
@@ -46,22 +49,30 @@ public class GameController {
     return new MageDTO(gameService.getMage(user.getName()).upgrade(building));
   }
 
+  @RequestMapping("/fight")
+  public MageDTO fight(Principal user) {
+    fightService.fight(user.getName());
+    return me(user);
+  }
+
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(InsuffisientFundsException.class)
   public String insuffisientFunds() {
     return "Not enough mana!";
   }
-  
+
   public static class MageDTO {
 
     private final List<MageBuildings> buildings;
     private final double income;
     private final double mana;
+    private final int fightWins;
 
     public MageDTO(Mage mage) {
       this.buildings = mage.getBuildings();
       this.income = mage.getIncome();
       this.mana = mage.getMana();
+      this.fightWins = mage.getFightWins();
     }
 
     public double getMana() {
@@ -76,7 +87,9 @@ public class GameController {
       return buildings;
     }
 
+    public int getFightWins() {
+      return fightWins;
+    }
   }
-
 
 }

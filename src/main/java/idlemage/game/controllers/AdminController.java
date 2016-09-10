@@ -77,6 +77,7 @@ public class AdminController {
     private List<BuildingDTO> buildings;
     private double mana;
     private LocalDateTime lastManaUpdate;
+    private int fightWins;
 
     public MageDTO(Map.Entry<String, Mage> mageEntry) {
       this.name = mageEntry.getKey();
@@ -84,6 +85,7 @@ public class AdminController {
       this.buildings = StreamEx.of(mage.getBuildings()).map(BuildingDTO::new).toList();
       this.mana = mage.getMana();
       this.lastManaUpdate = mage.getLastManaUpdate();
+      this.fightWins = mage.getFightWins();
     }
 
     public MageDTO withPasswordHash(String passwordHash) {
@@ -131,6 +133,12 @@ public class AdminController {
       this.lastManaUpdate = lastManaUpdate;
     }
 
-  }
+    public int getFightWins() {
+      return fightWins;
+    }
 
+    public void setFightWins(int fightWins) {
+      this.fightWins = fightWins;
+    }
+  }
 }

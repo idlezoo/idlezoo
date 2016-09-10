@@ -2,6 +2,7 @@
 <div ng-show="authenticated">
 	<p>You have {{controller.mage.mana | numeraljs:'0.000a'}} mana</p>
 	<p>You gain {{controller.mage.manaIncome | numeraljs:'0.000a'}} mana every second</p>
+	<p><button type="button" class="btn btn-default" ng-click="fight()">Fight!</button> (You've won {{controller.mage.fightWins}} fights)</p>
 	<h3>Your temples:</h3>
 	<div ng-repeat="building in controller.mage.buildings track by $index">
 		<div class="building">

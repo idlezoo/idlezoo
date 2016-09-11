@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <head>
 <title>Idlemage</title>
 	<link href="js/lib/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -12,16 +13,42 @@
 </head>
 
 <body ng-app="idlemage" ng-cloak class="ng-cloak">
-	<div ng-controller="navigation as nav" class="container">
-		<ul class="nav nav-pills" role="tablist">
-			<li ui-sref-active="active" ui-sref="app"><a>home</a></li>
-			<li ui-sref-active="active" ui-sref="top"><a>top</a></li>
-			<li ng-show="!authenticated" ui-sref-active="active" ui-sref="login"><a>login</a></li>
-			<li ng-show="!authenticated" ui-sref-active="active" ui-sref="signup"><a>signup</a></li>
-			<li ng-show="authenticated"><a href="" ng-click="nav.logout()">logout</a></li>
-		</ul>
-	</div>
-	<div ui-view class="container"></div>
+
+    <div ng-controller="navigation as nav" class="container">
+
+      <!-- Static navbar -->
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Idle mage</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li ui-sref-active="active" ui-sref="app"><a>Game</a></li>
+              <li ui-sref-active="active" ui-sref="top"><a>Top</a></li>
+              <li ui-sref-active="active" ui-sref="about"><a>About</a></li>
+              <li ui-sref-active="active" ui-sref="contact"><a>Contact</a></li>
+              
+
+			  <ul class="nav navbar-nav navbar-right">
+                <li ng-show="!authenticated" ui-sref-active="active" ui-sref="login"><a>Login</a></li>
+			    <li ng-show="!authenticated" ui-sref-active="active" ui-sref="signup"><a>Signup</a></li>
+			    <li ng-show="authenticated" ui-sref="logout"><a href="" ng-click="nav.logout()">Logout</a></li>
+              </ul>
+          </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+      </nav>
+
+      <div ui-view class="jumbotron">
+      </div>
+
+    </div> <!-- /container -->
 	<script src="js/lib/bower_components/jquery/dist/jquery.min.js" type="text/javascript"></script>
     <script src="js/lib/bower_components/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
 	<script src="js/lib/bower_components/angular/angular.min.js" type="text/javascript"></script>

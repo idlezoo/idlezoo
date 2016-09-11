@@ -4,7 +4,23 @@
 	<p>You gain {{controller.mage.manaIncome | numeraljs:'0.000a'}} mana every second</p>
 	<p><button type="button" class="btn btn-default" ng-click="fight()">Fight!</button> (You've won {{controller.mage.fightWins}} fights)</p>
 	<h3>Your temples:</h3>
-	<div ng-repeat="building in controller.mage.buildings track by $index">
+	<table class="table">
+	<tbody>
+		<tr ng-repeat="building in controller.mage.buildings">
+			<td>
+			<img height="20%" src="/images/{{building.name}}.png"/>
+			<!-- <div style="background-image: url('/images/{{building.name}}.png')">
+			</div> -->
+			</td>
+			<td>{{building.number}} {{building.name}}s (Level {{building.level}}) produce {{building.income | numeraljs:'0.000a'}} mana ({{(building.income / controller.mage.manaIncome * 100).toFixed(2)}}%)</td>
+			<td>
+			  <button type="button" class="btn btn-default" ng-click="buy(building.name)" ng-disabled="building.nextCost > controller.mage.mana">Buy for {{building.nextCost | numeraljs:'0.000a'}}</button>
+			  <button type="button" class="btn btn-default" ng-click="upgrade(building.name)" ng-disabled="building.upgradeCost > controller.mage.mana">Upgrade for {{building.upgradeCost | numeraljs:'0.000a'}}</button>
+			</td>
+		</tr>
+	</tbody>
+	</table>
+	<!-- <div ng-repeat="building in controller.mage.buildings track by $index">
 		<div class="building">
 			<div class="creature" style="background-image: url('/images/{{building.name}}.png')"></div>
 			<div class="text-m">{{building.number}} {{building.name}}s (Level {{building.level}}) produce {{building.income | numeraljs:'0.000a'}} mana ({{(building.income / controller.mage.manaIncome * 100).toFixed(2)}}%)</div>
@@ -12,7 +28,7 @@
 		<button type="button" class="btn btn-default" ng-click="buy(building.name)" ng-disabled="building.nextCost > controller.mage.mana">Buy for {{building.nextCost | numeraljs:'0.000a'}}</button>
 
 		</div>
-	</div>
+	</div> -->
 </div>
 <div  ng-show="!authenticated">
 	<p>Login to see your magical temples!</p>

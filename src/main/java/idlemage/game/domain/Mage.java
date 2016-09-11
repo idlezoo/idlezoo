@@ -25,6 +25,7 @@ public class Mage {
   private double mana;
   private LocalDateTime lastManaUpdate;
   private int fightWins;
+  private boolean waitingForFight;
   // cached value - trade memory for CPU
   private double income;
 
@@ -64,6 +65,14 @@ public class Mage {
 
   private void computeIncome() {
     income = buildings.stream().mapToDouble(MageBuildings::getIncome).sum();
+  }
+
+  public boolean isWaitingForFight() {
+    return waitingForFight;
+  }
+
+  public void setWaitingForFight(boolean waitingForFight) {
+    this.waitingForFight = waitingForFight;
   }
 
   public List<MageBuildings> getBuildings() {

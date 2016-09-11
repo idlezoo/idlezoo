@@ -2,13 +2,13 @@
 <div ng-show="authenticated">
 	<p>You have {{controller.mage.mana | numeraljs:'0.000a'}} mana</p>
 	<p>You gain {{controller.mage.manaIncome | numeraljs:'0.000a'}} mana every second</p>
-	<p><button type="button" class="btn btn-default" ng-click="fight()">Fight!</button> (You've won {{controller.mage.fightWins}} fights)</p>
+	<p><button type="button" class="btn btn-default" ng-click="fight()" ng-disabled="controller.mage.waitingForFight">{{controller.mage.waitingForFight ? "Waiting for fight." : "Fight!"}}</button> (You've won {{controller.mage.fightWins}} fights)</p>
 	<h3>Your temples:</h3>
 	<table class="table">
 	<tbody>
 		<tr ng-repeat="building in controller.mage.buildings">
 			<td>
-			<img height="20%" src="/images/{{building.name}}.png"/>
+			<img height="20%" ng-src="/images/{{building.name}}.png"/>
 			<!-- <div style="background-image: url('/images/{{building.name}}.png')">
 			</div> -->
 			</td>

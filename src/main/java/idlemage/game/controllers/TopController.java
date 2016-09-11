@@ -44,6 +44,17 @@ public class TopController {
         .map(TopEntry::new)
         .toList();
   }
+  
+  @RequestMapping("/wins")
+  public List<TopEntry<Integer>> wins() {
+    return EntryStream.of(gameService.getMages())
+        .mapValues(Mage::getFightWins)
+        .reverseSorted(comparingInt(Map.Entry::getValue))
+        .limit(10)
+        .map(TopEntry::new)
+        .toList();
+  }
+  
 
   public static class TopEntry<V> {
     private final String name;

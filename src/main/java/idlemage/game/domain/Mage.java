@@ -153,12 +153,12 @@ public class Mage {
 
         if (thisBuildings.getNumber() >= otherBuildings.getNumber()) {
           thisWins++;
-          otherBuildings.setNumber(0);
           thisBuildings.setNumber(thisBuildings.getNumber() - otherBuildings.getNumber());
+          otherBuildings.setNumber(0);
         } else {
           otherWins++;
-          thisBuildings.setNumber(0);
           otherBuildings.setNumber(otherBuildings.getNumber() - thisBuildings.getNumber());
+          thisBuildings.setNumber(0);
         }
       }
       computeIncome();

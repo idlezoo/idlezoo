@@ -28,6 +28,9 @@ idlemage.controller('home', function($scope, $interval, $http) {
     if ( !angular.isDefined(stop) ) {
     	stop = $interval(function() {
     		self.mage.mana += self.mage.manaIncome / 10;
+    		if(self.mage.waitingForFight){
+    			self.mage.championTime += 0.1;
+    		}
     	}, 100);
 	}
 

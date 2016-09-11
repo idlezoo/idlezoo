@@ -55,6 +55,16 @@ public class TopController {
         .toList();
   }
   
+  @RequestMapping("/championTime")
+  public List<TopEntry<Long>> championTime() {
+    return EntryStream.of(gameService.getMages())
+        .mapValues(Mage::getChampionTime)
+        .reverseSorted(comparingLong(Map.Entry::getValue))
+        .limit(10)
+        .map(TopEntry::new)
+        .toList();
+  }
+  
 
   public static class TopEntry<V> {
     private final String name;

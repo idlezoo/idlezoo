@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.util.Assert;
+
 import idlemage.game.services.ResourcesService;
 import one.util.streamex.StreamEx;
 
@@ -25,7 +27,9 @@ public class Mage {
   private double mana;
   private LocalDateTime lastManaUpdate;
   private int fightWins;
-  private boolean waitingForFight;
+  private long championTime;
+  private LocalDateTime waitingForFightStart;
+  // private boolean waitingForFight;
   // cached value - trade memory for CPU
   private double income;
 
@@ -68,11 +72,28 @@ public class Mage {
   }
 
   public boolean isWaitingForFight() {
-    return waitingForFight;
+    return waitingForFightStart != null;
   }
 
-  public void setWaitingForFight(boolean waitingForFight) {
-    this.waitingForFight = waitingForFight;
+  public void startWaitingForFight() {
+    Assert.isNull(waitingForFightStart);
+    waitingForFightStart = timer.now();
+  }
+
+  public void endWaitingForFight() {
+    Assert.notNull(waitingForFightStart);
+    LocalDateTime now = timer.now();
+    championTime += Duration.between(waitingForFightStart, now).getSeconds();
+    waitingForFightStart = null;
+  }
+
+  public long getChampionTime() {
+    if (isWaitingForFight()) {
+      LocalDateTime now = timer.now();
+      return championTime + Duration.between(waitingForFightStart, now).getSeconds();
+    } else {
+      return championTime;
+    }
   }
 
   public List<MageBuildings> getBuildings() {

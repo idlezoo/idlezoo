@@ -20,14 +20,14 @@ public class FightService {
     
     if (waitingFighter == null) {
       waitingFighter = username;
-      gameService.getMage(waitingFighter).setWaitingForFight(true);
+      gameService.getMage(waitingFighter).startWaitingForFight();
       return;
     }
     Mage waiting = gameService.getMage(waitingFighter);
     Mage fighter = gameService.getMage(username);
 
     waiting.fight(fighter);
-    waiting.setWaitingForFight(false);
+    waiting.endWaitingForFight();
     waitingFighter = null;
   }
 

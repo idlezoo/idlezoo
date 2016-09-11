@@ -3,6 +3,7 @@
 	<p>You have {{controller.mage.mana | numeraljs:'0.000a'}} mana</p>
 	<p>You gain {{controller.mage.manaIncome | numeraljs:'0.000a'}} mana every second</p>
 	<p><button type="button" class="btn btn-default" ng-click="fight()" ng-disabled="controller.mage.waitingForFight">{{controller.mage.waitingForFight ? "Waiting for fight." : "Fight!"}}</button> (You've won {{controller.mage.fightWins}} fights)</p>
+	<p>You was the champion for the {{controller.mage.championTime | numeraljs:'0.0a'}} seconds</p>
 	<h3>Your temples:</h3>
 	<table class="table">
 	<tbody>

@@ -68,6 +68,7 @@ public class GameController {
     private final double mana;
     private final int fightWins;
     private final boolean waitingForFight;
+    private final long championTime;
 
     public MageDTO(Mage mage) {
       this.buildings = mage.getBuildings();
@@ -75,6 +76,7 @@ public class GameController {
       this.mana = mage.getMana();
       this.fightWins = mage.getFightWins();
       this.waitingForFight = mage.isWaitingForFight();
+      this.championTime = mage.getChampionTime();
     }
 
     public double getMana() {
@@ -97,6 +99,9 @@ public class GameController {
       return waitingForFight;
     }
 
+    public long getChampionTime() {
+      return championTime;
+    }
   }
 
 }

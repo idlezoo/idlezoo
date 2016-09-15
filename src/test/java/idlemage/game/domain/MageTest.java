@@ -24,7 +24,7 @@ public class MageTest {
 	@Test
 	public void test() {
 		TestTimer timer = new TestTimer(LocalDateTime.now());
-		Mage mage = new Mage(gameResources, timer);
+		Mage mage = new Mage("testmage", gameResources, timer);
 		assertEquals(gameResources.startingMana(), mage.getMana(), 0.0001);
 		assertEquals(0D, mage.getIncome(), 0.0001);
 

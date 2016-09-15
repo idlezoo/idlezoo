@@ -21,6 +21,7 @@ import one.util.streamex.StreamEx;
 public class Mage {
   private static final Timer DEFAULT_TIMER = () -> LocalDateTime.now(ZoneOffset.UTC);
 
+  private final String name;
   private final Timer timer;
   private final List<MageBuildings> buildings;
   private final Map<String, MageBuildings> buildingsMap;
@@ -33,11 +34,12 @@ public class Mage {
   // cached value - trade memory for CPU
   private double income;
 
-  public Mage(ResourcesService gameResources) {
-    this(gameResources, DEFAULT_TIMER);
+  public Mage(String name, ResourcesService gameResources) {
+    this(name, gameResources, DEFAULT_TIMER);
   }
 
-  Mage(ResourcesService gameResources, Timer timer) {
+  Mage(String name, ResourcesService gameResources, Timer timer) {
+    this.name = name;
     buildings = new ArrayList<>(asList(new MageBuildings(gameResources.startingCreature())));
     buildingsMap = new HashMap<>(singletonMap(gameResources.startingCreature().getName(), buildings
         .get(0)));
@@ -53,6 +55,10 @@ public class Mage {
 
   public double getMana() {
     return mana;
+  }
+
+  public String getName() {
+    return name;
   }
 
   public double getIncome() {

@@ -17,7 +17,7 @@ public class GameService implements InitializingBean {
   private final ConcurrentHashMap<String, Mage> mages = new ConcurrentHashMap<>();
 
   public void createMage(String username) {
-    mages.put(username, new Mage(gameResources));
+    mages.put(username, new Mage(username, gameResources));
   }
 
   public Mage getMage(String username) {
@@ -30,7 +30,7 @@ public class GameService implements InitializingBean {
 
   @Override
   public void afterPropertiesSet() throws Exception {
-    Mage mage = new Mage(gameResources);
+    Mage mage = new Mage("admin", gameResources);
     mage.setMana(1e15);
     mages.put("admin", mage);
   }

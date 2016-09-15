@@ -13,7 +13,7 @@ public class FightService {
 
   private String waitingFighter;
 
-  public synchronized String fight(String username) {
+  public synchronized Mage fight(String username) {
     if (username.equals(waitingFighter)) {
       return null;
     }
@@ -28,9 +28,8 @@ public class FightService {
 
     waiting.fight(fighter);
     waiting.endWaitingForFight();
-    String result = waitingFighter;
     waitingFighter = null;
-    return result;
+    return waiting;
   }
 
 }

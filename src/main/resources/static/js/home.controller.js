@@ -1,27 +1,42 @@
 idlemage.controller('home', function($scope, $interval, $http) {
+	
+	var socket = new SockJS("/game/ws");
+	
+	socket.onopen = function () {
+		// Socket open.. start the game loop.
+		console.log('Info: WebSocket connection opened.');
+		socket.send('me');
+		setInterval(function() {
+			// Prevent server read timeout.
+			socket.send('ping');
+		}, 5000);
+	};
+	
+	
 	var self = this;
-	$http.get('/game/me').then(function(response) {
-		self.mage = response.data;
-	})
+//	$http.get('/game/me').then(function(response) {
+//		self.mage = response.data;
+//	})
 	
 	
 	$scope.buy = function($buildingName) {
-		$http.get('/game/buy?building=' + $buildingName).then(function(response){
-			self.mage = response.data;
-		})
+		socket.send('buy/' + $buildingName);
 	};
 	
 	$scope.upgrade = function($buildingName) {
-		$http.get('/game/upgrade?building=' + $buildingName).then(function(response){
-			self.mage = response.data;
-		})
+		socket.send('upgrade/' + $buildingName);
 	};
 	
 	$scope.fight = function(){
-		$http.get('/game/fight').then(function(response){
-			self.mage = response.data;
-		})
+		socket.send('fight');
 	};
+	
+	socket.onmessage = function (message) {
+		// _Potential_ security hole, consider using json lib to parse data in production.
+		console.log('Message from socket ' + message.data);
+		self.mage = JSON.parse(message.data);
+	};
+	
 
 	var stop;
     // Don't start update if it is already defined

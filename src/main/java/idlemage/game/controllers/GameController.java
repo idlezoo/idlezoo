@@ -1,7 +1,6 @@
 package idlemage.game.controllers;
 
 import java.security.Principal;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,12 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import idlemage.game.domain.Mage;
-import idlemage.game.domain.MageBuildings;
 import idlemage.game.domain.Mage.InsuffisientFundsException;
-import idlemage.game.services.ResourcesService;
+import idlemage.game.domain.MageDTO;
 import idlemage.game.services.FightService;
 import idlemage.game.services.GameService;
+import idlemage.game.services.ResourcesService;
 
 @RestController
 @RequestMapping("/game")
@@ -61,47 +59,5 @@ public class GameController {
     return "Not enough mana!";
   }
 
-  public static class MageDTO {
-
-    private final List<MageBuildings> buildings;
-    private final double income;
-    private final double mana;
-    private final int fightWins;
-    private final boolean waitingForFight;
-    private final long championTime;
-
-    public MageDTO(Mage mage) {
-      this.buildings = mage.getBuildings();
-      this.income = mage.getIncome();
-      this.mana = mage.getMana();
-      this.fightWins = mage.getFightWins();
-      this.waitingForFight = mage.isWaitingForFight();
-      this.championTime = mage.getChampionTime();
-    }
-
-    public double getMana() {
-      return mana;
-    }
-
-    public double getManaIncome() {
-      return income;
-    }
-
-    public List<MageBuildings> getBuildings() {
-      return buildings;
-    }
-
-    public int getFightWins() {
-      return fightWins;
-    }
-
-    public boolean isWaitingForFight() {
-      return waitingForFight;
-    }
-
-    public long getChampionTime() {
-      return championTime;
-    }
-  }
 
 }

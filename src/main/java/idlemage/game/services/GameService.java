@@ -33,7 +33,6 @@ public class GameService implements InitializingBean {
     Mage mage = new Mage(gameResources);
     mage.setMana(1e15);
     mages.put("admin", mage);
-
   }
 
 }

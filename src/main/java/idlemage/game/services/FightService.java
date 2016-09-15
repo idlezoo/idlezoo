@@ -13,22 +13,24 @@ public class FightService {
 
   private String waitingFighter;
 
-  public synchronized void fight(String username) {
+  public synchronized String fight(String username) {
     if (username.equals(waitingFighter)) {
-      return;
+      return null;
     }
     
     if (waitingFighter == null) {
       waitingFighter = username;
       gameService.getMage(waitingFighter).startWaitingForFight();
-      return;
+      return null;
     }
     Mage waiting = gameService.getMage(waitingFighter);
     Mage fighter = gameService.getMage(username);
 
     waiting.fight(fighter);
     waiting.endWaitingForFight();
+    String result = waitingFighter;
     waitingFighter = null;
+    return result;
   }
 
 }

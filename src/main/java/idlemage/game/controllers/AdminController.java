@@ -1,6 +1,5 @@
 package idlemage.game.controllers;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import idlemage.game.domain.Building;
 import idlemage.game.domain.Mage;
 import idlemage.game.domain.MageBuildings;
 import idlemage.game.services.GameService;
@@ -76,7 +74,7 @@ public class AdminController {
     private String passwordHash;
     private List<BuildingDTO> buildings;
     private double mana;
-    private LocalDateTime lastManaUpdate;
+    private long lastManaUpdate;
     private int fightWins;
 
     public MageDTO(Map.Entry<String, Mage> mageEntry) {
@@ -125,11 +123,11 @@ public class AdminController {
       this.mana = mana;
     }
 
-    public LocalDateTime getLastManaUpdate() {
+    public long getLastManaUpdate() {
       return lastManaUpdate;
     }
 
-    public void setLastManaUpdate(LocalDateTime lastManaUpdate) {
+    public void setLastManaUpdate(long lastManaUpdate) {
       this.lastManaUpdate = lastManaUpdate;
     }
 

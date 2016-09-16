@@ -23,7 +23,7 @@ public class MageTest {
 	
 	@Test
 	public void test() {
-		TestTimer timer = new TestTimer(LocalDateTime.now());
+		TestTimer timer = new TestTimer(0L);
 		Mage mage = new Mage("testmage", gameResources, timer);
 		assertEquals(gameResources.startingMana(), mage.getMana(), 0.0001);
 		assertEquals(0D, mage.getIncome(), 0.0001);
@@ -39,25 +39,25 @@ public class MageTest {
 		assertEquals(2 * gameResources.startingCreature().income(0), mage.getIncome(), 0.0001);
 
 		mana += mage.getIncome() * 10;
-		timer.now(timer.now().plusSeconds(10));
+		timer.now(10L);
 		mage.updateMana();
 		assertEquals(mana, mage.getMana(), 0.0001);
 
 	}
 
 	private static class TestTimer implements Timer {
-		private LocalDateTime testNow;
+		private long testNow;
 
-		public TestTimer(LocalDateTime testNow) {
+		public TestTimer(long testNow) {
 			this.testNow = testNow;
 		}
 
-		public void now(LocalDateTime testNow) {
+		public void now(long testNow) {
 			this.testNow = testNow;
 		}
 
 		@Override
-		public LocalDateTime now() {
+		public long now() {
 			return testNow;
 		}
 

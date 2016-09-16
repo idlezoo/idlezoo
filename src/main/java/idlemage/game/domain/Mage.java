@@ -19,17 +19,17 @@ import idlemage.game.services.ResourcesService;
 import one.util.streamex.StreamEx;
 
 public class Mage {
-  private static final Timer DEFAULT_TIMER = () -> LocalDateTime.now(ZoneOffset.UTC);
+  private static final Timer DEFAULT_TIMER = () -> java.time.Clock.systemUTC().instant().getEpochSecond();
 
   private final String name;
   private final Timer timer;
   private final List<MageBuildings> buildings;
   private final Map<String, MageBuildings> buildingsMap;
   private double mana;
-  private LocalDateTime lastManaUpdate;
+  private long lastManaUpdate;
   private int fightWins;
   private long championTime;
-  private LocalDateTime waitingForFightStart;
+  private Long waitingForFightStart;
   // private boolean waitingForFight;
   // cached value - trade memory for CPU
   private double income;
@@ -69,7 +69,7 @@ public class Mage {
     return fightWins;
   }
 
-  public LocalDateTime getLastManaUpdate() {
+  public long getLastManaUpdate() {
     return lastManaUpdate;
   }
 
@@ -88,15 +88,15 @@ public class Mage {
 
   public void endWaitingForFight() {
     Assert.notNull(waitingForFightStart);
-    LocalDateTime now = timer.now();
-    championTime += Duration.between(waitingForFightStart, now).getSeconds();
+    long now = timer.now();
+    championTime +=  now - waitingForFightStart;
     waitingForFightStart = null;
   }
 
   public long getChampionTime() {
     if (isWaitingForFight()) {
-      LocalDateTime now = timer.now();
-      return championTime + Duration.between(waitingForFightStart, now).getSeconds();
+      long now = timer.now();
+      return championTime + (now - waitingForFightStart);
     } else {
       return championTime;
     }
@@ -112,9 +112,8 @@ public class Mage {
 
   // Logic
   public synchronized Mage updateMana() {
-    LocalDateTime now = timer.now();
-    long dif = Duration.between(lastManaUpdate, now).getSeconds();
-    mana += dif * getIncome();
+    long now = timer.now();
+    mana += (now - lastManaUpdate) * income;
     lastManaUpdate = now;
     return this;
   }
@@ -126,7 +125,7 @@ public class Mage {
       throw new IllegalStateException("Building " + buildingName + " is not available");
     }
     if (mana < mageBuildings.getNextCost()) {
-      throw new InsuffisientFundsException();
+      return this;
     }
     mana -= mageBuildings.getNextCost();
     mageBuildings.buy();
@@ -149,7 +148,7 @@ public class Mage {
       throw new IllegalStateException("Upgrading " + buildingName + " is not available");
     }
     if (mana < mageBuildings.getUpgradeCost()) {
-      throw new InsuffisientFundsException();
+      return this;
     }
 
     mana -= mageBuildings.getUpgradeCost();
@@ -199,11 +198,7 @@ public class Mage {
   }
 
   interface Timer {
-    LocalDateTime now();
-  }
-
-  public static class InsuffisientFundsException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
+    long now();
   }
 
 }

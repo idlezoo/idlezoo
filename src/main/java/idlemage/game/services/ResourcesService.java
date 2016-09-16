@@ -24,7 +24,7 @@ public class ResourcesService implements InitializingBean {
 	@Autowired
 	private ObjectMapper mapper;
 
-	private double startingMana = 100D;
+	private double startingMana = 50D;
 	private List<Building> creaturesList;
 	private Map<String, Building> creaturesTypes = new HashMap<>();
 	private Map<String, Building> nextCreatures = new HashMap<>();
@@ -57,6 +57,14 @@ public class ResourcesService implements InitializingBean {
 
 	public Building startingCreature() {
 		return startingCreature;
+	}
+	
+	public String firstName(){
+		return startingCreature.getName();
+	}
+	
+	public String secondName(){
+		return nextType(firstName()).getName();
 	}
 
 	public Building nextType(String buildingName) {

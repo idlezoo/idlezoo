@@ -16,8 +16,8 @@ public class GameService implements InitializingBean {
 
   private final ConcurrentHashMap<String, Mage> mages = new ConcurrentHashMap<>();
 
-  public void createMage(String username) {
-    mages.put(username, new Mage(username, gameResources));
+  public boolean createMage(String username) {
+    return null == mages.put(username, new Mage(username, gameResources));
   }
 
   public Mage getMage(String username) {

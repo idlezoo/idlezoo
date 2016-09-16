@@ -91,7 +91,7 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
   }
 
   private void sendStateToPlayer(WebSocketSession session, Mage mage) {
-    MageDTO mageDTO = new MageDTO(mage);
+    MageDTO mageDTO = new MageDTO(mage.updateMana());
     try {
       session.sendMessage(new TextMessage(objectMapper.writeValueAsString(mageDTO)));;
     } catch (IOException e) {

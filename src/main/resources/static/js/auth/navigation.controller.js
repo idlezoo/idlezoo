@@ -6,13 +6,9 @@ function($rootScope, $http, $state) {
 
 	self.tab = function(route) {
 		console.log('route', route);
-
-		//return $route.current && route === $route.current.controller;
 	};
 
 	var authenticate = function(callback) {
-		console.log('sssss', callback)
-
 		$http.get('user').then(function(response) {
 			if (response.data.name) {
 				$rootScope.authenticated = true;

@@ -14,9 +14,6 @@ idlemage.controller('home', function($scope, $interval, $http) {
 	
 	
 	var self = this;
-//	$http.get('/game/me').then(function(response) {
-//		self.mage = response.data;
-//	})
 	
 	
 	$scope.buy = function($buildingName) {
@@ -32,7 +29,6 @@ idlemage.controller('home', function($scope, $interval, $http) {
 	};
 	
 	socket.onmessage = function (message) {
-		// _Potential_ security hole, consider using json lib to parse data in production.
 		console.log('Message from socket ' + message.data);
 		self.mage = JSON.parse(message.data);
 	};

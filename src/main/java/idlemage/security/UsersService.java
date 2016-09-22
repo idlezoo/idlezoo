@@ -1,7 +1,5 @@
 package idlemage.security;
 
-import static java.util.Collections.emptyList;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;

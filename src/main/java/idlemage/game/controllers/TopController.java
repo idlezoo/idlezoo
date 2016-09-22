@@ -31,7 +31,7 @@ public class TopController {
         .mapValues(MageBuildings::getNumber)
         .reverseSorted(comparingInt(Map.Entry::getValue))
         .limit(10)
-        .map(TopEntry::new)
+        .map(TopEntry::of)
         .toList();
   }
 
@@ -41,34 +41,37 @@ public class TopController {
         .mapValues(Mage::getIncome)
         .reverseSorted(comparingDouble(Map.Entry::getValue))
         .limit(10)
-        .map(TopEntry::new)
+        .map(TopEntry::of)
         .toList();
   }
-  
+
   @RequestMapping("/wins")
   public List<TopEntry<Integer>> wins() {
     return EntryStream.of(gameService.getMages())
         .mapValues(Mage::getFightWins)
         .reverseSorted(comparingInt(Map.Entry::getValue))
         .limit(10)
-        .map(TopEntry::new)
+        .map(TopEntry::of)
         .toList();
   }
-  
+
   @RequestMapping("/championTime")
   public List<TopEntry<Long>> championTime() {
     return EntryStream.of(gameService.getMages())
         .mapValues(Mage::getChampionTime)
         .reverseSorted(comparingLong(Map.Entry::getValue))
         .limit(10)
-        .map(TopEntry::new)
+        .map(TopEntry::of)
         .toList();
   }
-  
 
   public static class TopEntry<V> {
     private final String name;
     private final V value;
+
+    static <V> TopEntry<V> of(Map.Entry<String, V> entry){
+      return new TopEntry<>(entry);
+    }
 
     public TopEntry(Map.Entry<String, V> entry) {
       this.name = entry.getKey();

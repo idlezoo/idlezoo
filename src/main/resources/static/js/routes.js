@@ -16,10 +16,20 @@ idlemage.config(function($stateProvider, $urlRouterProvider) {
 			templateUrl: "js/auth/signup.html",
 			controller: 'navigation as controller'
 		})
-		.state('top', {
-			url: "/top",
+		.state('topincome', {
+			url: "/topincome",
 			templateUrl: "js/top/income.html",
-			controller: 'top as controller'
+			controller: 'topincome as controller'
+		})
+		.state('topwins', {
+			url: "/topwins",
+			templateUrl: "js/top/wins.html",
+			controller: 'topwins as controller'
+		})
+		.state('toptime', {
+			url: "/toptime",
+			templateUrl: "js/top/time.html",
+			controller: 'toptime as controller'
 		})
 
 	$urlRouterProvider.otherwise('/');

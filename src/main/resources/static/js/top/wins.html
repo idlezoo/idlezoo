@@ -1,0 +1,15 @@
+<h1>Top by Fight wins</h1>
+<table class="table">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Wins</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="entry in controller.top">
+			<td>{{entry.name}}</td>
+			<td>{{entry.value}}</td>
+		</tr>
+	</tbody>
+</table>

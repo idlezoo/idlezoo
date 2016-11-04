@@ -31,7 +31,7 @@ idlemage.controller('home', function($rootScope, $scope, $interval, $http) {
 		};
 		
 		socket.onmessage = function (message) {
-			console.log('Message from socket ' + message.data);
+			//console.log('Message from socket ' + message.data);
 			self.mage = JSON.parse(message.data);
 		};
 		

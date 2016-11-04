@@ -32,14 +32,16 @@
             <ul class="nav navbar-nav">
               <li ui-sref-active="active" ui-sref="app"><a>Game</a></li>
               <li ui-sref-active="active" ui-sref="top"><a>Top</a></li>
+              <!-- 
               <li ui-sref-active="active" ui-sref="about"><a>About</a></li>
               <li ui-sref-active="active" ui-sref="contact"><a>Contact</a></li>
+              -->
               
 
 			  <ul class="nav navbar-nav navbar-right">
                 <li ng-show="!authenticated" ui-sref-active="active" ui-sref="login"><a>Login</a></li>
 			    <li ng-show="!authenticated" ui-sref-active="active" ui-sref="signup"><a>Signup</a></li>
-			    <li ng-show="authenticated" ui-sref="logout"><a href="" ng-click="nav.logout()">Logout</a></li>
+			    <li ng-show="authenticated"><a href="" ng-click="nav.logout()">Logout</a></li>
               </ul>
           </div><!--/.nav-collapse -->
         </div><!--/.container-fluid -->

@@ -27,27 +27,25 @@ import org.springframework.util.MultiValueMap;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class SecurityTests {
 
-	@LocalServerPort
-	private int port;
-
-	@Autowired
-	private TestRestTemplate template;
-
 	@Autowired
 	private UsersService usersService;
-
+	
+	
+	@LocalServerPort
+	private int port;
+	@Autowired
+	private TestRestTemplate template;
 	@Test
 	public void homePageLoads() {
-		ResponseEntity<String> response = template.getForEntity("http://localhost:" + port + "/", String.class);
+		ResponseEntity<String> response = template.getForEntity("/", String.class);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 
 	@Test
 	public void userEndpoint() {
-		ResponseEntity<String> response = template.getForEntity("http://localhost:" + port + "/user", String.class);
+		ResponseEntity<String> response = template.getForEntity("/user", String.class);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertNull(response.getBody());
-
 	}
 
 	@Test
@@ -65,15 +63,15 @@ public class SecurityTests {
 	}
 
 	private ResponseEntity<Void> loginOrRegister(String user, String uri) {
-		ResponseEntity<String> response = template.getForEntity("http://localhost:" + port + "/resource", String.class);
+		ResponseEntity<String> response = template.getForEntity("/resource", String.class);
 		String csrf = getCsrf(response.getHeaders());
 		MultiValueMap<String, String> form = new LinkedMultiValueMap<String, String>();
 		form.set("username", user);
 		form.set("password", user);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("X-XSRF-TOKEN", csrf);
-		headers.put("COOKIE", response.getHeaders().get("Set-Cookie"));
-		RequestEntity<MultiValueMap<String, String>> request = new RequestEntity<MultiValueMap<String, String>>(
+		headers.put(HttpHeaders.COOKIE, response.getHeaders().get("Set-Cookie"));
+		RequestEntity<MultiValueMap<String, String>> request = new RequestEntity<>(
 				form, headers, HttpMethod.POST, URI.create("http://localhost:" + port + uri));
 		return template.exchange(request, Void.class);
 	}

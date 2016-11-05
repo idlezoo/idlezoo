@@ -1,4 +1,4 @@
-var idlemage = angular.module('idlemage', [
+var idlezoo = angular.module('idlezoo', [
     'ui.router',
     'ngNumeraljs'
 ]);

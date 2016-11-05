@@ -1,36 +1,25 @@
-<h1>IdleMage</h1>
+<h1>IdleZoo</h1>
 <div ng-show="authenticated">
-	<p>You have {{controller.mage.mana | numeraljs:'0.000a'}} mana</p>
-	<p>You gain {{controller.mage.manaIncome | numeraljs:'0.000a'}} mana every second</p>
-	<p><button type="button" class="btn btn-default" ng-click="fight()" ng-disabled="controller.mage.waitingForFight">{{controller.mage.waitingForFight ? "Waiting for fight." : "Fight!"}}</button> (You've won {{controller.mage.fightWins}} fights)</p>
-	<p>You was the champion for the {{controller.mage.championTime | numeraljs:'0.0a'}} seconds</p>
-	<h3>Your temples:</h3>
+	<p>You have {{controller.zoo.money | numeraljs:'0.000a'}} money</p>
+	<p>You gain {{controller.zoo.moneyIncome | numeraljs:'0.000a'}} money every second</p>
+	<p><button type="button" class="btn btn-default" ng-click="fight()" ng-disabled="controller.zoo.waitingForFight">{{controller.zoo.waitingForFight ? "Waiting for fight." : "Fight!"}}</button> (You've won {{controller.zoo.fightWins}} fights)</p>
+	<p>You was the champion for the {{controller.zoo.championTime | numeraljs:'0.0a'}} seconds</p>
+	<h3>Your animals:</h3>
 	<table class="table">
 	<tbody>
-		<tr ng-repeat="building in controller.mage.buildings">
+		<tr ng-repeat="building in controller.zoo.buildings">
 			<td>
 			<img height="60px" ng-src="/images/{{building.name}}.png"/>
-			<!-- <div style="background-image: url('/images/{{building.name}}.png')">
-			</div> -->
 			</td>
-			<td>{{building.number}} {{building.name}}s (Level {{building.level}}) produce {{building.income | numeraljs:'0.000a'}} mana ({{(building.income / controller.mage.manaIncome * 100).toFixed(2)}}%)</td>
+			<td>{{building.number}} {{building.name}}s (Level {{building.level}}) produce {{building.income | numeraljs:'0.000a'}} money ({{(building.income / controller.zoo.moneyIncome * 100).toFixed(2)}}%)</td>
 			<td>
-			  <button type="button" class="btn btn-default" ng-click="buy(building.name)" ng-disabled="building.nextCost > controller.mage.mana">Buy for {{building.nextCost | numeraljs:'0.000a'}}</button>
-			  <button type="button" class="btn btn-default" ng-click="upgrade(building.name)" ng-disabled="building.upgradeCost > controller.mage.mana">Upgrade for {{building.upgradeCost | numeraljs:'0.000a'}}</button>
+			  <button type="button" class="btn btn-default" ng-click="buy(building.name)" ng-disabled="building.nextCost > controller.zoo.money">Buy for {{building.nextCost | numeraljs:'0.000a'}}</button>
+			  <button type="button" class="btn btn-default" ng-click="upgrade(building.name)" ng-disabled="building.upgradeCost > controller.zoo.money">Upgrade for {{building.upgradeCost | numeraljs:'0.000a'}}</button>
 			</td>
 		</tr>
 	</tbody>
 	</table>
-	<!-- <div ng-repeat="building in controller.mage.buildings track by $index">
-		<div class="building">
-			<div class="creature" style="background-image: url('/images/{{building.name}}.png')"></div>
-			<div class="text-m">{{building.number}} {{building.name}}s (Level {{building.level}}) produce {{building.income | numeraljs:'0.000a'}} mana ({{(building.income / controller.mage.manaIncome * 100).toFixed(2)}}%)</div>
-			<button type="button" class="btn btn-default upgrade" ng-click="upgrade(building.name)" ng-disabled="building.upgradeCost > controller.mage.mana">Upgrade for {{building.upgradeCost | numeraljs:'0.000a'}}</button>
-		<button type="button" class="btn btn-default" ng-click="buy(building.name)" ng-disabled="building.nextCost > controller.mage.mana">Buy for {{building.nextCost | numeraljs:'0.000a'}}</button>
-
-		</div>
-	</div> -->
 </div>
 <div  ng-show="!authenticated">
-	<p>Login to see your magical temples!</p>
+	<p>Login to see your animals in your zoo!</p>
 </div>

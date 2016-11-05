@@ -1,4 +1,4 @@
-idlemage.controller('home', function($rootScope, $scope, $interval, $http) {
+idlezoo.controller('home', function($rootScope, $scope, $interval, $http) {
 	if(!$rootScope.authenticated){
 		return;
 	}
@@ -32,7 +32,7 @@ idlemage.controller('home', function($rootScope, $scope, $interval, $http) {
 		
 		socket.onmessage = function (message) {
 			//console.log('Message from socket ' + message.data);
-			self.mage = JSON.parse(message.data);
+			self.zoo = JSON.parse(message.data);
 		};
 		
 
@@ -40,9 +40,9 @@ idlemage.controller('home', function($rootScope, $scope, $interval, $http) {
 	    // Don't start update if it is already defined
 	    if ( !angular.isDefined(stop) ) {
 	    	stop = $interval(function() {
-	    		self.mage.mana += self.mage.manaIncome / 10;
-	    		if(self.mage.waitingForFight){
-	    			self.mage.championTime += 0.1;
+	    		self.zoo.money += self.zoo.moneyIncome / 10;
+	    		if(self.zoo.waitingForFight){
+	    			self.zoo.championTime += 0.1;
 	    		}
 	    	}, 100);
 		}

@@ -1,4 +1,4 @@
-idlemage.controller('navigation',
+idlezoo.controller('navigation',
 
 function($rootScope, $http, $state) {
 	

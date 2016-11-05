@@ -4,6 +4,5 @@ target
 .project
 .idea
 .settings
-bower_components
 
 *~

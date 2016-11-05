@@ -1,14 +1,14 @@
 package idlezoo.game.services;
 
-import idlezoo.game.domain.ZooDTO;
+import idlezoo.game.domain.Zoo;
 
 public interface GameService {
   
   boolean createZoo(String username);  
   
-  ZooDTO getZoo(String name);
+  Zoo getZoo(String name);
 
-  ZooDTO buy(String name, String animal);
+  Zoo buy(String name, String animal);
 
-  ZooDTO upgrade(String name, String animal);
+  Zoo upgrade(String name, String animal);
 }

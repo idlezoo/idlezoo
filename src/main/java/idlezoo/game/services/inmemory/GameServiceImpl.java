@@ -3,7 +3,7 @@ package idlezoo.game.services.inmemory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import idlezoo.game.domain.ZooDTO;
+import idlezoo.game.domain.Zoo;
 import idlezoo.game.services.GameService;
 import idlezoo.game.services.ResourcesService;
 
@@ -20,23 +20,23 @@ public class GameServiceImpl implements GameService {
   }
 
   @Override
-  public ZooDTO getZoo(String name) {
+  public Zoo getZoo(String name) {
     return storage.getZoo(name).updateMoney().toDTO();
   }
 
   @Override
-  public ZooDTO buy(String name, String animal) {
+  public Zoo buy(String name, String animal) {
     return storage.getZoo(name).buy(animal, resources).updateMoney().toDTO();
   }
 
   @Override
-  public ZooDTO upgrade(String name, String animal) {
+  public Zoo upgrade(String name, String animal) {
     return storage.getZoo(name).upgrade(animal).updateMoney().toDTO();
   }
 
   @Override
   public boolean createZoo(String username) {
-    return null == storage.getZoos().put(username, new Zoo(username, resources));
+    return null == storage.getZoos().put(username, new InMemoryZoo(username, resources));
   }
 
 }

@@ -14,17 +14,17 @@ import org.springframework.util.Assert;
 
 import idlezoo.game.domain.Building;
 import idlezoo.game.domain.ZooBuildings;
-import idlezoo.game.domain.ZooDTO;
+import idlezoo.game.domain.Zoo;
 import idlezoo.game.services.ResourcesService;
 import one.util.streamex.StreamEx;
 
-public class Zoo {
+public class InMemoryZoo {
 	private static final Timer DEFAULT_TIMER = () -> java.time.Clock.systemUTC().instant().getEpochSecond();
 
 	private final String name;
 	private final Timer timer;
-	private final List<ZooBuildings> buildings;
-	private final Map<String, ZooBuildings> buildingsMap;
+	private final List<InMemoryZooBuildings> buildings;
+	private final Map<String, InMemoryZooBuildings> buildingsMap;
 	private double money;
 	private long lastMoneyUpdate;
 	private int fightWins;
@@ -34,18 +34,18 @@ public class Zoo {
 	// cached value - trade memory for CPU
 	private double income;
 
-	public Zoo(String name, ResourcesService gameResources) {
+	public InMemoryZoo(String name, ResourcesService gameResources) {
 		this(name, gameResources, DEFAULT_TIMER);
 	}
 	
-	public ZooDTO toDTO(){
-	  return new ZooDTO(name, buildings, income, money, fightWins, waitingForFightStart != null, championTime);
+	public Zoo toDTO(){
+	  return new Zoo(name, StreamEx.of(buildings).map(InMemoryZooBuildings::toDTO).toList(), income, money, fightWins, waitingForFightStart != null, championTime);
 	}
 	
 
-	Zoo(String name, ResourcesService gameResources, Timer timer) {
+	InMemoryZoo(String name, ResourcesService gameResources, Timer timer) {
 		this.name = name;
-		buildings = new ArrayList<>(asList(new ZooBuildings(gameResources.startingAnimal())));
+		buildings = new ArrayList<>(asList(new InMemoryZooBuildings(gameResources.startingAnimal())));
 		buildingsMap = new HashMap<>(singletonMap(gameResources.startingAnimal().getName(), buildings
 				.get(0)));
 		money = gameResources.startingMoney();
@@ -79,7 +79,7 @@ public class Zoo {
 	}
 
 	private void computeIncome() {
-		income = buildings.stream().mapToDouble(ZooBuildings::getIncome).sum();
+		income = buildings.stream().mapToDouble(InMemoryZooBuildings::getIncome).sum();
 	}
 
 	public boolean isWaitingForFight() {
@@ -107,25 +107,25 @@ public class Zoo {
 		}
 	}
 
-	public List<ZooBuildings> getBuildings() {
+	public List<InMemoryZooBuildings> getBuildings() {
 		return buildings;
 	}
 
-	public Map<String, ZooBuildings> getBuildingsMap() {
+	public Map<String, InMemoryZooBuildings> getBuildingsMap() {
 		return buildingsMap;
 	}
 
 	// Logic
-	public synchronized Zoo updateMoney() {
+	public synchronized InMemoryZoo updateMoney() {
 		long now = timer.now();
 		money += (now - lastMoneyUpdate) * income;
 		lastMoneyUpdate = now;
 		return this;
 	}
 
-	public synchronized Zoo buy(String buildingName, ResourcesService gameResources) {
+	public synchronized InMemoryZoo buy(String buildingName, ResourcesService gameResources) {
 		updateMoney();
-		ZooBuildings zooBuildings = buildingsMap.get(buildingName);
+		InMemoryZooBuildings zooBuildings = buildingsMap.get(buildingName);
 		if (zooBuildings == null) {
 			throw new IllegalStateException("Building " + buildingName + " is not available");
 		}
@@ -137,7 +137,7 @@ public class Zoo {
 		if (zooBuildings.first()) {
 			Building next = gameResources.nextType(buildingName);
 			if (next != null && !buildingsMap.containsKey(next.getName())) {
-				ZooBuildings nextBuildings = new ZooBuildings(next);
+			  InMemoryZooBuildings nextBuildings = new InMemoryZooBuildings(next);
 				buildings.add(nextBuildings);
 				buildingsMap.put(next.getName(), nextBuildings);
 			}
@@ -146,9 +146,9 @@ public class Zoo {
 		return this;
 	}
 
-	public synchronized Zoo upgrade(String buildingName) {
+	public synchronized InMemoryZoo upgrade(String buildingName) {
 		updateMoney();
-		ZooBuildings zooBuildings = buildingsMap.get(buildingName);
+		InMemoryZooBuildings zooBuildings = buildingsMap.get(buildingName);
 		if (zooBuildings == null) {
 			throw new IllegalStateException("Upgrading " + buildingName + " is not available");
 		}
@@ -162,17 +162,17 @@ public class Zoo {
 		return this;
 	}
 
-	public synchronized void fight(Zoo other) {
+	public synchronized void fight(InMemoryZoo other) {
 		synchronized (other) {
 			Set<String> buildingsSuperSet = new HashSet<>();
 			buildingsSuperSet.addAll(
-					StreamEx.of(buildings).filter(b -> b.getNumber() != 0).map(ZooBuildings::getName).toList());
+					StreamEx.of(buildings).filter(b -> b.getNumber() != 0).map(InMemoryZooBuildings::getName).toList());
 			buildingsSuperSet.addAll(
-					StreamEx.of(other.buildings).filter(b -> b.getNumber() != 0).map(ZooBuildings::getName).toList());
+					StreamEx.of(other.buildings).filter(b -> b.getNumber() != 0).map(InMemoryZooBuildings::getName).toList());
 			int thisWins = 0, otherWins = 0;
 			for (String building : buildingsSuperSet) {
-				ZooBuildings thisBuildings = buildingsMap.get(building);
-				ZooBuildings otherBuildings = other.buildingsMap.get(building);
+			  InMemoryZooBuildings thisBuildings = buildingsMap.get(building);
+			  InMemoryZooBuildings otherBuildings = other.buildingsMap.get(building);
 
 				if (thisBuildings == null) {
 					otherWins++;

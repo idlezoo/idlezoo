@@ -1,9 +1,9 @@
 package idlezoo.game.services;
 
-import idlezoo.game.domain.ZooDTO;
+import idlezoo.game.domain.Zoo;
 
 public interface FightService {
 
-  ZooDTO fight(String username);
+  Zoo fight(String username);
 
 }

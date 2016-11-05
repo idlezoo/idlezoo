@@ -1,19 +1,22 @@
-package idlezoo.game.domain;
+package idlezoo.game.services.inmemory;
 
-public class ZooBuildings {
+import idlezoo.game.domain.Building;
+import idlezoo.game.domain.ZooBuildings;
+
+public class InMemoryZooBuildings {
   private final String name;
   private final Building building;
-  private final int level;
-  private final int number;
+  private int level = 0;
+  private int number = 0;
 
-  public ZooBuildings(Building building, int level, int number) {
+  public InMemoryZooBuildings(Building building) {
     this.name = building.getName();
     this.building = building;
-    this.level = level;
-    this.number = number;
   }
 
-  // Getters for JSON
+  public ZooBuildings toDTO() {
+    return new ZooBuildings(building, level, number);
+  }
 
   public String getName() {
     return name;
@@ -39,6 +42,15 @@ public class ZooBuildings {
     return number;
   }
 
+  // Game logic
+  public void upgrade() {
+    this.level++;
+  }
+
+  public void buy() {
+    this.number++;
+  }
+
   public boolean first() {
     return number == 1;
   }
@@ -46,4 +58,13 @@ public class ZooBuildings {
   public Building getBuilding() {
     return building;
   }
+
+  public void setLevel(int level) {
+    this.level = level;
+  }
+
+  public void setNumber(int number) {
+    this.number = number;
+  }
+
 }

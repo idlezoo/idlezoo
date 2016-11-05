@@ -12,7 +12,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import idlezoo.game.domain.ZooDTO;
+import idlezoo.game.domain.Zoo;
 import idlezoo.game.services.FightService;
 import idlezoo.game.services.GameService;
 
@@ -51,7 +51,7 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
         sendStateToPlayer(session, gameService.getZoo(user));
         break;
       case "fight":
-        ZooDTO enemy = fightService.fight(user);
+        Zoo enemy = fightService.fight(user);
         sendStateToPlayer(session, gameService.getZoo(user));
         if (enemy != null) {
           sendStateToPlayer(enemy);
@@ -65,11 +65,11 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
   private void handleMessage(WebSocketSession session, String user, String payload) {
     if (payload.startsWith("buy/")) {
       String animal = payload.substring("buy/".length());
-      ZooDTO zoo = gameService.buy(user, animal);
+      Zoo zoo = gameService.buy(user, animal);
       sendStateToPlayer(session, zoo);
     } else if (payload.startsWith("upgrade/")) {
       String animal = payload.substring("upgrade/".length());
-      ZooDTO zoo = gameService.upgrade(user, animal);
+      Zoo zoo = gameService.upgrade(user, animal);
       sendStateToPlayer(session, zoo);
     } else {
       throw new IllegalStateException("Unkown message " + payload);
@@ -77,7 +77,7 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
 
   }
 
-  private void sendStateToPlayer(ZooDTO zoo) {
+  private void sendStateToPlayer(Zoo zoo) {
     WebSocketSession session = wsSessions.get(zoo.getName());
     if (session != null) {
       sendStateToPlayer(session, zoo);
@@ -85,7 +85,7 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
   }
 
 
-  private void sendStateToPlayer(WebSocketSession session, ZooDTO zoo) {
+  private void sendStateToPlayer(WebSocketSession session, Zoo zoo) {
     try {
       session.sendMessage(new TextMessage(objectMapper.writeValueAsString(zoo)));;
     } catch (IOException e) {

@@ -3,7 +3,7 @@ package idlezoo.game.services.inmemory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import idlezoo.game.domain.ZooDTO;
+import idlezoo.game.domain.Zoo;
 import idlezoo.game.services.FightService;
 
 @Service
@@ -20,7 +20,7 @@ public class FightServiceImpl implements FightService {
   }
 
   @Override
-  public synchronized ZooDTO fight(String username) {
+  public synchronized Zoo fight(String username) {
     if (username.equals(waitingFighter)) {
       return null;
     }
@@ -30,8 +30,8 @@ public class FightServiceImpl implements FightService {
       storage.getZoo(waitingFighter).startWaitingForFight();
       return null;
     }
-    Zoo waiting = storage.getZoo(waitingFighter);
-    Zoo fighter = storage.getZoo(username);
+    InMemoryZoo waiting = storage.getZoo(waitingFighter);
+    InMemoryZoo fighter = storage.getZoo(username);
 
     waiting.fight(fighter);
     waiting.endWaitingForFight();

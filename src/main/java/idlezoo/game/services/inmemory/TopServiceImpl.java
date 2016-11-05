@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import idlezoo.game.domain.TopEntry;
-import idlezoo.game.domain.ZooBuildings;
 import idlezoo.game.services.TopService;
 import one.util.streamex.EntryStream;
 
@@ -32,7 +31,7 @@ public class TopServiceImpl implements TopService {
     return EntryStream.of(storage.getZoos())
         .mapValues(zoo -> zoo.getBuildingsMap().get(building))
         .filterValues(Objects::nonNull)
-        .mapValues(ZooBuildings::getNumber)
+        .mapValues(InMemoryZooBuildings::getNumber)
         .reverseSorted(comparingInt(Map.Entry::getValue))
         .limit(10)
         .map(TopEntry::of)
@@ -42,7 +41,7 @@ public class TopServiceImpl implements TopService {
   @Override
   public List<TopEntry<Double>> income() {
     return EntryStream.of(storage.getZoos())
-        .mapValues(Zoo::getIncome)
+        .mapValues(InMemoryZoo::getIncome)
         .reverseSorted(comparingDouble(Map.Entry::getValue))
         .limit(10)
         .map(TopEntry::of)
@@ -52,7 +51,7 @@ public class TopServiceImpl implements TopService {
   @Override
   public List<TopEntry<Integer>> wins() {
     return EntryStream.of(storage.getZoos())
-        .mapValues(Zoo::getFightWins)
+        .mapValues(InMemoryZoo::getFightWins)
         .reverseSorted(comparingInt(Map.Entry::getValue))
         .limit(10)
         .map(TopEntry::of)
@@ -62,7 +61,7 @@ public class TopServiceImpl implements TopService {
   @Override
   public List<TopEntry<Long>> championTime() {
     return EntryStream.of(storage.getZoos())
-        .mapValues(Zoo::getChampionTime)
+        .mapValues(InMemoryZoo::getChampionTime)
         .reverseSorted(comparingLong(Map.Entry::getValue))
         .limit(10)
         .map(TopEntry::of)

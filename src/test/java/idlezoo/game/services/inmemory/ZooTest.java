@@ -9,8 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import idlezoo.game.services.ResourcesService;
-import idlezoo.game.services.inmemory.Zoo;
-import idlezoo.game.services.inmemory.Zoo.Timer;
+import idlezoo.game.services.inmemory.InMemoryZoo;
+import idlezoo.game.services.inmemory.InMemoryZoo.Timer;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -22,7 +22,7 @@ public class ZooTest {
 	@Test
 	public void test() {
 		TestTimer timer = new TestTimer(0L);
-		Zoo zoo = new Zoo("testzoo", gameResources, timer);
+		InMemoryZoo zoo = new InMemoryZoo("testzoo", gameResources, timer);
 		assertEquals(gameResources.startingMoney(), zoo.getMoney(), 0.0001);
 		assertEquals(0D, zoo.getIncome(), 0.0001);
 

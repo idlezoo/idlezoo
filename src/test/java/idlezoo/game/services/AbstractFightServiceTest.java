@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import idlezoo.game.domain.ZooDTO;
+import idlezoo.game.domain.Zoo;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -32,11 +32,11 @@ public abstract class AbstractFightServiceTest {
     fightService.fight(ZOO1);
     fightService.fight(ZOO2);
 
-    ZooDTO zoo1 = gameService.getZoo(ZOO1);
+    Zoo zoo1 = gameService.getZoo(ZOO1);
     assertEquals(1, zoo1.getFightWins());
     assertEquals(1, zoo1.getBuildings().get(0).getNumber());
 
-    ZooDTO zoo2 = gameService.getZoo(ZOO2);
+    Zoo zoo2 = gameService.getZoo(ZOO2);
     assertEquals(0, zoo2.getFightWins());
   }
 
@@ -48,11 +48,11 @@ public abstract class AbstractFightServiceTest {
     fightService.fight(ZOO1);
     fightService.fight(ZOO2);
 
-    ZooDTO zoo1 = gameService.getZoo(ZOO1);
+    Zoo zoo1 = gameService.getZoo(ZOO1);
     assertEquals(1, zoo1.getFightWins());
     assertEquals(0, zoo1.getBuildings().get(0).getNumber());
 
-    ZooDTO zoo2 = gameService.getZoo(ZOO2);
+    Zoo zoo2 = gameService.getZoo(ZOO2);
     assertEquals(0, zoo2.getFightWins());
   }
 
@@ -62,10 +62,10 @@ public abstract class AbstractFightServiceTest {
     fightService.fight(ZOO1);
     fightService.fight(ZOO2);
 
-    ZooDTO zoo1 = gameService.getZoo(ZOO1);
+    Zoo zoo1 = gameService.getZoo(ZOO1);
     assertEquals(0, zoo1.getFightWins());
 
-    ZooDTO zoo2 = gameService.getZoo(ZOO2);
+    Zoo zoo2 = gameService.getZoo(ZOO2);
     assertEquals(1, zoo2.getBuildings().get(0).getNumber());
     assertEquals(1, zoo2.getFightWins());
   }
@@ -79,10 +79,10 @@ public abstract class AbstractFightServiceTest {
     fightService.fight(ZOO1);
     fightService.fight(ZOO2);
 
-    ZooDTO zoo1 = gameService.getZoo(ZOO1);
+    Zoo zoo1 = gameService.getZoo(ZOO1);
     assertEquals(0, zoo1.getFightWins());
 
-    ZooDTO zoo2 = gameService.getZoo(ZOO2);
+    Zoo zoo2 = gameService.getZoo(ZOO2);
     assertEquals(1, zoo2.getBuildings().get(0).getNumber());
     assertEquals(1, zoo2.getFightWins());
   }
@@ -99,12 +99,12 @@ public abstract class AbstractFightServiceTest {
     fightService.fight(ZOO1);
     fightService.fight(ZOO2);
 
-    ZooDTO zoo1 = gameService.getZoo(ZOO1);
+    Zoo zoo1 = gameService.getZoo(ZOO1);
     assertEquals(1, zoo1.getFightWins());
     assertEquals(0, zoo1.getBuildings().get(0).getNumber());
     assertEquals(0, zoo1.getBuildings().get(1).getNumber());
 
-    ZooDTO zoo2 = gameService.getZoo(ZOO2);
+    Zoo zoo2 = gameService.getZoo(ZOO2);
     assertEquals(0, zoo2.getBuildings().get(0).getNumber());
     assertEquals(1, zoo2.getBuildings().get(1).getNumber());
     assertEquals(0, zoo2.getFightWins());

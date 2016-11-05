@@ -2,7 +2,7 @@ package idlezoo.game.domain;
 
 import java.util.List;
 
-public class ZooDTO {
+public class Zoo {
 
   private final String name;
   private final List<ZooBuildings> buildings;
@@ -12,7 +12,7 @@ public class ZooDTO {
   private final boolean waitingForFight;
   private final long championTime;
 
-  public ZooDTO(String name, List<ZooBuildings> buildings, double income, double money,
+  public Zoo(String name, List<ZooBuildings> buildings, double income, double money,
       int fightWins,
       boolean waitingForFight, long championTime) {
     this.name = name;

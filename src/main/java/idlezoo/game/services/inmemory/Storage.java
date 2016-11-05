@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component;
 @Profile("default")
 public class Storage {
 
-  private final ConcurrentHashMap<String, Zoo> zoos = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, InMemoryZoo> zoos = new ConcurrentHashMap<>();
 
-  public ConcurrentHashMap<String, Zoo> getZoos() {
+  public ConcurrentHashMap<String, InMemoryZoo> getZoos() {
     return zoos;
   }
 
-  public Zoo getZoo(String name) {
+  public InMemoryZoo getZoo(String name) {
     return zoos.get(name);
   }
 

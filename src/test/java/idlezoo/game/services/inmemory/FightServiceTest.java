@@ -5,11 +5,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
 
 import idlezoo.game.services.AbstractFightServiceTest;
 
-@ActiveProfiles("default")
+
 public class FightServiceTest extends AbstractFightServiceTest {
 
   @Autowired

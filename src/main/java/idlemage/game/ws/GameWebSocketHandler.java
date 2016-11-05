@@ -33,7 +33,10 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
 
   @Override
   public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-    wsSessions.put(session.getPrincipal().getName(), session);
+    WebSocketSession prev = wsSessions.put(session.getPrincipal().getName(), session);
+    if(prev != null){
+      prev.close(CloseStatus.POLICY_VIOLATION);
+    }
   }
 
   @Override
@@ -43,7 +46,7 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
     String user = session.getPrincipal().getName();
     switch (payload) {
       case "ping":
-        //do nothing
+        // do nothing
         break;
       case "me":
         sendStateToPlayer(user);
@@ -60,16 +63,16 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
     }
   }
 
-  private void handleMessage(WebSocketSession session,String user, String payload) {
+  private void handleMessage(WebSocketSession session, String user, String payload) {
     if (payload.startsWith("buy/")) {
       String creature = payload.substring("buy/".length());
       Mage mage = gameService.getMage(user).buy(creature, resourcesService);
       sendStateToPlayer(session, mage);
-    }else if(payload.startsWith("upgrade/")){
+    } else if (payload.startsWith("upgrade/")) {
       String creature = payload.substring("upgrade/".length());
       Mage mage = gameService.getMage(user).upgrade(creature);
       sendStateToPlayer(session, mage);
-    }else{
+    } else {
       throw new IllegalStateException("Unkown message " + payload);
     }
 

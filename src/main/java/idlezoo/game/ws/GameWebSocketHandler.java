@@ -12,32 +12,29 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import idlezoo.game.domain.Zoo;
 import idlezoo.game.domain.ZooDTO;
 import idlezoo.game.services.FightService;
 import idlezoo.game.services.GameService;
-import idlezoo.game.services.ResourcesService;
 
 @Component
 public class GameWebSocketHandler extends TextWebSocketHandler {
 
   private final ConcurrentHashMap<String, WebSocketSession> wsSessions = new ConcurrentHashMap<>();
+
   @Autowired
   private GameService gameService;
   @Autowired
   private FightService fightService;
-  @Autowired
-  private ResourcesService resourcesService;
   @Autowired
   private ObjectMapper objectMapper;
 
   @Override
   public void afterConnectionEstablished(WebSocketSession session) throws Exception {
     WebSocketSession prev = wsSessions.put(session.getPrincipal().getName(), session);
-    if(prev != null){
-      //TODO this is intended to close ws from prev session if new one is opened
-      //however it closes ws even for single session
-      //prev.close(CloseStatus.POLICY_VIOLATION);
+    if (prev != null) {
+      // TODO this is intended to close ws from prev session if new one is opened
+      // however it closes ws even for single session
+      // prev.close(CloseStatus.POLICY_VIOLATION);
     }
   }
 
@@ -51,11 +48,11 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
         // do nothing
         break;
       case "me":
-        sendStateToPlayer(user);
+        sendStateToPlayer(session, gameService.getZoo(user));
         break;
       case "fight":
-        Zoo enemy = fightService.fight(user);
-        sendStateToPlayer(user);
+        ZooDTO enemy = fightService.fight(user);
+        sendStateToPlayer(session, gameService.getZoo(user));
         if (enemy != null) {
           sendStateToPlayer(enemy);
         }
@@ -68,11 +65,11 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
   private void handleMessage(WebSocketSession session, String user, String payload) {
     if (payload.startsWith("buy/")) {
       String animal = payload.substring("buy/".length());
-      Zoo zoo = gameService.getZoo(user).buy(animal, resourcesService);
+      ZooDTO zoo = gameService.buy(user, animal);
       sendStateToPlayer(session, zoo);
     } else if (payload.startsWith("upgrade/")) {
-      String creature = payload.substring("upgrade/".length());
-      Zoo zoo = gameService.getZoo(user).upgrade(creature);
+      String animal = payload.substring("upgrade/".length());
+      ZooDTO zoo = gameService.upgrade(user, animal);
       sendStateToPlayer(session, zoo);
     } else {
       throw new IllegalStateException("Unkown message " + payload);
@@ -80,27 +77,19 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
 
   }
 
-  private void sendStateToPlayer(String username) {
-    WebSocketSession session = wsSessions.get(username);
-    if (session == null) {
-      return;
-    }
-    sendStateToPlayer(session, gameService.getZoo(username));
-  }
-
-  private void sendStateToPlayer(Zoo zoo) {
+  private void sendStateToPlayer(ZooDTO zoo) {
     WebSocketSession session = wsSessions.get(zoo.getName());
     if (session != null) {
       sendStateToPlayer(session, zoo);
     }
   }
 
-  private void sendStateToPlayer(WebSocketSession session, Zoo zoo) {
-    ZooDTO zooDTO = new ZooDTO(zoo.updateMoney());
+
+  private void sendStateToPlayer(WebSocketSession session, ZooDTO zoo) {
     try {
-      session.sendMessage(new TextMessage(objectMapper.writeValueAsString(zooDTO)));;
+      session.sendMessage(new TextMessage(objectMapper.writeValueAsString(zoo)));;
     } catch (IOException e) {
-      wsSessions.remove(zoo.getName());
+      wsSessions.remove(session.getPrincipal().getName());
     }
   }
 

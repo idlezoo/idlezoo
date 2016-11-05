@@ -1,4 +1,4 @@
-package idlezoo.game.domain;
+package idlezoo.game.services.inmemory;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import idlezoo.game.domain.Zoo;
-import idlezoo.game.domain.Zoo.Timer;
 import idlezoo.game.services.ResourcesService;
+import idlezoo.game.services.inmemory.Zoo;
+import idlezoo.game.services.inmemory.Zoo.Timer;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)

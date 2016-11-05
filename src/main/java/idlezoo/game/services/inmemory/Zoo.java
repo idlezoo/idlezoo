@@ -1,4 +1,4 @@
-package idlezoo.game.domain;
+package idlezoo.game.services.inmemory;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonMap;
@@ -12,6 +12,9 @@ import java.util.Set;
 
 import org.springframework.util.Assert;
 
+import idlezoo.game.domain.Building;
+import idlezoo.game.domain.ZooBuildings;
+import idlezoo.game.domain.ZooDTO;
 import idlezoo.game.services.ResourcesService;
 import one.util.streamex.StreamEx;
 
@@ -34,6 +37,11 @@ public class Zoo {
 	public Zoo(String name, ResourcesService gameResources) {
 		this(name, gameResources, DEFAULT_TIMER);
 	}
+	
+	public ZooDTO toDTO(){
+	  return new ZooDTO(name, buildings, income, money, fightWins, waitingForFightStart != null, championTime);
+	}
+	
 
 	Zoo(String name, ResourcesService gameResources, Timer timer) {
 		this.name = name;

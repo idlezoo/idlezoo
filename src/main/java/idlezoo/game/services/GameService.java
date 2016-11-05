@@ -1,31 +1,14 @@
 package idlezoo.game.services;
 
-import java.util.concurrent.ConcurrentHashMap;
+import idlezoo.game.domain.ZooDTO;
 
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+public interface GameService {
+  
+  boolean createZoo(String username);  
+  
+  ZooDTO getZoo(String name);
 
-import idlezoo.game.domain.Zoo;
+  ZooDTO buy(String name, String animal);
 
-@Service
-public class GameService {
-
-  @Autowired
-  private ResourcesService gameResources;
-
-  private final ConcurrentHashMap<String, Zoo> zoos = new ConcurrentHashMap<>();
-
-  public boolean createZoo(String username) {
-    return null == zoos.put(username, new Zoo(username, gameResources));
-  }
-
-  public Zoo getZoo(String username) {
-    return zoos.get(username);
-  }
-
-  public ConcurrentHashMap<String, Zoo> getZoos() {
-    return zoos;
-  }
-
+  ZooDTO upgrade(String name, String animal);
 }

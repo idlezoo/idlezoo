@@ -35,7 +35,9 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
   public void afterConnectionEstablished(WebSocketSession session) throws Exception {
     WebSocketSession prev = wsSessions.put(session.getPrincipal().getName(), session);
     if(prev != null){
-      prev.close(CloseStatus.POLICY_VIOLATION);
+      //TODO this is intended to close ws from prev session if new one is opened
+      //however it closes ws even for single session
+      //prev.close(CloseStatus.POLICY_VIOLATION);
     }
   }
 

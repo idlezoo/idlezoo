@@ -3,6 +3,7 @@ package idlezoo.security.inmemory;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,11 +18,8 @@ import idlezoo.security.UsersService;
 public class UsersServiceInMemory implements UsersService {
   private final ConcurrentHashMap<String, ZooUser> users = new ConcurrentHashMap<>();
 
-  private final PasswordEncoder passwordEncoder;
-
-  public UsersServiceInMemory(PasswordEncoder passwordEncoder) {
-    this.passwordEncoder = passwordEncoder;
-  }
+  @Autowired
+  private PasswordEncoder passwordEncoder;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -17,11 +17,11 @@ import one.util.streamex.EntryStream;
 
 @Service
 @Profile("default")
-public class TopServiceImpl implements TopService {
+public class TopServiceInMemory implements TopService {
 
   private final Storage storage;
 
-  public TopServiceImpl(Storage storage) {
+  public TopServiceInMemory(Storage storage) {
     this.storage = storage;
   }
 

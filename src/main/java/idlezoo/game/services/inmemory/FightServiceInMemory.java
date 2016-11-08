@@ -8,13 +8,13 @@ import idlezoo.game.services.FightService;
 
 @Service
 @Profile("default")
-public class FightServiceImpl implements FightService {
+public class FightServiceInMemory implements FightService {
 
   private final Storage storage;
 
   private String waitingFighter;
   
-  public FightServiceImpl(Storage storage) {
+  public FightServiceInMemory(Storage storage) {
     super();
     this.storage = storage;
   }

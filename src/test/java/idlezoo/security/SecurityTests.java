@@ -18,6 +18,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -51,9 +52,18 @@ public class SecurityTests {
 
   @Test
   public void register() {
-    assertFalse(usersService.userExists("testregister"));
+    assertFalse(userExists("testregister"));
     loginOrRegister("testregister", "/createuser");
     assertEquals("testregister", usersService.loadUserByUsername("testregister").getUsername());
+  }
+
+  private boolean userExists(String username) {
+    try {
+      usersService.loadUserByUsername(username);
+      return true;
+    } catch (UsernameNotFoundException notFound) {
+      return false;
+    }
   }
 
   @Test

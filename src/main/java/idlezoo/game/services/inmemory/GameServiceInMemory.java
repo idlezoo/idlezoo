@@ -9,12 +9,12 @@ import idlezoo.game.services.ResourcesService;
 
 @Service
 @Profile("default")
-public class GameServiceImpl implements GameService {
+public class GameServiceInMemory implements GameService {
 
   private final Storage storage;
   private final ResourcesService resources;
 
-  public GameServiceImpl(Storage storage, ResourcesService resources) {
+  public GameServiceInMemory(Storage storage, ResourcesService resources) {
     this.storage = storage;
     this.resources=resources;
   }

@@ -15,7 +15,7 @@ import idlezoo.security.UsersService;
 
 @Service
 @Profile("default")
-public class UsersServiceImpl implements UsersService {
+public class UsersServiceInMemory implements UsersService {
   private final ConcurrentHashMap<String, ZooUser> users = new ConcurrentHashMap<>();
 
   @Autowired
@@ -28,11 +28,6 @@ public class UsersServiceImpl implements UsersService {
       throw new UsernameNotFoundException("User " + username + " not found");
     }
     return new User(user.name, user.password, Collections.emptyList());
-  }
-
-  @Override
-  public boolean userExists(String username) {
-    return users.containsKey(username);
   }
 
   public boolean addUser(String username, String password) {

@@ -1,3 +1,9 @@
+services:
+  - postgresql
+before_script:
+  - psql -c "create user idlezoo with password 'idlezoo';" -U postgres
+  - psql -c "create database idlezoo;" -U postgres
+  - psql -c "grant all on database idlezoo to idlezoo;" -U postgres
 language: java
 jdk:
-- oraclejdk8
+  - oraclejdk8

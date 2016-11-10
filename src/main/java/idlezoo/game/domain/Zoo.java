@@ -2,7 +2,7 @@ package idlezoo.game.domain;
 
 import java.util.List;
 
-public class Zoo {
+public final class Zoo {
 
   private final String name;
   private final List<ZooBuildings> buildings;
@@ -55,4 +55,55 @@ public class Zoo {
   public long getChampionTime() {
     return championTime;
   }
+
+  public static final class Builder {
+    private String name;
+    private List<ZooBuildings> buildings;
+    private double income;
+    private double money;
+    private int fightWins;
+    private boolean waitingForFight;
+    private long championTime;
+
+    public Builder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder setBuildings(List<ZooBuildings> buildings) {
+      this.buildings = buildings;
+      return this;
+    }
+
+    public Builder setIncome(double income) {
+      this.income = income;
+      return this;
+    }
+
+    public Builder setMoney(double money) {
+      this.money = money;
+      return this;
+    }
+
+    public Builder setFightWins(int fightWins) {
+      this.fightWins = fightWins;
+      return this;
+    }
+
+    public Builder setWaitingForFight(boolean waitingForFight) {
+      this.waitingForFight = waitingForFight;
+      return this;
+    }
+
+    public Builder setChampionTime(long championTime) {
+      this.championTime = championTime;
+      return this;
+    }
+
+    public Zoo build() {
+      return new Zoo(name, buildings, income, income, fightWins, waitingForFight, championTime);
+    }
+
+  }
+
 }

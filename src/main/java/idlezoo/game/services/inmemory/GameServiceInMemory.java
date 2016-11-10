@@ -34,9 +34,4 @@ public class GameServiceInMemory implements GameService {
     return storage.getZoo(name).upgrade(animal).updateMoney().toDTO();
   }
 
-  @Override
-  public boolean createZoo(String username) {
-    return null == storage.getZoos().put(username, new InMemoryZoo(username, resources));
-  }
-
 }

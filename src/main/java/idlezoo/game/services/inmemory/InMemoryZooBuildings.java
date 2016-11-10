@@ -4,13 +4,11 @@ import idlezoo.game.domain.Building;
 import idlezoo.game.domain.ZooBuildings;
 
 public class InMemoryZooBuildings {
-  private final String name;
   private final Building building;
   private int level = 0;
   private int number = 0;
 
   public InMemoryZooBuildings(Building building) {
-    this.name = building.getName();
     this.building = building;
   }
 
@@ -19,7 +17,7 @@ public class InMemoryZooBuildings {
   }
 
   public String getName() {
-    return name;
+    return building.getName();
   }
 
   public double getIncome() {

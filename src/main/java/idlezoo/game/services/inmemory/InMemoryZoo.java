@@ -21,6 +21,7 @@ public class InMemoryZoo {
 	private static final Timer DEFAULT_TIMER = () -> java.time.Clock.systemUTC().instant().getEpochSecond();
 
 	private final String name;
+	private final String password;
 	private final Timer timer;
 	private final List<InMemoryZooBuildings> buildings;
 	private final Map<String, InMemoryZooBuildings> buildingsMap;
@@ -29,21 +30,21 @@ public class InMemoryZoo {
 	private int fightWins;
 	private long championTime;
 	private Long waitingForFightStart;
-	// private boolean waitingForFight;
 	// cached value - trade memory for CPU
 	private double income;
 
-	public InMemoryZoo(String name, ResourcesService gameResources) {
-		this(name, gameResources, DEFAULT_TIMER);
+	public InMemoryZoo(String name, String password, ResourcesService gameResources) {
+		this(name, password, gameResources, DEFAULT_TIMER);
 	}
-	
-	public Zoo toDTO(){
-	  return new Zoo(name, StreamEx.of(buildings).map(InMemoryZooBuildings::toDTO).toList(), income, money, fightWins, waitingForFightStart != null, championTime);
-	}
-	
 
-	InMemoryZoo(String name, ResourcesService gameResources, Timer timer) {
+	public Zoo toDTO() {
+		return new Zoo(name, StreamEx.of(buildings).map(InMemoryZooBuildings::toDTO).toList(), income, money, fightWins,
+				waitingForFightStart != null, championTime);
+	}
+
+	InMemoryZoo(String name, String password, ResourcesService gameResources, Timer timer) {
 		this.name = name;
+		this.password = password;
 		buildings = new ArrayList<>(asList(new InMemoryZooBuildings(gameResources.startingAnimal())));
 		buildingsMap = new HashMap<>(singletonMap(gameResources.startingAnimal().getName(), buildings
 				.get(0)));
@@ -63,6 +64,10 @@ public class InMemoryZoo {
 
 	public String getName() {
 		return name;
+	}
+
+	public String getPassword() {
+		return password;
 	}
 
 	public double getIncome() {
@@ -136,7 +141,7 @@ public class InMemoryZoo {
 		if (zooBuildings.first()) {
 			Building next = gameResources.nextType(buildingName);
 			if (next != null && !buildingsMap.containsKey(next.getName())) {
-			  InMemoryZooBuildings nextBuildings = new InMemoryZooBuildings(next);
+				InMemoryZooBuildings nextBuildings = new InMemoryZooBuildings(next);
 				buildings.add(nextBuildings);
 				buildingsMap.put(next.getName(), nextBuildings);
 			}
@@ -167,11 +172,12 @@ public class InMemoryZoo {
 			buildingsSuperSet.addAll(
 					StreamEx.of(buildings).filter(b -> b.getNumber() != 0).map(InMemoryZooBuildings::getName).toList());
 			buildingsSuperSet.addAll(
-					StreamEx.of(other.buildings).filter(b -> b.getNumber() != 0).map(InMemoryZooBuildings::getName).toList());
+					StreamEx.of(other.buildings).filter(b -> b.getNumber() != 0).map(InMemoryZooBuildings::getName)
+							.toList());
 			int thisWins = 0, otherWins = 0;
 			for (String building : buildingsSuperSet) {
-			  InMemoryZooBuildings thisBuildings = buildingsMap.get(building);
-			  InMemoryZooBuildings otherBuildings = other.buildingsMap.get(building);
+				InMemoryZooBuildings thisBuildings = buildingsMap.get(building);
+				InMemoryZooBuildings otherBuildings = other.buildingsMap.get(building);
 
 				if (thisBuildings == null) {
 					otherWins++;

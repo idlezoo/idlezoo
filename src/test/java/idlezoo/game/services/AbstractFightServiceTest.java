@@ -1,7 +1,9 @@
 package idlezoo.game.services;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import idlezoo.game.domain.Zoo;
+import idlezoo.security.UsersService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -22,9 +25,19 @@ public abstract class AbstractFightServiceTest {
 
   @Autowired
   protected GameService gameService;
+  
+  @Autowired
+  protected UsersService usersService;
 
   @Autowired
   protected ResourcesService resourcesService;
+  
+  @Before
+  public void setup() {
+    assertTrue(usersService.addUser(ZOO1, ""));
+    assertTrue(usersService.addUser(ZOO2, ""));
+  }
+  
 
   @Test
   public void test1vs0() {

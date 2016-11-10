@@ -22,7 +22,7 @@ public class ZooTest {
 	@Test
 	public void test() {
 		TestTimer timer = new TestTimer(0L);
-		InMemoryZoo zoo = new InMemoryZoo("testzoo", gameResources, timer);
+		InMemoryZoo zoo = new InMemoryZoo("testzoo", "", gameResources, timer);
 		assertEquals(gameResources.startingMoney(), zoo.getMoney(), 0.0001);
 		assertEquals(0D, zoo.getIncome(), 0.0001);
 

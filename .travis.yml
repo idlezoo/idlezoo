@@ -1,5 +1,7 @@
 services:
   - postgresql
+addons:
+  postgresql: "9.5"
 before_script:
   - psql -c "create user idlezoo with password 'idlezoo';" -U postgres
   - psql -c "create database idlezoo;" -U postgres

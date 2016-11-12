@@ -90,7 +90,9 @@ public class GameServicePostgres implements GameService {
     if(count == 0){
       Building next = resourcesService.nextType(animal);
       if(next != null){
-        template.update("insert into animal(username, animal_type) values(?,?)", name, next.getName());
+        template.update("insert into animal(username, animal_type) values(?,?)"
+            //requires postgres 9.5
+            + " on conflict do nothing", name, next.getName());
       }
     }
     return updateIncomeAndGetZoo(name);

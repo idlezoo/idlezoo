@@ -55,7 +55,11 @@ public final class Zoo {
   public long getChampionTime() {
     return championTime;
   }
-
+  
+  public Zoo withIncome(double income){
+    return new Zoo(name, buildings, income, money, fightWins, waitingForFight, championTime);
+  }
+  
   public static final class Builder {
     private String name;
     private List<ZooBuildings> buildings;

@@ -3,6 +3,7 @@ package idlezoo.game.services.postgres;
 import java.util.List;
 
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
@@ -69,11 +70,14 @@ public class GameServicePostgres implements GameService {
     Builder zooBuilder = template.queryForObject("select *,"
         + " EXTRACT(EPOCH FROM now() - waiting_for_fight_start)::bigint as waiting_fight_time"
         + " from users where username=?", zooMapper, name);
-    List<ZooBuildings> buildings = template.query("select * from animal where username=?",
-        zooBuildingMapper, name);
+    List<ZooBuildings> buildings = getBuildings(name);
 
     zooBuilder.setBuildings(buildings);
     return zooBuilder.build();
+  }
+
+  private List<ZooBuildings> getBuildings(String name) {
+    return template.query("select * from animal where username=?", zooBuildingMapper, name);
   }
 
   @Override
@@ -86,13 +90,19 @@ public class GameServicePostgres implements GameService {
     if (money < buildCost) {
       return getZooNoUpdate(name);
     }
-    template.update("update animal set count=count+1 where username=? and animal_type=?", name, animal);
-    if(count == 0){
+    template.update("update animal set count=count+1"
+        + " where username=? and animal_type=?", name, animal);
+    if (count == 0) {
       Building next = resourcesService.nextType(animal);
-      if(next != null){
-        template.update("insert into animal(username, animal_type) values(?,?)"
-            //requires postgres 9.5
-            + " on conflict do nothing", name, next.getName());
+      if (next != null) {
+        try {
+          template.update("insert into animal(username, animal_type) values(?,?)"
+          // requires postgres 9.5
+          // + " on conflict do nothing"
+              , name, next.getName());
+        } catch (DuplicateKeyException duplicate) {
+          // ignore
+        }
       }
     }
     return updateIncomeAndGetZoo(name);
@@ -105,17 +115,27 @@ public class GameServicePostgres implements GameService {
         "select level from animal where username=? and animal_type=?", Integer.class, name, animal);
     Building type = resourcesService.type(animal);
     double upgradeCost = type.upgradeCost(level);
-    if(money < upgradeCost){
+    if (money < upgradeCost) {
       return getZooNoUpdate(name);
     }
-    template.update("update animal set level=level+1 where username=? and animal_type=?", name, animal);
+    template.update("update animal set level=level+1"
+        + " where username=? and animal_type=?", name, animal);
     return updateIncomeAndGetZoo(name);
   }
-  
-  private Zoo updateIncomeAndGetZoo(String name){
-    final Zoo zoo = getZooNoUpdate(name);
-    final double newIncome = zoo.getBuildings().stream().mapToDouble(ZooBuildings::getIncome).sum();
+
+  public void updateIncome(String name) {
+    updateIncome(name, getBuildings(name));
+  }
+
+  private double updateIncome(String name, List<ZooBuildings> buildings) {
+    final double newIncome = buildings.stream().mapToDouble(ZooBuildings::getIncome).sum();
     template.update("update users set income=? where username=?", newIncome, name);
+    return newIncome;
+  }
+
+  public Zoo updateIncomeAndGetZoo(String name) {
+    final Zoo zoo = getZooNoUpdate(name);
+    final double newIncome = updateIncome(name, zoo.getBuildings());
     return zoo.withIncome(newIncome);
   }
 

@@ -105,7 +105,7 @@ public final class Zoo {
     }
 
     public Zoo build() {
-      return new Zoo(name, buildings, income, income, fightWins, waitingForFight, championTime);
+      return new Zoo(name, buildings, income, money, fightWins, waitingForFight, championTime);
     }
 
   }

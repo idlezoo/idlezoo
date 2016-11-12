@@ -48,6 +48,7 @@ public class GameServicePostgresTest extends AbstractGameServiceTest {
     assertEquals(0, zoo1.getBuildings().get(0).getNumber());
     assertFalse(zoo1.isWaitingForFight());
     assertEquals(0, zoo1.getMoneyIncome(), 0.0001);
+    assertEquals(100, zoo1.getMoney(), 0.0001);
   }
   
   

@@ -30,7 +30,7 @@ public class GameServicePostgres implements GameService {
     this.template = template;
     this.resourcesService = resourcesService;
     zooBuildingMapper = (res, rowNum) -> {
-      Building building = resourcesService.type(res.getString("animal_type"));
+      Building building = resourcesService.byIndex(res.getInt("animal_type"));
       return new ZooBuildings(building, res.getInt("level"), res.getInt("count"));
     };
 
@@ -77,21 +77,21 @@ public class GameServicePostgres implements GameService {
   }
 
   private List<ZooBuildings> getBuildings(String name) {
-    return template.query("select * from animal where username=?", zooBuildingMapper, name);
+    return template.query("select * from animal where username=? order by animal_type", zooBuildingMapper, name);
   }
 
   @Override
   public Zoo buy(String name, String animal) {
     double money = updateAndGetMoney(name);
     int count = template.queryForObject(
-        "select count from animal where username=? and animal_type=?", Integer.class, name, animal);
+        "select count from animal where username=? and animal_type=?", Integer.class, name, resourcesService.index(animal));
     Building type = resourcesService.type(animal);
     double buildCost = type.buildCost(count);
     if (money < buildCost) {
       return getZooNoUpdate(name);
     }
     template.update("update animal set count=count+1"
-        + " where username=? and animal_type=?", name, animal);
+        + " where username=? and animal_type=?", name, resourcesService.index(animal));
     template.update("update users set money=money-? where username=?", buildCost, name);
     if (count == 0) {
       Building next = resourcesService.nextType(animal);
@@ -100,7 +100,7 @@ public class GameServicePostgres implements GameService {
           template.update("insert into animal(username, animal_type) values(?,?)"
           // requires postgres 9.5
           // + " on conflict do nothing"
-              , name, next.getName());
+              , name, resourcesService.index(next.getName()));
         } catch (DuplicateKeyException duplicate) {
           // ignore
         }
@@ -113,14 +113,14 @@ public class GameServicePostgres implements GameService {
   public Zoo upgrade(String name, String animal) {
     double money = updateAndGetMoney(name);
     int level = template.queryForObject(
-        "select level from animal where username=? and animal_type=?", Integer.class, name, animal);
+        "select level from animal where username=? and animal_type=?", Integer.class, name, resourcesService.index(animal));
     Building type = resourcesService.type(animal);
     double upgradeCost = type.upgradeCost(level);
     if (money < upgradeCost) {
       return getZooNoUpdate(name);
     }
     template.update("update animal set level=level+1"
-        + " where username=? and animal_type=?", name, animal);
+        + " where username=? and animal_type=?", name, resourcesService.index(animal));
     template.update("update users set money=money-? where username=?", upgradeCost, name);
     return updateIncomeAndGetZoo(name);
   }

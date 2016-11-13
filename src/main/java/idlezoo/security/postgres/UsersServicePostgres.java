@@ -49,7 +49,7 @@ public class UsersServicePostgres implements UsersService {
 			template.update("insert into users(username, password) values(?,?)",
 					username, passwordEncoder.encode(password));
 			template.update("insert into animal(username, animal_type) values(?,?)",
-					username, gameResources.startingAnimal().getName());
+					username, 0);
 			return true;
 		} catch (DuplicateKeyException duplicate) {
 			return false;

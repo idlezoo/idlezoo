@@ -33,7 +33,6 @@ public class FightServicePostgresTest {
   private GameService gameService;
   @Autowired
   private UsersService usersService;
-
   @Autowired
   private ResourcesService resourcesService;
   @Autowired

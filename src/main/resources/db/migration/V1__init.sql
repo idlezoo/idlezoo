@@ -13,7 +13,7 @@ create unique index lower_username_unique on users(lower(username));
 
 create table animal(
 	username text not null references users(username),
-	animal_type text not null,
+	animal_type int not null,
 	count int not null default 0,
 	level int not null default 0,
 	primary key(username, animal_type)

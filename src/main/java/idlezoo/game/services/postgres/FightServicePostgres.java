@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import idlezoo.game.domain.Zoo;
 import idlezoo.game.domain.ZooBuildings;
 import idlezoo.game.services.FightService;
+import idlezoo.game.services.ResourcesService;
 import one.util.streamex.StreamEx;
 
 @Service
@@ -22,10 +23,12 @@ public class FightServicePostgres implements FightService {
 
   private final JdbcTemplate template;
   private final GameServicePostgres gameService;
+  private final ResourcesService resourcesService;
 
-  public FightServicePostgres(JdbcTemplate template, GameServicePostgres gameService) {
+  public FightServicePostgres(JdbcTemplate template, GameServicePostgres gameService, ResourcesService resourcesService) {
     this.template = template;
     this.gameService = gameService;
+    this.resourcesService=resourcesService;
   }
 
   @Override
@@ -68,18 +71,19 @@ public class FightServicePostgres implements FightService {
         continue;
       }
 
+      int buildingIndex = resourcesService.index(building);
       if (waitingAnimals.getNumber() >= fighterAnimals.getNumber()) {
         waitingWins++;
         template.update("update animal set count=count-? where username=? and animal_type=?",
-            fighterAnimals.getNumber(), waiting.getName(), building);
+            fighterAnimals.getNumber(), waiting.getName(), buildingIndex);
         template.update("update animal set count=0 where username=? and animal_type=?",
-            fighter.getName(), building);
+            fighter.getName(), buildingIndex);
       } else {
         fighterWins++;
         template.update("update animal set count=count-? where username=? and animal_type=?",
-            waitingAnimals.getNumber(), fighter.getName(), building);
+            waitingAnimals.getNumber(), fighter.getName(), buildingIndex);
         template.update("update animal set count=0 where username=? and animal_type=?",
-            waiting.getName(), building);
+            waiting.getName(), buildingIndex);
       }
     }
     if (waitingWins >= fighterWins) {

@@ -70,14 +70,16 @@ public class FightServicePostgres implements FightService {
 
       if (waitingAnimals.getNumber() >= fighterAnimals.getNumber()) {
         waitingWins++;
-        template.update("update animal set count=count-? where username=?", fighterAnimals
-            .getNumber(), waiting.getName());
-        template.update("update animal set count=0 where username=?", fighter.getName());
+        template.update("update animal set count=count-? where username=? and animal_type=?",
+            fighterAnimals.getNumber(), waiting.getName(), building);
+        template.update("update animal set count=0 where username=? and animal_type=?",
+            fighter.getName(), building);
       } else {
         fighterWins++;
-        template.update("update animal set count=count-? where username=?", waitingAnimals
-            .getNumber(), fighter.getName());
-        template.update("update animal set count=0 where username=?", waiting.getName());
+        template.update("update animal set count=count-? where username=? and animal_type=?",
+            waitingAnimals.getNumber(), fighter.getName(), building);
+        template.update("update animal set count=0 where username=? and animal_type=?",
+            waiting.getName(), building);
       }
     }
     if (waitingWins >= fighterWins) {
@@ -91,7 +93,7 @@ public class FightServicePostgres implements FightService {
     template.update("update arena set waiting_user=null");
     template.update("update users set waiting_for_fight_start=null"
         + ", champion_time = champion_time + EXTRACT(EPOCH FROM now() - waiting_for_fight_start)::bigint"
-        + " where username=?", waiting);
+        + " where username=?", waiting.getName());
 
     gameService.updateIncome(fighter.getName());
     return gameService.updateIncomeAndGetZoo(waiting.getName());

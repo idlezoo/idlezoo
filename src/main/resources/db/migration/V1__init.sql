@@ -2,7 +2,7 @@ create table users(
 	username text not null primary key,
 	password text not null,
 	last_money_update timestamp not null default now(),
-	money double precision not null default 100,
+	money double precision not null default 50,
 	champion_time bigint not null default 0,
 	waiting_for_fight_start timestamp,
 	fights_win int not null default 0,

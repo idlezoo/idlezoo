@@ -9,12 +9,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import idlezoo.game.domain.Zoo;
-import idlezoo.game.services.AbstractGameServiceTest;
 import idlezoo.game.services.GameService;
 import idlezoo.game.services.ResourcesService;
 import idlezoo.security.UsersService;
@@ -23,16 +23,20 @@ import idlezoo.security.UsersService;
 @SpringBootTest
 @Transactional
 @ActiveProfiles({"postgres", "local"})
-public class GameServicePostgresTest extends AbstractGameServiceTest {
-
-  @Autowired
-  protected GameService gameService;
-
-  @Autowired
-  protected UsersService usersService;
+public class GameServicePostgresTest {
+  private static final String ZOO1 = "1";
   
   @Autowired
-  protected ResourcesService resourcesService;
+  private GameService gameService;
+
+  @Autowired
+  private UsersService usersService;
+  
+  @Autowired
+  private ResourcesService resourcesService;
+  
+  @Autowired
+  private JdbcTemplate template;
 
   @Before
   public void setup() {
@@ -48,7 +52,7 @@ public class GameServicePostgresTest extends AbstractGameServiceTest {
     assertEquals(0, zoo1.getBuildings().get(0).getNumber());
     assertFalse(zoo1.isWaitingForFight());
     assertEquals(0, zoo1.getMoneyIncome(), 0.0001);
-    assertEquals(100, zoo1.getMoney(), 0.0001);
+    assertEquals(50, zoo1.getMoney(), 0.0001);
   }
   
   
@@ -64,6 +68,7 @@ public class GameServicePostgresTest extends AbstractGameServiceTest {
   
   @Test
   public void testUpgrade(){
+    template.update("update users set money=100 where username=?", ZOO1);
     Zoo zoo1 = gameService.upgrade(ZOO1, resourcesService.firstName());
     assertEquals(1, zoo1.getBuildings().size());
     assertEquals(1, zoo1.getBuildings().get(0).getLevel());

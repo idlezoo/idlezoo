@@ -45,6 +45,7 @@ public class FightServicePostgresTest {
 
     template.update("update users set money=1000000 where username=?", ZOO1);
     template.update("update users set money=1000000 where username=?", ZOO2);
+    template.update("update arena set waiting_user=null");
   }
 
   @Test

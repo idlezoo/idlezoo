@@ -71,6 +71,13 @@ public class GameServicePostgresTest {
   }
   
   @Test
+  public void testBuyFirstWithSecondAvailable(){
+	template.update("insert into animal(username,animal_type) values(?,?)", ZOO1, 1);
+	testBuy();
+  }
+  
+  
+  @Test
   public void testUpgrade(){
     template.update("update users set money=100 where username=?", ZOO1);
 

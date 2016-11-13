@@ -92,6 +92,7 @@ public class GameServicePostgres implements GameService {
     }
     template.update("update animal set count=count+1"
         + " where username=? and animal_type=?", name, animal);
+    template.update("update users set money=money-? where username=?", buildCost, name);
     if (count == 0) {
       Building next = resourcesService.nextType(animal);
       if (next != null) {
@@ -120,6 +121,7 @@ public class GameServicePostgres implements GameService {
     }
     template.update("update animal set level=level+1"
         + " where username=? and animal_type=?", name, animal);
+    template.update("update users set money=money-? where username=?", upgradeCost, name);
     return updateIncomeAndGetZoo(name);
   }
 

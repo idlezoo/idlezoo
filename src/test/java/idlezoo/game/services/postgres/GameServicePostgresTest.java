@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import idlezoo.game.domain.Building;
 import idlezoo.game.domain.Zoo;
 import idlezoo.game.services.GameService;
 import idlezoo.game.services.ResourcesService;
@@ -60,16 +61,24 @@ public class GameServicePostgresTest {
   public void testBuy(){
     String animalType = resourcesService.firstName();
     Zoo zoo1 = gameService.buy(ZOO1, animalType);
+    Building type = resourcesService.type(animalType);
+    double moneyAfterBuy = resourcesService.startingMoney() - type.buildCost(0);
+    assertEquals(moneyAfterBuy, zoo1.getMoney(), 0.0001);
     assertEquals(2, zoo1.getBuildings().size());
     assertEquals(1, zoo1.getBuildings().get(0).getNumber());
     assertEquals(0, zoo1.getBuildings().get(1).getNumber());
-    assertEquals(resourcesService.type(animalType).income(0), zoo1.getMoneyIncome(), 0.0001);
+    assertEquals(type.income(0), zoo1.getMoneyIncome(), 0.0001);
   }
   
   @Test
   public void testUpgrade(){
     template.update("update users set money=100 where username=?", ZOO1);
-    Zoo zoo1 = gameService.upgrade(ZOO1, resourcesService.firstName());
+
+    String animalType = resourcesService.firstName();
+    Zoo zoo1 = gameService.upgrade(ZOO1, animalType);
+    Building type = resourcesService.type(animalType);
+    double moneyAfterUpgrade = 100 - type.upgradeCost(0);
+    assertEquals(moneyAfterUpgrade, zoo1.getMoney(), 0.0001);
     assertEquals(1, zoo1.getBuildings().size());
     assertEquals(1, zoo1.getBuildings().get(0).getLevel());
   }

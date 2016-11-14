@@ -1,5 +1,6 @@
 create table users(
-	username text not null primary key,
+	id serial primary key,
+	username text not null,
 	password text not null,
 	last_money_update timestamp not null default now(),
 	money double precision not null default 50,
@@ -12,16 +13,16 @@ create table users(
 create unique index lower_username_unique on users(lower(username));
 
 create table animal(
-	username text not null references users(username),
+	user_id int not null references users(id),
 	animal_type int not null,
 	count int not null default 0,
 	level int not null default 0,
-	primary key(username, animal_type)
+	primary key(user_id, animal_type)
 );
 
 create table arena(
 	id smallint primary key, 
-	waiting_user text references users(username)
+	waiting_user_id int references users(id)
 );
 
 insert into arena(id) values(1);

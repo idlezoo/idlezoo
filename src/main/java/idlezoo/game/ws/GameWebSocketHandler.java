@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import idlezoo.game.domain.Zoo;
 import idlezoo.game.services.FightService;
 import idlezoo.game.services.GameService;
+import idlezoo.security.IdUser;
 
 @Component
 public class GameWebSocketHandler extends TextWebSocketHandler {
@@ -42,34 +44,35 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
   protected void handleTextMessage(WebSocketSession session, TextMessage message)
       throws Exception {
     String payload = message.getPayload();
-    String user = session.getPrincipal().getName();
+    //TODO is this the intended way?
+    int userId = ((IdUser) ((Authentication) session.getPrincipal()).getPrincipal()).getId();
     switch (payload) {
       case "ping":
         // do nothing
         break;
       case "me":
-        sendStateToPlayer(session, gameService.getZoo(user));
+        sendStateToPlayer(session, gameService.getZoo(userId));
         break;
       case "fight":
-        Zoo enemy = fightService.fight(user);
-        sendStateToPlayer(session, gameService.getZoo(user));
+        Zoo enemy = fightService.fight(userId);
+        sendStateToPlayer(session, gameService.getZoo(userId));
         if (enemy != null) {
           sendStateToPlayer(enemy);
         }
         break;
       default:
-        handleMessage(session, user, payload);
+        handleMessage(session, userId, payload);
     }
   }
 
-  private void handleMessage(WebSocketSession session, String user, String payload) {
+  private void handleMessage(WebSocketSession session, int userId, String payload) {
     if (payload.startsWith("buy/")) {
       String animal = payload.substring("buy/".length());
-      Zoo zoo = gameService.buy(user, animal);
+      Zoo zoo = gameService.buy(userId, animal);
       sendStateToPlayer(session, zoo);
     } else if (payload.startsWith("upgrade/")) {
       String animal = payload.substring("upgrade/".length());
-      Zoo zoo = gameService.upgrade(user, animal);
+      Zoo zoo = gameService.upgrade(userId, animal);
       sendStateToPlayer(session, zoo);
     } else {
       throw new IllegalStateException("Unkown message " + payload);

@@ -24,9 +24,9 @@ import idlezoo.security.UsersService;
 @ActiveProfiles({"postgres", "local"})
 @Transactional
 public class FightServicePostgresTest {
-  private static final String ZOO1 = "1";
-  private static final String ZOO2 = "2";
-
+  private static final String ZOO1 = "1", ZOO2 = "2";
+  private int zoo1id, zoo2id;
+  
   @Autowired
   private FightService fightService;
   @Autowired
@@ -37,96 +37,101 @@ public class FightServicePostgresTest {
   private ResourcesService resourcesService;
   @Autowired
   private JdbcTemplate template;
+  
+
 
   @Before
   public void setup() {
     assertTrue(usersService.addUser(ZOO1, ""));
     assertTrue(usersService.addUser(ZOO2, ""));
 
+    zoo1id = template.queryForObject("select id from users where username=?", Integer.class, ZOO1);
+    zoo2id = template.queryForObject("select id from users where username=?", Integer.class, ZOO2);
+    
     template.update("update users set money=1000000 where username=?", ZOO1);
     template.update("update users set money=1000000 where username=?", ZOO2);
-    template.update("update arena set waiting_user=null");
+    template.update("update arena set waiting_user_id=null");
   }
 
   @Test
   public void test1vs0() {
-    gameService.buy(ZOO1, resourcesService.firstName());
-    fightService.fight(ZOO1);
-    fightService.fight(ZOO2);
+    gameService.buy(zoo1id, resourcesService.firstName());
+    fightService.fight(zoo1id);
+    fightService.fight(zoo2id);
 
-    Zoo zoo1 = gameService.getZoo(ZOO1);
+    Zoo zoo1 = gameService.getZoo(zoo1id);
     assertEquals(1, zoo1.getFightWins());
     assertEquals(1, zoo1.getBuildings().get(0).getNumber());
 
-    Zoo zoo2 = gameService.getZoo(ZOO2);
+    Zoo zoo2 = gameService.getZoo(zoo2id);
     assertEquals(0, zoo2.getFightWins());
   }
 
   @Test
   public void test1vs1() {
-    gameService.buy(ZOO1, resourcesService.firstName());
-    gameService.buy(ZOO2, resourcesService.firstName());
+    gameService.buy(zoo1id, resourcesService.firstName());
+    gameService.buy(zoo2id, resourcesService.firstName());
 
-    fightService.fight(ZOO1);
-    fightService.fight(ZOO2);
+    fightService.fight(zoo1id);
+    fightService.fight(zoo2id);
 
-    Zoo zoo1 = gameService.getZoo(ZOO1);
+    Zoo zoo1 = gameService.getZoo(zoo1id);
     assertEquals(1, zoo1.getFightWins());
     assertEquals(0, zoo1.getBuildings().get(0).getNumber());
 
-    Zoo zoo2 = gameService.getZoo(ZOO2);
+    Zoo zoo2 = gameService.getZoo(zoo2id);
     assertEquals(0, zoo2.getFightWins());
   }
 
   @Test
   public void test0vs1() {
-    gameService.buy(ZOO2, resourcesService.firstName());
-    fightService.fight(ZOO1);
-    fightService.fight(ZOO2);
+    gameService.buy(zoo2id, resourcesService.firstName());
+    fightService.fight(zoo1id);
+    fightService.fight(zoo2id);
 
-    Zoo zoo1 = gameService.getZoo(ZOO1);
+    Zoo zoo1 = gameService.getZoo(zoo1id);
     assertEquals(0, zoo1.getFightWins());
 
-    Zoo zoo2 = gameService.getZoo(ZOO2);
+    Zoo zoo2 = gameService.getZoo(zoo2id);
     assertEquals(1, zoo2.getBuildings().get(0).getNumber());
     assertEquals(1, zoo2.getFightWins());
   }
 
   @Test
   public void test1vs2() {
-    gameService.buy(ZOO1, resourcesService.firstName());
-    gameService.buy(ZOO2, resourcesService.firstName());
-    gameService.buy(ZOO2, resourcesService.firstName());
+    gameService.buy(zoo1id, resourcesService.firstName());
+    gameService.buy(zoo2id, resourcesService.firstName());
+    gameService.buy(zoo2id, resourcesService.firstName());
 
-    fightService.fight(ZOO1);
-    fightService.fight(ZOO2);
+    fightService.fight(zoo1id);
+    fightService.fight(zoo2id);
 
-    Zoo zoo1 = gameService.getZoo(ZOO1);
+    Zoo zoo1 = gameService.getZoo(zoo1id);
     assertEquals(0, zoo1.getFightWins());
 
-    Zoo zoo2 = gameService.getZoo(ZOO2);
+    Zoo zoo2 = gameService.getZoo(zoo2id);
     assertEquals(1, zoo2.getBuildings().get(0).getNumber());
     assertEquals(1, zoo2.getFightWins());
   }
 
   @Test
   public void test1and1vs1and2() {
-    gameService.buy(ZOO1, resourcesService.firstName());
-    gameService.buy(ZOO1, resourcesService.secondName());
+    gameService.buy(zoo1id, resourcesService.firstName());
+    gameService.buy(zoo1id, resourcesService.secondName());
 
-    gameService.buy(ZOO2, resourcesService.firstName());
-    gameService.buy(ZOO2, resourcesService.secondName());
-    gameService.buy(ZOO2, resourcesService.secondName());
+    gameService.buy(zoo2id, resourcesService.firstName());
+    gameService.buy(zoo2id, resourcesService.secondName());
+    gameService.buy(zoo2id, resourcesService.secondName());
 
-    fightService.fight(ZOO1);
-    fightService.fight(ZOO2);
+    fightService.fight(zoo1id);
+    fightService.fight(zoo2id);
 
-    Zoo zoo1 = gameService.getZoo(ZOO1);
+    Zoo zoo1 = gameService.getZoo(zoo1id);
     assertEquals(1, zoo1.getFightWins());
     assertEquals(0, zoo1.getBuildings().get(0).getNumber());
     assertEquals(0, zoo1.getBuildings().get(1).getNumber());
 
-    Zoo zoo2 = gameService.getZoo(ZOO2);
+    Zoo zoo2 = gameService.getZoo(zoo2id);
     assertEquals(0, zoo2.getBuildings().get(0).getNumber());
     assertEquals(1, zoo2.getBuildings().get(1).getNumber());
     assertEquals(0, zoo2.getFightWins());

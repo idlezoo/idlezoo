@@ -1,6 +1,7 @@
 package idlezoo.game.services.postgres;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -32,19 +33,19 @@ public class FightServicePostgres implements FightService {
   }
 
   @Override
-  public Zoo fight(String username) {
-    String waitingFighter = template.queryForObject("select waiting_user from arena for update",
-        String.class);
-    if (username.equals(waitingFighter)) {
+  public Zoo fight(final Integer userId) {
+    final Integer waitingFighter = template.queryForObject("select waiting_user_id from arena for update",
+        Integer.class);
+    if (Objects.equals(userId, waitingFighter)) {
       return null;
     }
     if (waitingFighter == null) {
-      template.update("update arena set waiting_user=?", username);
-      template.update("update users set waiting_for_fight_start=now() where username=?", username);
+      template.update("update arena set waiting_user_id=?", userId);
+      template.update("update users set waiting_for_fight_start=now() where id=?", userId);
       return null;
     }
     Zoo waiting = gameService.getZoo(waitingFighter);
-    Zoo fighter = gameService.getZoo(username);
+    Zoo fighter = gameService.getZoo(userId);
 
     Set<String> buildingsSuperSet = new HashSet<>();
     buildingsSuperSet.addAll(
@@ -71,36 +72,34 @@ public class FightServicePostgres implements FightService {
         continue;
       }
 
-      int buildingIndex = resourcesService.index(building);
+      Integer buildingIndex = resourcesService.index(building);
       if (waitingAnimals.getNumber() >= fighterAnimals.getNumber()) {
         waitingWins++;
-        template.update("update animal set count=count-? where username=? and animal_type=?",
-            fighterAnimals.getNumber(), waiting.getName(), buildingIndex);
-        template.update("update animal set count=0 where username=? and animal_type=?",
-            fighter.getName(), buildingIndex);
+        template.update("update animal set count=count-? where user_id=? and animal_type=?",
+            fighterAnimals.getNumber(), waitingFighter, buildingIndex);
+        template.update("update animal set count=0 where user_id=? and animal_type=?",
+        		userId, buildingIndex);
       } else {
         fighterWins++;
-        template.update("update animal set count=count-? where username=? and animal_type=?",
-            waitingAnimals.getNumber(), fighter.getName(), buildingIndex);
-        template.update("update animal set count=0 where username=? and animal_type=?",
-            waiting.getName(), buildingIndex);
+        template.update("update animal set count=count-? where user_id=? and animal_type=?",
+            waitingAnimals.getNumber(), userId, buildingIndex);
+        template.update("update animal set count=0 where user_id=? and animal_type=?",
+        		waitingFighter, buildingIndex);
       }
     }
     if (waitingWins >= fighterWins) {
-      template.update("update users set fights_win=fights_win+1 where username=?", waiting
-          .getName());
+      template.update("update users set fights_win=fights_win+1 where id=?", waitingFighter);
     } else {
-      template.update("update users set fights_win=fights_win+1 where username=?", fighter
-          .getName());
+      template.update("update users set fights_win=fights_win+1 where id=?", userId);
     }
 
-    template.update("update arena set waiting_user=null");
+    template.update("update arena set waiting_user_id=null");
     template.update("update users set waiting_for_fight_start=null"
         + ", champion_time = champion_time + EXTRACT(EPOCH FROM now() - waiting_for_fight_start)::bigint"
         + " where username=?", waiting.getName());
 
-    gameService.updateIncome(fighter.getName());
-    return gameService.updateIncomeAndGetZoo(waiting.getName());
+    gameService.updateIncome(userId);
+    return gameService.updateIncomeAndGetZoo(waitingFighter);
   }
 
   public static <K, T> Predicate<T> compose(Function<T, K> fn, Predicate<K> pred) {

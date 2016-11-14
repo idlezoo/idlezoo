@@ -4,9 +4,9 @@ import idlezoo.game.domain.Zoo;
 
 public interface GameService {
   
-  Zoo getZoo(String name);
+  Zoo getZoo(Integer userId);
 
-  Zoo buy(String name, String animal);
+  Zoo buy(Integer userId, String animal);
 
-  Zoo upgrade(String name, String animal);
+  Zoo upgrade(Integer userId, String animal);
 }

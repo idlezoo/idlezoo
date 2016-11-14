@@ -1,5 +1,7 @@
 package idlezoo.game.services.inmemory;
 
+import java.util.Objects;
+
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -10,33 +12,33 @@ import idlezoo.game.services.FightService;
 @Profile("default")
 public class FightServiceInMemory implements FightService {
 
-  private final Storage storage;
+	private final Storage storage;
 
-  private String waitingFighter;
-  
-  public FightServiceInMemory(Storage storage) {
-    super();
-    this.storage = storage;
-  }
+	private Integer waitingFighter;
 
-  @Override
-  public synchronized Zoo fight(String username) {
-    if (username.equals(waitingFighter)) {
-      return null;
-    }
-    
-    if (waitingFighter == null) {
-      waitingFighter = username;
-      storage.getZoo(waitingFighter).startWaitingForFight();
-      return null;
-    }
-    InMemoryZoo waiting = storage.getZoo(waitingFighter);
-    InMemoryZoo fighter = storage.getZoo(username);
+	public FightServiceInMemory(Storage storage) {
+		super();
+		this.storage = storage;
+	}
 
-    waiting.fight(fighter);
-    waiting.endWaitingForFight();
-    waitingFighter = null;
-    return waiting.updateMoney().toDTO();
-  }
+	@Override
+	public synchronized Zoo fight(Integer id) {
+		if (Objects.equals(id, waitingFighter)) {
+			return null;
+		}
+
+		if (waitingFighter == null) {
+			waitingFighter = id;
+			storage.getZoo(waitingFighter).startWaitingForFight();
+			return null;
+		}
+		InMemoryZoo waiting = storage.getZoo(waitingFighter);
+		InMemoryZoo fighter = storage.getZoo(id);
+
+		waiting.fight(fighter);
+		waiting.endWaitingForFight();
+		waitingFighter = null;
+		return waiting.updateMoney().toDTO();
+	}
 
 }

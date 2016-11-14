@@ -22,66 +22,68 @@ import idlezoo.security.UsersService;
 @SpringBootTest
 public class GameServiceInMemoryTest {
 
-  private static final String ZOO1 = "1";
+	private static final String ZOO1 = "1";
+	private Integer zoo1Id;
 
-  @Autowired
-  private GameService gameService;
+	@Autowired
+	private GameService gameService;
 
-  @Autowired
-  private UsersService usersService;
+	@Autowired
+	private UsersService usersService;
 
-  @Autowired
-  protected ResourcesService resourcesService;
+	@Autowired
+	protected ResourcesService resourcesService;
 
-  @Autowired
-  private Storage storage;
+	@Autowired
+	private Storage storage;
 
-  @Before
-  public void setup() {
-    assertTrue(usersService.addUser(ZOO1, ""));
+	@Before
+	public void setup() {
+		assertTrue(usersService.addUser(ZOO1, ""));
+		zoo1Id = storage.getZoo(ZOO1).getId();
 
-  }
+	}
 
-  @After
-  public void tearDown() {
-    storage.getZoos().clear();
-  }
+	@After
+	public void tearDown() {
+		storage.getZoos().clear();
+	}
 
-  @Test
-  public void testGetZoo() {
-    Zoo zoo1 = gameService.getZoo(ZOO1);
-    assertEquals(0, zoo1.getFightWins());
-    assertEquals(1, zoo1.getBuildings().size());
-    assertEquals(0, zoo1.getBuildings().get(0).getNumber());
-    assertFalse(zoo1.isWaitingForFight());
-    assertEquals(0, zoo1.getMoneyIncome(), 0.0001);
-    assertEquals(50, zoo1.getMoney(), 0.0001);
-  }
+	@Test
+	public void testGetZoo() {
+		Zoo zoo1 = gameService.getZoo(zoo1Id);
+		assertEquals(0, zoo1.getFightWins());
+		assertEquals(1, zoo1.getBuildings().size());
+		assertEquals(0, zoo1.getBuildings().get(0).getNumber());
+		assertFalse(zoo1.isWaitingForFight());
+		assertEquals(0, zoo1.getMoneyIncome(), 0.0001);
+		assertEquals(50, zoo1.getMoney(), 0.0001);
+	}
 
-  @Test
-  public void testBuy() {
-    String animalType = resourcesService.firstName();
-    Zoo zoo1 = gameService.buy(ZOO1, animalType);
-    Building type = resourcesService.type(animalType);
-    double moneyAfterBuy = resourcesService.startingMoney() - type.buildCost(0);
-    assertEquals(moneyAfterBuy, zoo1.getMoney(), 0.0001);
-    assertEquals(2, zoo1.getBuildings().size());
-    assertEquals(1, zoo1.getBuildings().get(0).getNumber());
-    assertEquals(0, zoo1.getBuildings().get(1).getNumber());
-    assertEquals(type.income(0), zoo1.getMoneyIncome(), 0.0001);
-  }
+	@Test
+	public void testBuy() {
+		String animalType = resourcesService.firstName();
+		Zoo zoo1 = gameService.buy(zoo1Id, animalType);
+		Building type = resourcesService.type(animalType);
+		double moneyAfterBuy = resourcesService.startingMoney() - type.buildCost(0);
+		assertEquals(moneyAfterBuy, zoo1.getMoney(), 0.0001);
+		assertEquals(2, zoo1.getBuildings().size());
+		assertEquals(1, zoo1.getBuildings().get(0).getNumber());
+		assertEquals(0, zoo1.getBuildings().get(1).getNumber());
+		assertEquals(type.income(0), zoo1.getMoneyIncome(), 0.0001);
+	}
 
-  @Test
-  public void testUpgrade() {
-    storage.getZoo(ZOO1).setMoney(100);
+	@Test
+	public void testUpgrade() {
+		storage.getZoo(zoo1Id).setMoney(100);
 
-    String animalType = resourcesService.firstName();
-    Zoo zoo1 = gameService.upgrade(ZOO1, animalType);
-    Building type = resourcesService.type(animalType);
-    double moneyAfterUpgrade = 100 - type.upgradeCost(0);
-    assertEquals(moneyAfterUpgrade, zoo1.getMoney(), 0.0001);
-    assertEquals(1, zoo1.getBuildings().size());
-    assertEquals(1, zoo1.getBuildings().get(0).getLevel());
-  }
+		String animalType = resourcesService.firstName();
+		Zoo zoo1 = gameService.upgrade(zoo1Id, animalType);
+		Building type = resourcesService.type(animalType);
+		double moneyAfterUpgrade = 100 - type.upgradeCost(0);
+		assertEquals(moneyAfterUpgrade, zoo1.getMoney(), 0.0001);
+		assertEquals(1, zoo1.getBuildings().size());
+		assertEquals(1, zoo1.getBuildings().get(0).getLevel());
+	}
 
 }

@@ -89,7 +89,7 @@ public class ResourcesService implements InitializingBean {
     return animalsList.get(index);
   }
   
-  public int index(String animalName){
+  public Integer index(String animalName){
     return animalIndexes.get(animalName);
   }
 

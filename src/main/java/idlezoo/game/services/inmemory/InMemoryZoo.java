@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.util.Assert;
 
@@ -20,6 +21,8 @@ import one.util.streamex.StreamEx;
 public class InMemoryZoo {
 	private static final Timer DEFAULT_TIMER = () -> java.time.Clock.systemUTC().instant().getEpochSecond();
 
+	private static final AtomicInteger ID_COUNTER = new AtomicInteger();
+	private final Integer id = ID_COUNTER.incrementAndGet();
 	private final String name;
 	private final String password;
 	private final Timer timer;
@@ -60,6 +63,10 @@ public class InMemoryZoo {
 
 	public double getMoney() {
 		return money;
+	}
+
+	public Integer getId() {
+		return id;
 	}
 
 	public String getName() {

@@ -76,6 +76,7 @@
 
 
 	<build>
+		<finalName>idlezoo</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

@@ -40,8 +40,8 @@ public class GameServicePostgres implements GameService {
 			builder.setIncome(res.getDouble("income"));
 			builder.setMoney(res.getDouble("money"));
 			long waitingFightTime = res.getLong("waiting_fight_time");
+			builder.setWaitingForFight(!res.wasNull());
 			builder.setChampionTime(res.getLong("champion_time") + waitingFightTime);
-			builder.setWaitingForFight(waitingFightTime != 0);
 			return builder;
 		};
 

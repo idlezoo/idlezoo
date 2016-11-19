@@ -5,7 +5,6 @@ import java.util.Objects;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import idlezoo.game.domain.Zoo;
 import idlezoo.game.services.FightService;
 
 @Service
@@ -14,31 +13,29 @@ public class FightServiceInMemory implements FightService {
 
 	private final Storage storage;
 
-	private Integer waitingFighter;
-
 	public FightServiceInMemory(Storage storage) {
 		super();
 		this.storage = storage;
 	}
 
 	@Override
-	public synchronized Zoo fight(Integer id) {
-		if (Objects.equals(id, waitingFighter)) {
-			return null;
+	public synchronized OutcomeContainer fight(Integer id) {
+		if (Objects.equals(id, storage.getWaitingFighter())) {
+			return OutcomeContainer.WAITING;
 		}
 
-		if (waitingFighter == null) {
-			waitingFighter = id;
-			storage.getZoo(waitingFighter).startWaitingForFight();
-			return null;
+		if (storage.getWaitingFighter() == null) {
+			storage.setWaitingFighter(id);
+			storage.getZoo(id).startWaitingForFight();
+			return OutcomeContainer.WAITING;
 		}
-		InMemoryZoo waiting = storage.getZoo(waitingFighter);
+		InMemoryZoo waiting = storage.getZoo(storage.getWaitingFighter());
 		InMemoryZoo fighter = storage.getZoo(id);
 
-		waiting.fight(fighter);
+		Outcome outcome = waiting.fight(fighter);
 		waiting.endWaitingForFight();
-		waitingFighter = null;
-		return waiting.updateMoney().toDTO();
+		storage.setWaitingFighter(null);
+		return new OutcomeContainer(outcome, waiting.updateMoney().toDTO());
 	}
 
 }

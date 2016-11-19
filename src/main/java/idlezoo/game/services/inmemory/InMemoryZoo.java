@@ -15,6 +15,7 @@ import org.springframework.util.Assert;
 
 import idlezoo.game.domain.Building;
 import idlezoo.game.domain.Zoo;
+import idlezoo.game.services.FightService.Outcome;
 import idlezoo.game.services.ResourcesService;
 import one.util.streamex.StreamEx;
 
@@ -173,7 +174,7 @@ public class InMemoryZoo {
 		return this;
 	}
 
-	public synchronized void fight(InMemoryZoo other) {
+	public synchronized Outcome fight(InMemoryZoo other) {
 		synchronized (other) {
 			Set<String> buildingsSuperSet = new HashSet<>();
 			buildingsSuperSet.addAll(
@@ -210,8 +211,10 @@ public class InMemoryZoo {
 			other.computeIncome();
 			if (thisWins >= otherWins) {
 				fightWins++;
+				return Outcome.LOSS;
 			} else {
 				other.fightWins++;
+				return Outcome.WIN;
 			}
 		}
 	}

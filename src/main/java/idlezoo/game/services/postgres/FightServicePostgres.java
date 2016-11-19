@@ -33,16 +33,16 @@ public class FightServicePostgres implements FightService {
   }
 
   @Override
-  public Zoo fight(final Integer userId) {
+  public OutcomeContainer fight(final Integer userId) {
     final Integer waitingFighter = template.queryForObject("select waiting_user_id from arena for update",
         Integer.class);
     if (Objects.equals(userId, waitingFighter)) {
-      return null;
+      return OutcomeContainer.WAITING;
     }
     if (waitingFighter == null) {
       template.update("update arena set waiting_user_id=?", userId);
       template.update("update users set waiting_for_fight_start=now() where id=?", userId);
-      return null;
+      return OutcomeContainer.WAITING;
     }
     Zoo waiting = gameService.getZoo(waitingFighter);
     Zoo fighter = gameService.getZoo(userId);
@@ -87,10 +87,13 @@ public class FightServicePostgres implements FightService {
         		waitingFighter, buildingIndex);
       }
     }
+    Outcome outcome;
     if (waitingWins >= fighterWins) {
-      template.update("update users set fights_win=fights_win+1 where id=?", waitingFighter);
+        outcome = Outcome.LOSS;
+        template.update("update users set fights_win=fights_win+1 where id=?", waitingFighter);
     } else {
-      template.update("update users set fights_win=fights_win+1 where id=?", userId);
+        outcome = Outcome.WIN;
+        template.update("update users set fights_win=fights_win+1 where id=?", userId);
     }
 
     template.update("update arena set waiting_user_id=null");
@@ -99,7 +102,7 @@ public class FightServicePostgres implements FightService {
         + " where username=?", waiting.getName());
 
     gameService.updateIncome(userId);
-    return gameService.updateIncomeAndGetZoo(waitingFighter);
+    return new OutcomeContainer(outcome, gameService.updateIncomeAndGetZoo(waitingFighter));
   }
 
   public static <K, T> Predicate<T> compose(Function<T, K> fn, Predicate<K> pred) {

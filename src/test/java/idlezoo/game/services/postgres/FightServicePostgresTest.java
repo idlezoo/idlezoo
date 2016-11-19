@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import idlezoo.game.domain.Zoo;
 import idlezoo.game.services.FightService;
+import idlezoo.game.services.FightService.Outcome;
+import idlezoo.game.services.FightService.OutcomeContainer;
 import idlezoo.game.services.GameService;
 import idlezoo.game.services.ResourcesService;
 import idlezoo.security.UsersService;
@@ -54,15 +56,17 @@ public class FightServicePostgresTest {
 
 	@Test
 	public void isWaitingAfterStart() {
-		assertNull(fightService.fight(zoo1id));
+		assertEquals(Outcome.WAITING, fightService.fight(zoo1id).getOutcome());
 		assertTrue(gameService.getZoo(zoo1id).isWaitingForFight());
 	}
 
 	@Test
 	public void test1vs0() {
 		gameService.buy(zoo1id, resourcesService.firstName());
-		assertNull(fightService.fight(zoo1id));
-		assertEquals(ZOO1, fightService.fight(zoo2id).getName());
+		assertEquals(Outcome.WAITING, fightService.fight(zoo1id).getOutcome());
+		OutcomeContainer fightOutcome = fightService.fight(zoo2id);
+		assertEquals(Outcome.LOSS, fightOutcome.getOutcome());
+		assertEquals(ZOO1, fightOutcome.getWaitingFighter().getName());
 
 		Zoo zoo1 = gameService.getZoo(zoo1id);
 		assertEquals(1, zoo1.getFightWins());
@@ -77,8 +81,10 @@ public class FightServicePostgresTest {
 		gameService.buy(zoo1id, resourcesService.firstName());
 		gameService.buy(zoo2id, resourcesService.firstName());
 
-		fightService.fight(zoo1id);
-		fightService.fight(zoo2id);
+		assertEquals(Outcome.WAITING, fightService.fight(zoo1id).getOutcome());
+		OutcomeContainer fightOutcome = fightService.fight(zoo2id);
+		assertEquals(Outcome.LOSS, fightOutcome.getOutcome());
+		assertEquals(ZOO1, fightOutcome.getWaitingFighter().getName());
 
 		Zoo zoo1 = gameService.getZoo(zoo1id);
 		assertEquals(1, zoo1.getFightWins());
@@ -91,9 +97,12 @@ public class FightServicePostgresTest {
 	@Test
 	public void test0vs1() {
 		gameService.buy(zoo2id, resourcesService.firstName());
-		fightService.fight(zoo1id);
-		fightService.fight(zoo2id);
-
+		
+		assertEquals(Outcome.WAITING, fightService.fight(zoo1id).getOutcome());
+		OutcomeContainer fightOutcome = fightService.fight(zoo2id);
+		assertEquals(Outcome.WIN, fightOutcome.getOutcome());
+		assertEquals(ZOO1, fightOutcome.getWaitingFighter().getName());
+		
 		Zoo zoo1 = gameService.getZoo(zoo1id);
 		assertEquals(0, zoo1.getFightWins());
 
@@ -108,8 +117,10 @@ public class FightServicePostgresTest {
 		gameService.buy(zoo2id, resourcesService.firstName());
 		gameService.buy(zoo2id, resourcesService.firstName());
 
-		fightService.fight(zoo1id);
-		fightService.fight(zoo2id);
+		assertEquals(Outcome.WAITING, fightService.fight(zoo1id).getOutcome());
+		OutcomeContainer fightOutcome = fightService.fight(zoo2id);
+		assertEquals(Outcome.WIN, fightOutcome.getOutcome());
+		assertEquals(ZOO1, fightOutcome.getWaitingFighter().getName());
 
 		Zoo zoo1 = gameService.getZoo(zoo1id);
 		assertEquals(0, zoo1.getFightWins());
@@ -128,9 +139,12 @@ public class FightServicePostgresTest {
 		gameService.buy(zoo2id, resourcesService.secondName());
 		gameService.buy(zoo2id, resourcesService.secondName());
 
-		fightService.fight(zoo1id);
-		fightService.fight(zoo2id);
-
+		
+		assertEquals(Outcome.WAITING, fightService.fight(zoo1id).getOutcome());
+		OutcomeContainer fightOutcome = fightService.fight(zoo2id);
+		assertEquals(Outcome.LOSS, fightOutcome.getOutcome());
+		assertEquals(ZOO1, fightOutcome.getWaitingFighter().getName());
+		
 		Zoo zoo1 = gameService.getZoo(zoo1id);
 		assertEquals(1, zoo1.getFightWins());
 		assertEquals(0, zoo1.getBuildings().get(0).getNumber());

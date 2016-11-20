@@ -5,12 +5,14 @@ public class ZooBuildings {
   private final Building building;
   private final int level;
   private final int number;
+  private final int lost;
 
-  public ZooBuildings(Building building, int level, int number) {
+  public ZooBuildings(Building building, int level, int number, int lost) {
     this.name = building.getName();
     this.building = building;
     this.level = level;
     this.number = number;
+    this.lost = lost;
   }
 
   // Getters for JSON
@@ -37,6 +39,10 @@ public class ZooBuildings {
 
   public int getNumber() {
     return number;
+  }
+
+  public int getLost() {
+    return lost;
   }
 
   public boolean first() {

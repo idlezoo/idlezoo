@@ -31,6 +31,11 @@ public class TopController {
   public List<TopEntry<Integer>> wins() {
     return topService.wins();
   }
+  
+  @RequestMapping("/losses")
+  public List<TopEntry<Integer>> losses() {
+    return topService.losses();
+  }
 
   @RequestMapping("/championTime")
   public List<TopEntry<Long>> championTime() {

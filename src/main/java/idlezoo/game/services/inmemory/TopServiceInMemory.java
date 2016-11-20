@@ -57,6 +57,19 @@ public class TopServiceInMemory implements TopService {
         .map(TopEntry::of)
         .toList();
   }
+  
+  
+
+  @Override
+  public List<TopEntry<Integer>> losses() {
+    return EntryStream.of(storage.getZoos())
+        .mapValues(InMemoryZoo::getFightLosses)
+        .reverseSorted(comparingInt(Map.Entry::getValue))
+        .limit(10)
+        .map(TopEntry::of)
+        .toList();
+  }
+
 
   @Override
   public List<TopEntry<Long>> championTime() {

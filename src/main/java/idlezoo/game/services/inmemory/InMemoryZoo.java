@@ -20,207 +20,223 @@ import idlezoo.game.services.ResourcesService;
 import one.util.streamex.StreamEx;
 
 public class InMemoryZoo {
-	private static final Timer DEFAULT_TIMER = () -> java.time.Clock.systemUTC().instant().getEpochSecond();
+  private static final Timer DEFAULT_TIMER = () -> java.time.Clock.systemUTC().instant()
+      .getEpochSecond();
 
-	private static final AtomicInteger ID_COUNTER = new AtomicInteger();
-	private final Integer id = ID_COUNTER.incrementAndGet();
-	private final String name;
-	private final String password;
-	private final Timer timer;
-	private final List<InMemoryZooBuildings> buildings;
-	private final Map<String, InMemoryZooBuildings> buildingsMap;
-	private double money;
-	private long lastMoneyUpdate;
-	private int fightWins;
-	private long championTime;
-	private Long waitingForFightStart;
-	// cached value - trade memory for CPU
-	private double income;
+  private static final AtomicInteger ID_COUNTER = new AtomicInteger();
+  private final Integer id = ID_COUNTER.incrementAndGet();
+  private final String name;
+  private final String password;
+  private final Timer timer;
+  private final List<InMemoryZooBuildings> buildings;
+  private final Map<String, InMemoryZooBuildings> buildingsMap;
+  private double money;
+  private long lastMoneyUpdate;
+  private int fightWins;
+  private int fightLosses;
+  private long championTime;
+  private Long waitingForFightStart;
+  // cached value - trade memory for CPU
+  private double income;
 
-	public InMemoryZoo(String name, String password, ResourcesService gameResources) {
-		this(name, password, gameResources, DEFAULT_TIMER);
-	}
+  public InMemoryZoo(String name, String password, ResourcesService gameResources) {
+    this(name, password, gameResources, DEFAULT_TIMER);
+  }
 
-	public Zoo toDTO() {
-		return new Zoo(name, StreamEx.of(buildings).map(InMemoryZooBuildings::toDTO).toList(), income, money, fightWins,
-				waitingForFightStart != null, championTime);
-	}
+  public Zoo toDTO() {
+    return new Zoo(name, StreamEx.of(buildings).map(InMemoryZooBuildings::toDTO).toList(),
+        income, money,
+        fightWins, fightLosses,
+        waitingForFightStart != null, championTime);
+  }
 
-	InMemoryZoo(String name, String password, ResourcesService gameResources, Timer timer) {
-		this.name = name;
-		this.password = password;
-		buildings = new ArrayList<>(asList(new InMemoryZooBuildings(gameResources.startingAnimal())));
-		buildingsMap = new HashMap<>(singletonMap(gameResources.startingAnimal().getName(), buildings
-				.get(0)));
-		money = gameResources.startingMoney();
+  InMemoryZoo(String name, String password, ResourcesService gameResources, Timer timer) {
+    this.name = name;
+    this.password = password;
+    buildings = new ArrayList<>(asList(new InMemoryZooBuildings(gameResources.startingAnimal())));
+    buildingsMap = new HashMap<>(singletonMap(gameResources.startingAnimal().getName(), buildings
+        .get(0)));
+    money = gameResources.startingMoney();
 
-		this.timer = timer;
-		lastMoneyUpdate = timer.now();
-	}
+    this.timer = timer;
+    lastMoneyUpdate = timer.now();
+  }
 
-	public void setMoney(double money) {
-		this.money = money;
-	}
+  public void setMoney(double money) {
+    this.money = money;
+  }
 
-	public double getMoney() {
-		return money;
-	}
+  public double getMoney() {
+    return money;
+  }
 
-	public Integer getId() {
-		return id;
-	}
+  public Integer getId() {
+    return id;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public String getPassword() {
-		return password;
-	}
+  public String getPassword() {
+    return password;
+  }
 
-	public double getIncome() {
-		return income;
-	}
+  public double getIncome() {
+    return income;
+  }
 
-	public int getFightWins() {
-		return fightWins;
-	}
+  public int getFightWins() {
+    return fightWins;
+  }
 
-	public long getLastMoneyUpdate() {
-		return lastMoneyUpdate;
-	}
+  public int getFightLosses() {
+    return fightLosses;
+  }
 
-	private void computeIncome() {
-		income = buildings.stream().mapToDouble(InMemoryZooBuildings::getIncome).sum();
-	}
+  public long getLastMoneyUpdate() {
+    return lastMoneyUpdate;
+  }
 
-	public boolean isWaitingForFight() {
-		return waitingForFightStart != null;
-	}
+  private void computeIncome() {
+    income = buildings.stream().mapToDouble(InMemoryZooBuildings::getIncome).sum();
+  }
 
-	public void startWaitingForFight() {
-		Assert.isNull(waitingForFightStart);
-		waitingForFightStart = timer.now();
-	}
+  public boolean isWaitingForFight() {
+    return waitingForFightStart != null;
+  }
 
-	public void endWaitingForFight() {
-		Assert.notNull(waitingForFightStart);
-		long now = timer.now();
-		championTime += now - waitingForFightStart;
-		waitingForFightStart = null;
-	}
+  public void startWaitingForFight() {
+    Assert.isNull(waitingForFightStart);
+    waitingForFightStart = timer.now();
+  }
 
-	public long getChampionTime() {
-		if (isWaitingForFight()) {
-			long now = timer.now();
-			return championTime + (now - waitingForFightStart);
-		} else {
-			return championTime;
-		}
-	}
+  public void endWaitingForFight() {
+    Assert.notNull(waitingForFightStart);
+    long now = timer.now();
+    championTime += now - waitingForFightStart;
+    waitingForFightStart = null;
+  }
 
-	public List<InMemoryZooBuildings> getBuildings() {
-		return buildings;
-	}
+  public long getChampionTime() {
+    if (isWaitingForFight()) {
+      long now = timer.now();
+      return championTime + (now - waitingForFightStart);
+    } else {
+      return championTime;
+    }
+  }
 
-	public Map<String, InMemoryZooBuildings> getBuildingsMap() {
-		return buildingsMap;
-	}
+  public List<InMemoryZooBuildings> getBuildings() {
+    return buildings;
+  }
 
-	// Logic
-	public synchronized InMemoryZoo updateMoney() {
-		long now = timer.now();
-		money += (now - lastMoneyUpdate) * income;
-		lastMoneyUpdate = now;
-		return this;
-	}
+  public Map<String, InMemoryZooBuildings> getBuildingsMap() {
+    return buildingsMap;
+  }
 
-	public synchronized InMemoryZoo buy(String buildingName, ResourcesService gameResources) {
-		updateMoney();
-		InMemoryZooBuildings zooBuildings = buildingsMap.get(buildingName);
-		if (zooBuildings == null) {
-			throw new IllegalStateException("Building " + buildingName + " is not available");
-		}
-		if (money < zooBuildings.getNextCost()) {
-			return this;
-		}
-		money -= zooBuildings.getNextCost();
-		zooBuildings.buy();
-		if (zooBuildings.first()) {
-			Building next = gameResources.nextType(buildingName);
-			if (next != null && !buildingsMap.containsKey(next.getName())) {
-				InMemoryZooBuildings nextBuildings = new InMemoryZooBuildings(next);
-				buildings.add(nextBuildings);
-				buildingsMap.put(next.getName(), nextBuildings);
-			}
-		}
-		computeIncome();
-		return this;
-	}
+  // Logic
+  public synchronized InMemoryZoo updateMoney() {
+    long now = timer.now();
+    money += (now - lastMoneyUpdate) * income;
+    lastMoneyUpdate = now;
+    return this;
+  }
 
-	public synchronized InMemoryZoo upgrade(String buildingName) {
-		updateMoney();
-		InMemoryZooBuildings zooBuildings = buildingsMap.get(buildingName);
-		if (zooBuildings == null) {
-			throw new IllegalStateException("Upgrading " + buildingName + " is not available");
-		}
-		if (money < zooBuildings.getUpgradeCost()) {
-			return this;
-		}
+  public synchronized InMemoryZoo buy(String buildingName, ResourcesService gameResources) {
+    updateMoney();
+    InMemoryZooBuildings zooBuildings = buildingsMap.get(buildingName);
+    if (zooBuildings == null) {
+      throw new IllegalStateException("Building " + buildingName + " is not available");
+    }
+    if (money < zooBuildings.getNextCost()) {
+      return this;
+    }
+    money -= zooBuildings.getNextCost();
+    zooBuildings.buy();
+    if (zooBuildings.first()) {
+      Building next = gameResources.nextType(buildingName);
+      if (next != null && !buildingsMap.containsKey(next.getName())) {
+        InMemoryZooBuildings nextBuildings = new InMemoryZooBuildings(next);
+        buildings.add(nextBuildings);
+        buildingsMap.put(next.getName(), nextBuildings);
+      }
+    }
+    computeIncome();
+    return this;
+  }
 
-		money -= zooBuildings.getUpgradeCost();
-		zooBuildings.upgrade();
-		computeIncome();
-		return this;
-	}
+  public synchronized InMemoryZoo upgrade(String buildingName) {
+    updateMoney();
+    InMemoryZooBuildings zooBuildings = buildingsMap.get(buildingName);
+    if (zooBuildings == null) {
+      throw new IllegalStateException("Upgrading " + buildingName + " is not available");
+    }
+    if (money < zooBuildings.getUpgradeCost()) {
+      return this;
+    }
 
-	public synchronized Outcome fight(InMemoryZoo other) {
-		synchronized (other) {
-			Set<String> buildingsSuperSet = new HashSet<>();
-			buildingsSuperSet.addAll(
-					StreamEx.of(buildings).filter(b -> b.getNumber() != 0).map(InMemoryZooBuildings::getName).toList());
-			buildingsSuperSet.addAll(
-					StreamEx.of(other.buildings).filter(b -> b.getNumber() != 0).map(InMemoryZooBuildings::getName)
-							.toList());
-			int thisWins = 0, otherWins = 0;
-			for (String building : buildingsSuperSet) {
-				InMemoryZooBuildings thisBuildings = buildingsMap.get(building);
-				InMemoryZooBuildings otherBuildings = other.buildingsMap.get(building);
+    money -= zooBuildings.getUpgradeCost();
+    zooBuildings.upgrade();
+    computeIncome();
+    return this;
+  }
 
-				if (thisBuildings == null) {
-					otherWins++;
-					continue;
-				}
+  public synchronized Outcome fight(InMemoryZoo other) {
+    synchronized (other) {
+      Set<String> buildingsSuperSet = new HashSet<>();
+      buildingsSuperSet.addAll(
+          StreamEx.of(buildings).filter(b -> b.getNumber() != 0).map(InMemoryZooBuildings::getName)
+              .toList());
+      buildingsSuperSet.addAll(
+          StreamEx.of(other.buildings).filter(b -> b.getNumber() != 0).map(
+              InMemoryZooBuildings::getName)
+              .toList());
+      int thisWins = 0, otherWins = 0;
+      for (String building : buildingsSuperSet) {
+        InMemoryZooBuildings thisBuildings = buildingsMap.get(building);
+        InMemoryZooBuildings otherBuildings = other.buildingsMap.get(building);
 
-				if (otherBuildings == null) {
-					thisWins++;
-					continue;
-				}
+        if (thisBuildings == null) {
+          otherWins++;
+          continue;
+        }
 
-				if (thisBuildings.getNumber() >= otherBuildings.getNumber()) {
-					thisWins++;
-					thisBuildings.setNumber(thisBuildings.getNumber() - otherBuildings.getNumber());
-					otherBuildings.setNumber(0);
-				} else {
-					otherWins++;
-					otherBuildings.setNumber(otherBuildings.getNumber() - thisBuildings.getNumber());
-					thisBuildings.setNumber(0);
-				}
-			}
-			computeIncome();
-			other.computeIncome();
-			if (thisWins >= otherWins) {
-				fightWins++;
-				return Outcome.LOSS;
-			} else {
-				other.fightWins++;
-				return Outcome.WIN;
-			}
-		}
-	}
+        if (otherBuildings == null) {
+          thisWins++;
+          continue;
+        }
 
-	interface Timer {
-		long now();
-	}
+        if (thisBuildings.getNumber() >= otherBuildings.getNumber()) {
+          thisWins++;
+          thisBuildings.setNumber(thisBuildings.getNumber() - otherBuildings.getNumber());
+          otherBuildings.setNumber(0);
+          thisBuildings.lost(otherBuildings.getNumber());
+          otherBuildings.lost(otherBuildings.getNumber());
+        } else {
+          otherWins++;
+          otherBuildings.setNumber(otherBuildings.getNumber() - thisBuildings.getNumber());
+          thisBuildings.setNumber(0);
+          thisBuildings.lost(thisBuildings.getNumber());
+          otherBuildings.lost(thisBuildings.getNumber());
+        }
+      }
+      computeIncome();
+      other.computeIncome();
+      if (thisWins >= otherWins) {
+        fightWins++;
+        other.fightLosses++;
+        return Outcome.LOSS;
+      } else {
+        other.fightWins++;
+        fightLosses++;
+        return Outcome.WIN;
+      }
+    }
+  }
+
+  interface Timer {
+    long now();
+  }
 
 }

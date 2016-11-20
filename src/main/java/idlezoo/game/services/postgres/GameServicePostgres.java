@@ -30,13 +30,14 @@ public class GameServicePostgres implements GameService {
 		this.resourcesService = resourcesService;
 		zooBuildingMapper = (res, rowNum) -> {
 			Building building = resourcesService.byIndex(res.getInt("animal_type"));
-			return new ZooBuildings(building, res.getInt("level"), res.getInt("count"));
+			return new ZooBuildings(building, res.getInt("level"), res.getInt("count"), res.getInt("lost"));
 		};
 
 		zooMapper = (res, rowNum) -> {
 			Builder builder = new Zoo.Builder();
 			builder.setName(res.getString("username"));
 			builder.setFightWins(res.getInt("fights_win"));
+			builder.setFightLosses(res.getInt("fights_loss"));
 			builder.setIncome(res.getDouble("income"));
 			builder.setMoney(res.getDouble("money"));
 			long waitingFightTime = res.getLong("waiting_fight_time");

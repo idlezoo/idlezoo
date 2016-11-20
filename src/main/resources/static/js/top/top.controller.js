@@ -18,3 +18,10 @@ idlezoo.controller('topwins', function($rootScope, $http, $state) {
 		self.top = response.data;
 	});
 });
+
+idlezoo.controller('toplosses', function($rootScope, $http, $state) {
+	var self = this;
+	$http.get('/top/losses').then(function(response) {
+		self.top = response.data;
+	});
+});

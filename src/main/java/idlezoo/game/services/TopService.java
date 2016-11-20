@@ -11,6 +11,8 @@ public interface TopService {
   List<TopEntry<Double>> income();
 
   List<TopEntry<Integer>> wins();
+  
+  List<TopEntry<Integer>> losses();
 
   List<TopEntry<Long>> championTime();
 

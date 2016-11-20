@@ -2,7 +2,7 @@
 <div ng-show="authenticated">
 	<p>You have {{controller.zoo.money | numeraljs:'0.000a'}} money</p>
 	<p>You gain {{controller.zoo.moneyIncome | numeraljs:'0.000a'}} money every second</p>
-	<p><button type="button" class="btn btn-default" ng-click="fight()" ng-disabled="controller.zoo.waitingForFight">{{controller.zoo.waitingForFight ? "Waiting for fight." : "Fight!"}}</button> (You've won {{controller.zoo.fightWins}} fights)</p>
+	<p><button type="button" class="btn btn-default" ng-click="fight()" ng-disabled="controller.zoo.waitingForFight">{{controller.zoo.waitingForFight ? "Waiting for fight." : "Fight!"}}</button> (You've won {{controller.zoo.fightWins}} and lost {{controller.zoo.fightLosses}} fights )</p>
 	<p>You was the champion for the {{controller.zoo.championTime | numeraljs:'0.0a'}} seconds</p>
 	<h3>Your animals:</h3>
 	<table class="table">

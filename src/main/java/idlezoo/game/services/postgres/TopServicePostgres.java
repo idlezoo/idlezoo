@@ -53,6 +53,14 @@ public class TopServicePostgres implements TopService {
 	}
 
 	@Override
+  public List<TopEntry<Integer>> losses() {
+    return template.query("select username, fights_loss as topvalue"
+        + " from users"
+        + " order by fights_loss desc"
+        + " limit 10", INTEGER_TOP_MAPPER);
+  }
+
+  @Override
 	public List<TopEntry<Long>> championTime() {
 		return template.query(
 				"select username,"

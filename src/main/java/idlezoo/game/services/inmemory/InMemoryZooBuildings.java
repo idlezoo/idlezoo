@@ -7,13 +7,14 @@ public class InMemoryZooBuildings {
   private final Building building;
   private int level = 0;
   private int number = 0;
+  private int lost = 0;
 
   public InMemoryZooBuildings(Building building) {
     this.building = building;
   }
 
   public ZooBuildings toDTO() {
-    return new ZooBuildings(building, level, number);
+    return new ZooBuildings(building, level, number, lost);
   }
 
   public String getName() {
@@ -63,6 +64,10 @@ public class InMemoryZooBuildings {
 
   public void setNumber(int number) {
     this.number = number;
+  }
+
+  public void lost(int lost) {
+    lost += lost;
   }
 
 }

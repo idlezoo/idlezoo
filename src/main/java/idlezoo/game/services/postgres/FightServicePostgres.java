@@ -26,15 +26,17 @@ public class FightServicePostgres implements FightService {
   private final GameServicePostgres gameService;
   private final ResourcesService resourcesService;
 
-  public FightServicePostgres(JdbcTemplate template, GameServicePostgres gameService, ResourcesService resourcesService) {
+  public FightServicePostgres(JdbcTemplate template, GameServicePostgres gameService,
+      ResourcesService resourcesService) {
     this.template = template;
     this.gameService = gameService;
-    this.resourcesService=resourcesService;
+    this.resourcesService = resourcesService;
   }
 
   @Override
   public OutcomeContainer fight(final Integer userId) {
-    final Integer waitingFighter = template.queryForObject("select waiting_user_id from arena for update",
+    final Integer waitingFighter = template.queryForObject(
+        "select waiting_user_id from arena for update",
         Integer.class);
     if (Objects.equals(userId, waitingFighter)) {
       return OutcomeContainer.WAITING;
@@ -75,25 +77,31 @@ public class FightServicePostgres implements FightService {
       Integer buildingIndex = resourcesService.index(building);
       if (waitingAnimals.getNumber() >= fighterAnimals.getNumber()) {
         waitingWins++;
-        template.update("update animal set count=count-? where user_id=? and animal_type=?",
-            fighterAnimals.getNumber(), waitingFighter, buildingIndex);
-        template.update("update animal set count=0 where user_id=? and animal_type=?",
-        		userId, buildingIndex);
+        template.update(
+            "update animal set count=count-?, lost=lost+? where user_id=? and animal_type=?",
+            fighterAnimals.getNumber(), fighterAnimals.getNumber(), waitingFighter, buildingIndex);
+        template.update(
+            "update animal set count=0, lost=lost+? where user_id=? and animal_type=?",
+            fighterAnimals.getNumber(), userId, buildingIndex);
       } else {
         fighterWins++;
-        template.update("update animal set count=count-? where user_id=? and animal_type=?",
-            waitingAnimals.getNumber(), userId, buildingIndex);
-        template.update("update animal set count=0 where user_id=? and animal_type=?",
-        		waitingFighter, buildingIndex);
+        template.update(
+            "update animal set count=count-?, lost=lost+?  where user_id=? and animal_type=?",
+            waitingAnimals.getNumber(), waitingAnimals.getNumber(), userId, buildingIndex);
+        template.update(
+            "update animal set count=0, lost=lost+? where user_id=? and animal_type=?",
+            waitingAnimals.getNumber(), waitingFighter, buildingIndex);
       }
     }
     Outcome outcome;
     if (waitingWins >= fighterWins) {
-        outcome = Outcome.LOSS;
-        template.update("update users set fights_win=fights_win+1 where id=?", waitingFighter);
+      outcome = Outcome.LOSS;
+      template.update("update users set fights_win=fights_win+1 where id=?", waitingFighter);
+      template.update("update users set fights_loss=fights_loss+1 where id=?", userId);
     } else {
-        outcome = Outcome.WIN;
-        template.update("update users set fights_win=fights_win+1 where id=?", userId);
+      outcome = Outcome.WIN;
+      template.update("update users set fights_win=fights_win+1 where id=?", userId);
+      template.update("update users set fights_loss=fights_loss+1 where id=?", waitingFighter);
     }
 
     template.update("update arena set waiting_user_id=null");

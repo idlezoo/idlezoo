@@ -3,6 +3,8 @@ package idlezoo.game.ws;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,7 @@ import idlezoo.security.IdUser;
 
 @Component
 public class GameWebSocketHandler extends TextWebSocketHandler {
+  private final Logger logger = LoggerFactory.getLogger(GameWebSocketHandler.class);
 
 	private final ConcurrentHashMap<String, WebSocketSession> wsSessions = new ConcurrentHashMap<>();
 
@@ -111,6 +114,7 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
 		try {
 			session.sendMessage(new TextMessage(outcome.toString()));
 		} catch (IOException e) {
+		  logger.info("Exception sending fight outcome", e);
 			wsSessions.remove(session.getPrincipal().getName());
 		}
 	}
@@ -119,6 +123,7 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
 		try {
 			session.sendMessage(new TextMessage(objectMapper.writeValueAsString(zoo)));
 		} catch (IOException e) {
+		  logger.info("Exception sending player state", e);
 			wsSessions.remove(session.getPrincipal().getName());
 		}
 	}

@@ -32,11 +32,11 @@ idlezoo.controller('home', function($rootScope, $scope, $interval, $http) {
 		
 		socket.onmessage = function (message) {
 			if(message.data == 'WIN'){
-				console.log("You've won the fight!");
+				toastr["success"]("You've won the fight!");
 			}else if(message.data == 'LOSS'){
-				console.log("You've lost the fight!");
+				toastr["error"]("You've lost the fight!");
 			}else if(message.data == 'WAITING'){
-				console.log("You've started waiting the fight.");
+				toastr["info"]("You've started waiting the fight.");
 			}else{
 				self.zoo = JSON.parse(message.data);
 			}

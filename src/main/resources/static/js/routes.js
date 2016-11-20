@@ -26,9 +26,19 @@ idlezoo.config(function($stateProvider, $urlRouterProvider) {
 			templateUrl: "js/top/wins.html",
 			controller: 'topwins as controller'
 		})
+		.state('toplosses', {
+			url: "/toplosses",
+			templateUrl: "js/top/losses.html",
+			controller: 'toplosses as controller'
+		})
 		.state('toptime', {
 			url: "/toptime",
 			templateUrl: "js/top/time.html",
+			controller: 'toptime as controller'
+		})
+		.state('about', {
+			url: "/about",
+			templateUrl: "js/about.html",
 			controller: 'toptime as controller'
 		})
 

@@ -70,3 +70,7 @@ idlezoo.controller('home', function($rootScope, $scope, $interval, $http) {
 
 
 });
+
+idlezoo.controller('about', function() {
+	//TODO can I delete this?
+});

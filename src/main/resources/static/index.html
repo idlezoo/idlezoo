@@ -43,6 +43,7 @@
               
 
 			  <ul class="nav navbar-nav navbar-right">
+			  	<li ui-sref-active="active" ui-sref="about"><a>About</a></li>
                 <li ng-show="!authenticated" ui-sref-active="active" ui-sref="login"><a>Login</a></li>
 			    <li ng-show="!authenticated" ui-sref-active="active" ui-sref="signup"><a>Signup</a></li>
 			    <li ng-show="authenticated"><a href="" ng-click="nav.logout()">Logout</a></li>

@@ -17,80 +17,98 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
 import idlezoo.game.domain.Building;
+import idlezoo.game.domain.Perks.Perk;
 
 @Service
 public class ResourcesService implements InitializingBean {
 
-  @Autowired
-  private ObjectMapper mapper;
+	@Autowired
+	private ObjectMapper mapper;
 
-  private double startingMoney = 50D;
-  private List<Building> animalsList;
-  private Map<String, Integer> animalIndexes = new HashMap<>();
-  private Map<String, Building> animalTypes = new HashMap<>();
-  private Map<String, Building> nextAnimals = new HashMap<>();
-  private Building startingAnimal;
+	private double startingMoney = 50D;
+	private List<Building> animalsList;
+	private List<Perk> perkList;
+	private Map<String, Integer> animalIndexes = new HashMap<>();
+	private Map<String, Building> animalTypes = new HashMap<>();
+	private Map<String, Building> nextAnimals = new HashMap<>();
+	private Building startingAnimal;
 
-  @Override
-  public void afterPropertiesSet() throws IOException {
-    try (InputStream creatures = ResourcesService.class.getResourceAsStream(
-        "/animals/animals.json")) {
-      CollectionType type = mapper.getTypeFactory().constructCollectionType(List.class,
-          Building.class);
-      animalsList = unmodifiableList(mapper.readValue(creatures, type));
-      startingAnimal = animalsList.get(0);
+	@Override
+	public void afterPropertiesSet() throws IOException {
+		initAnimals();
+		initPerks();
+	}
 
-      Building prev = null;
-      for (int i = 0; i < animalsList.size(); i++) {
-        Building animal = animalsList.get(i);
-        animalIndexes.put(animal.getName(), i);
-        animalTypes.put(animal.getName(), animal);
-        if (prev != null) {
-          nextAnimals.put(prev.getName(), animal);
-        }
-        prev = animal;
-      }
-    }
-    animalTypes = unmodifiableMap(animalTypes);
-    nextAnimals = unmodifiableMap(nextAnimals);
-    animalIndexes = unmodifiableMap(animalIndexes);
+	private void initPerks() throws IOException {
+		try (InputStream perks = ResourcesService.class.getResourceAsStream(
+				"/mechanics/perks.json")) {
+			CollectionType type = mapper.getTypeFactory().constructCollectionType(List.class, Perk.class);
+			perkList = unmodifiableList(mapper.readValue(perks, type));
+		}
 
-  }
+	}
+	
+	private void initAnimals() throws IOException {
+		try (InputStream creatures = ResourcesService.class.getResourceAsStream(
+				"/mechanics/animals.json")) {
+			CollectionType type = mapper.getTypeFactory().constructCollectionType(List.class, Building.class);
+			animalsList = unmodifiableList(mapper.readValue(creatures, type));
+			startingAnimal = animalsList.get(0);
 
-  public double startingMoney() {
-    return startingMoney;
-  }
+			Building prev = null;
+			for (int i = 0; i < animalsList.size(); i++) {
+				Building animal = animalsList.get(i);
+				animalIndexes.put(animal.getName(), i);
+				animalTypes.put(animal.getName(), animal);
+				if (prev != null) {
+					nextAnimals.put(prev.getName(), animal);
+				}
+				prev = animal;
+			}
+		}
+		animalTypes = unmodifiableMap(animalTypes);
+		nextAnimals = unmodifiableMap(nextAnimals);
+		animalIndexes = unmodifiableMap(animalIndexes);
+	}
 
-  public Building startingAnimal() {
-    return startingAnimal;
-  }
+	public double startingMoney() {
+		return startingMoney;
+	}
 
-  public String firstName() {
-    return startingAnimal.getName();
-  }
+	public Building startingAnimal() {
+		return startingAnimal;
+	}
 
-  public String secondName() {
-    return nextType(firstName()).getName();
-  }
+	public String firstName() {
+		return startingAnimal.getName();
+	}
 
-  public Building nextType(String buildingName) {
-    return nextAnimals.get(buildingName);
-  }
+	public String secondName() {
+		return nextType(firstName()).getName();
+	}
 
-  public Building type(String typeName) {
-    return animalTypes.get(typeName);
-  }
+	public Building nextType(String buildingName) {
+		return nextAnimals.get(buildingName);
+	}
 
-  public List<Building> getAnimalsList() {
-    return animalsList;
-  }
-  
-  public Building byIndex(int index){
-    return animalsList.get(index);
-  }
-  
-  public Integer index(String animalName){
-    return animalIndexes.get(animalName);
-  }
+	public Building type(String typeName) {
+		return animalTypes.get(typeName);
+	}
+
+	public List<Building> getAnimalsList() {
+		return animalsList;
+	}
+	
+	public List<Perk> getPerkList() {
+		return perkList;
+	}
+
+	public Building byIndex(int index) {
+		return animalsList.get(index);
+	}
+
+	public Integer index(String animalName) {
+		return animalIndexes.get(animalName);
+	}
 
 }

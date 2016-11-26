@@ -1,0 +1,40 @@
+[
+{	"type":"all-income",
+	"multiplier":0.5,
+	"rules":[{"type":"more-all-animals","number":100}]
+},
+{	"type":"all-income",
+	"multiplier":1.0,
+	"rules":[{"type":"more-all-animals","number":1000}]
+},
+{	"type":"all-income",
+	"multiplier":2.0,
+	"rules":[{"type":"more-all-animals","number":10000}]
+},
+
+{	"type":"all-income",
+	"multiplier":0.5,
+	"rules":[{"type":"more-wins","number":10}]
+},
+{	"type":"all-income",
+	"multiplier":1.0,
+	"rules":[{"type":"more-wins","number":25}]
+},
+{	"type":"all-income",
+	"multiplier":2.0,
+	"rules":[{"type":"more-wins","number":100}]
+},
+
+{	"type":"all-income",
+	"multiplier":0.5,
+	"rules":[{"type":"more-losses","number":10}]
+},
+{	"type":"all-income",
+	"multiplier":1.0,
+	"rules":[{"type":"more-losses","number":25}]
+},
+{	"type":"all-income",
+	"multiplier":2.0,
+	"rules":[{"type":"more-losses","number":100}]
+}
+]

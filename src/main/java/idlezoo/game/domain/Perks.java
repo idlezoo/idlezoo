@@ -12,15 +12,57 @@ import one.util.streamex.StreamEx;
 
 public class Perks {
 
+	public static class PerkDTO {
+		private final int id;
+		private final double cost;
+		private final String name;
+		private final String description;
+
+		public PerkDTO(int id, double cost, String name, String description) {
+			this.id = id;
+			this.cost = cost;
+			this.name = name;
+			this.description = description;
+		}
+
+		public int getId() {
+			return id;
+		}
+
+		public double getCost() {
+			return cost;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+
+	}
+
 	@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 	@JsonSubTypes({
 			@Type(value = AllIncomeMultiplier.class, name = "all-income"),
-			@Type(value = AnimalIncomeMultiplier.class, name = "animal-income") })
+			@Type(value = AnimalIncomeMultiplier.class, name = "animal-income"),
+			@Type(value = AnimalToAnimalPerk.class, name = "animal-to-animal") })
 	public static abstract class Perk {
+		private final double cost;
+		private final String name;
+		private final String description;
 		private final List<Rule> rules;
 
-		public Perk(List<Rule> rules) {
+		public Perk(double cost, String name, String description, List<Rule> rules) {
+			this.cost = cost;
+			this.name = name;
+			this.description = description;
 			this.rules = rules;
+		}
+
+		public PerkDTO toDto(int id) {
+			return new PerkDTO(id, cost, name, description);
 		}
 
 		boolean isAvailable(Zoo zoo) {
@@ -34,9 +76,13 @@ public class Perks {
 		private final double multiplier;
 
 		@JsonCreator
-		public AllIncomeMultiplier(@JsonProperty("rules") List<Rule> rules,
+		public AllIncomeMultiplier(@JsonProperty("cost") double cost,
+				@JsonProperty("name") String name,
+				@JsonProperty("description") String description,
+				@JsonProperty("rules") List<Rule> rules,
 				@JsonProperty("multiplier") double multiplier) {
-			super(rules);
+			super(cost, name, description, rules);
+
 			this.multiplier = multiplier;
 		}
 
@@ -45,44 +91,48 @@ public class Perks {
 			return multiplier * zoo.getMoneyIncome();
 		}
 	}
-	
-//	public static class AnimalToAnimalPerk extends Perk {
-//		private final String animal;
-//		private final String perkingAnimal;
-//		private final double multiplier;
-//
-//		@JsonCreator
-//		public AnimalToAnimalPerk(@JsonProperty("rules") List<Rule> rules,
-//				@JsonProperty("animal") String animal,
-//				@JsonProperty("perkingAnimal") String perkingAnimal,
-//				@JsonProperty("multiplier") double multiplier) {
-//			super(rules);
-//			this.animal=animal;
-//			this.perkingAnimal=perkingAnimal;
-//			this.multiplier = multiplier;
-//		}
-//
-//		@Override
-//		public double perkIncome(Zoo zoo) {
-//			
-//			
-//			ZooBuildings perkingBuilding = zoo.animal(perkingAnimal);
-//			if(perkingBuilding)
-//			zoo.animal(perkingAnimal).getNumber() * multiplier;
-//			
-//			return multiplier * zoo.getMoneyIncome();
-//		}
-//	}
-//	
+
+	public static class AnimalToAnimalPerk extends Perk {
+		private final String animal;
+		private final String perkingAnimal;
+		private final double multiplier;
+
+		@JsonCreator
+		public AnimalToAnimalPerk(@JsonProperty("cost") double cost,
+				@JsonProperty("name") String name,
+				@JsonProperty("description") String description,
+				@JsonProperty("rules") List<Rule> rules,
+				@JsonProperty("animal") String animal,
+				@JsonProperty("perkingAnimal") String perkingAnimal,
+				@JsonProperty("multiplier") double multiplier) {
+			super(cost, name, description, rules);
+			this.animal = animal;
+			this.perkingAnimal = perkingAnimal;
+			this.multiplier = multiplier;
+		}
+
+		@Override
+		public double perkIncome(Zoo zoo) {
+			ZooBuildings perkingBuilding = zoo.animal(perkingAnimal);
+			ZooBuildings building = zoo.animal(animal);
+			if (perkingBuilding == null || building == null) {
+				return 0;
+			}
+			return building.getIncome() * perkingBuilding.getNumber() * multiplier;
+		}
+	}
 
 	public static class AnimalIncomeMultiplier extends Perk {
 		private final String animal;
 		private final double multiplier;
 
-		public AnimalIncomeMultiplier(@JsonProperty("rules") List<Rule> rules,
+		public AnimalIncomeMultiplier(@JsonProperty("cost") double cost,
+				@JsonProperty("name") String name,
+				@JsonProperty("description") String description,
+				@JsonProperty("rules") List<Rule> rules,
 				@JsonProperty("animal") String animal,
 				@JsonProperty("multiplier") double multiplier) {
-			super(rules);
+			super(cost, name, description, rules);
 			this.animal = animal;
 			this.multiplier = multiplier;
 		}

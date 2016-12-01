@@ -1,40 +1,67 @@
 [
 {	"type":"all-income",
+	"cost":1e7,
+	"name":"TODO100",
+	"description":"50% income increase for having 100 animals",
 	"multiplier":0.5,
 	"rules":[{"type":"more-all-animals","number":100}]
 },
 {	"type":"all-income",
+	"cost":1e9,
+	"name":"TODO1k",
+	"description":"100% income increase for having 1k animals",
 	"multiplier":1.0,
 	"rules":[{"type":"more-all-animals","number":1000}]
 },
 {	"type":"all-income",
+	"cost":1e11,
+	"name":"TODO10k",
+	"description":"200% income increase for having 10k animals",
 	"multiplier":2.0,
 	"rules":[{"type":"more-all-animals","number":10000}]
 },
 
 {	"type":"all-income",
+	"cost":1e8,
+	"name":"Lucky boy",
+	"description":"50% income increase for winning 5 fights",
 	"multiplier":0.5,
+	"rules":[{"type":"more-wins","number":5}]
+},
+{	"type":"all-income",
+	"cost":1e10,
+	"name":"TODO10wins",
+	"description":"100% income increase for winning 10 fights",
+	"multiplier":1.0,
 	"rules":[{"type":"more-wins","number":10}]
 },
 {	"type":"all-income",
-	"multiplier":1.0,
-	"rules":[{"type":"more-wins","number":25}]
-},
-{	"type":"all-income",
+	"cost":1e12,
+	"name":"TODO25wins",
+	"description":"200% income increase for winning 25 fights",
 	"multiplier":2.0,
-	"rules":[{"type":"more-wins","number":100}]
+	"rules":[{"type":"more-wins","number":25}]
 },
 
 {	"type":"all-income",
+	"cost":1e8,
+	"name":"TODO5Loses",
+	"description":"50% income increase for losing 5 fights",
 	"multiplier":0.5,
+	"rules":[{"type":"more-losses","number":5}]
+},
+{	"type":"all-income",
+	"cost":1e10,
+	"name":"TODO10Loses",
+	"description":"100% income increase for losing 10 fights",
+	"multiplier":1.0,
 	"rules":[{"type":"more-losses","number":10}]
 },
 {	"type":"all-income",
-	"multiplier":1.0,
-	"rules":[{"type":"more-losses","number":25}]
-},
-{	"type":"all-income",
+	"cost":1e12,
+	"name":"TODO25Loses",
+	"description":"200% income increase for losing 25 fights",
 	"multiplier":2.0,
-	"rules":[{"type":"more-losses","number":100}]
+	"rules":[{"type":"more-losses","number":25}]
 }
 ]

@@ -74,7 +74,7 @@ public class FightServicePostgres implements FightService {
         continue;
       }
 
-      Integer buildingIndex = resourcesService.index(building);
+      Integer buildingIndex = resourcesService.animalIndex(building);
       if (waitingAnimals.getNumber() >= fighterAnimals.getNumber()) {
         waitingWins++;
         template.update(

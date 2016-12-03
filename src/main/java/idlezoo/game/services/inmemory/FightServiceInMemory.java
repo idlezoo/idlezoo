@@ -6,16 +6,18 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import idlezoo.game.services.FightService;
+import idlezoo.game.services.ResourcesService;
 
 @Service
 @Profile("default")
 public class FightServiceInMemory implements FightService {
 
 	private final Storage storage;
+	private final ResourcesService resourcesService;
 
-	public FightServiceInMemory(Storage storage) {
-		super();
+	public FightServiceInMemory(Storage storage, ResourcesService resourcesService) {
 		this.storage = storage;
+		this.resourcesService=resourcesService;
 	}
 
 	@Override
@@ -35,7 +37,7 @@ public class FightServiceInMemory implements FightService {
 		Outcome outcome = waiting.fight(fighter);
 		waiting.endWaitingForFight();
 		storage.setWaitingFighter(null);
-		return new OutcomeContainer(outcome, waiting.updateMoney().toDTO());
+		return new OutcomeContainer(outcome, waiting.updateMoney().toDTO(resourcesService));
 	}
 
 }

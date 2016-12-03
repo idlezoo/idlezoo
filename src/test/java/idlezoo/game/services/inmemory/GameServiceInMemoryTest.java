@@ -85,5 +85,28 @@ public class GameServiceInMemoryTest {
 		assertEquals(1, zoo1.getBuildings().size());
 		assertEquals(1, zoo1.getBuildings().get(0).getLevel());
 	}
+	
+
+  @Test
+  public void testBuyPerk() {
+    storage.getZoo(zoo1Id).setMoney(1000_000_000);
+    String animal = resourcesService.firstName();
+    Zoo zoo1 = null;
+    for (int i = 0; i < 100; i++) {
+      zoo1 = gameService.buy(zoo1Id, animal);
+    }
+    assertEquals(100, zoo1.getBuildings().get(0).getNumber());
+    assertEquals(0, zoo1.getPerks().size());
+    assertEquals(1, zoo1.getAvailablePerks().size());
+    assertEquals(100, zoo1.getBaseIncome(), 0.0001);
+    assertEquals(100, zoo1.getMoneyIncome(), 0.0001);
+    
+    zoo1 = gameService.buyPerk(zoo1Id, resourcesService.getPerkList().get(0).getName());
+    assertEquals(100, zoo1.getBuildings().get(0).getNumber());
+    assertEquals(1, zoo1.getPerks().size());
+    assertEquals(100, zoo1.getBaseIncome(), 0.0001);
+    assertEquals(150, zoo1.getMoneyIncome(), 0.0001);
+    assertEquals(0, zoo1.getAvailablePerks().size());
+  }
 
 }

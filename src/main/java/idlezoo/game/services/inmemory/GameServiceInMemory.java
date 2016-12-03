@@ -21,17 +21,22 @@ public class GameServiceInMemory implements GameService {
 
   @Override
   public Zoo getZoo(Integer userId) {
-    return storage.getZoo(userId).updateMoney().toDTO();
+    return storage.getZoo(userId).updateMoney().toDTO(resources);
   }
 
   @Override
   public Zoo buy(Integer userId, String animal) {
-    return storage.getZoo(userId).buy(animal, resources).toDTO();
+    return storage.getZoo(userId).buy(animal, resources).toDTO(resources);
   }
 
   @Override
   public Zoo upgrade(Integer userId, String animal) {
-    return storage.getZoo(userId).upgrade(animal).toDTO();
+    return storage.getZoo(userId).upgrade(animal).toDTO(resources);
+  }
+
+  @Override
+  public Zoo buyPerk(Integer userId, String perk) {
+    return storage.getZoo(userId).buyPerk(perk, resources).toDTO(resources);
   }
 
 }

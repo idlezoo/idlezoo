@@ -14,7 +14,7 @@ import idlezoo.game.services.inmemory.InMemoryZoo.Timer;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class ZooTest {
+public class InMemoryZooTest {
 
 	@Autowired
 	private ResourcesService gameResources;
@@ -24,19 +24,19 @@ public class ZooTest {
 		TestTimer timer = new TestTimer(0L);
 		InMemoryZoo zoo = new InMemoryZoo("testzoo", "", gameResources, timer);
 		assertEquals(gameResources.startingMoney(), zoo.getMoney(), 0.0001);
-		assertEquals(0D, zoo.getIncome(), 0.0001);
+		assertEquals(0D, zoo.getMoneyIncome(), 0.0001);
 
 		zoo.buy(gameResources.startingAnimal().getName(), gameResources);
 		double money = gameResources.startingMoney() - gameResources.startingAnimal().buildCost(0);
 		assertEquals(money, zoo.getMoney(), 0.0001);
-		assertEquals(gameResources.startingAnimal().income(0), zoo.getIncome(), 0.0001);
+		assertEquals(gameResources.startingAnimal().income(0), zoo.getMoneyIncome(), 0.0001);
 
 		zoo.buy(gameResources.startingAnimal().getName(), gameResources);
 		money -= gameResources.startingAnimal().buildCost(1);
 		assertEquals(money, zoo.getMoney(), 0.0001);
-		assertEquals(2 * gameResources.startingAnimal().income(0), zoo.getIncome(), 0.0001);
+		assertEquals(2 * gameResources.startingAnimal().income(0), zoo.getMoneyIncome(), 0.0001);
 
-		money += zoo.getIncome() * 10;
+		money += zoo.getMoneyIncome() * 10;
 		timer.now(10L);
 		zoo.updateMoney();
 		assertEquals(money, zoo.getMoney(), 0.0001);

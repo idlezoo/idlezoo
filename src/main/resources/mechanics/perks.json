@@ -26,21 +26,21 @@
 	"name":"Lucky boy",
 	"description":"50% income increase for winning 5 fights",
 	"multiplier":0.5,
-	"rules":[{"type":"more-wins","number":5}]
+	"rules":[{"type":"more-wins","wins":5}]
 },
 {	"type":"all-income",
 	"cost":1e10,
 	"name":"TODO10wins",
 	"description":"100% income increase for winning 10 fights",
 	"multiplier":1.0,
-	"rules":[{"type":"more-wins","number":10}]
+	"rules":[{"type":"more-wins","wins":10}]
 },
 {	"type":"all-income",
 	"cost":1e12,
 	"name":"TODO25wins",
 	"description":"200% income increase for winning 25 fights",
 	"multiplier":2.0,
-	"rules":[{"type":"more-wins","number":25}]
+	"rules":[{"type":"more-wins","wins":25}]
 },
 
 {	"type":"all-income",
@@ -48,20 +48,20 @@
 	"name":"TODO5Loses",
 	"description":"50% income increase for losing 5 fights",
 	"multiplier":0.5,
-	"rules":[{"type":"more-losses","number":5}]
+	"rules":[{"type":"more-losses","losses":5}]
 },
 {	"type":"all-income",
 	"cost":1e10,
 	"name":"TODO10Loses",
 	"description":"100% income increase for losing 10 fights",
 	"multiplier":1.0,
-	"rules":[{"type":"more-losses","number":10}]
+	"rules":[{"type":"more-losses","losses":10}]
 },
 {	"type":"all-income",
 	"cost":1e12,
 	"name":"TODO25Loses",
 	"description":"200% income increase for losing 25 fights",
 	"multiplier":2.0,
-	"rules":[{"type":"more-losses","number":25}]
+	"rules":[{"type":"more-losses","losses":25}]
 }
 ]

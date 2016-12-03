@@ -14,12 +14,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.util.Assert;
 
 import idlezoo.game.domain.Building;
+import idlezoo.game.domain.Perks.Perk;
 import idlezoo.game.domain.Zoo;
+import idlezoo.game.domain.Zoo.Builder;
+import idlezoo.game.domain.ZooBuildings;
+import idlezoo.game.domain.ZooInfo;
 import idlezoo.game.services.FightService.Outcome;
 import idlezoo.game.services.ResourcesService;
 import one.util.streamex.StreamEx;
 
-public class InMemoryZoo {
+public class InMemoryZoo implements ZooInfo {
   private static final Timer DEFAULT_TIMER = () -> java.time.Clock.systemUTC().instant()
       .getEpochSecond();
 
@@ -30,6 +34,7 @@ public class InMemoryZoo {
   private final Timer timer;
   private final List<InMemoryZooBuildings> buildings;
   private final Map<String, InMemoryZooBuildings> buildingsMap;
+  private final List<Perk> perks = new ArrayList<>();
   private double money;
   private long lastMoneyUpdate;
   private int fightWins;
@@ -37,17 +42,27 @@ public class InMemoryZoo {
   private long championTime;
   private Long waitingForFightStart;
   // cached value - trade memory for CPU
-  private double income;
+  private double baseIncome;
+  private double perkIncome;
 
   public InMemoryZoo(String name, String password, ResourcesService gameResources) {
     this(name, password, gameResources, DEFAULT_TIMER);
   }
 
-  public Zoo toDTO() {
-    return new Zoo(name, StreamEx.of(buildings).map(InMemoryZooBuildings::toDTO).toList(),
-        income, money,
-        fightWins, fightLosses,
-        waitingForFightStart != null, championTime);
+  public Zoo toDTO(ResourcesService resourcesService) {
+    Builder builder = new Zoo.Builder();
+    builder.setName(name);
+    builder.setBuildings(StreamEx.of(buildings).map(InMemoryZooBuildings::toDTO).toList());
+    builder.setPerks(perks);
+    builder.setBaseIncome(baseIncome);
+    builder.setMoney(money);
+    builder.setFightWins(fightWins);
+    builder.setFightLosses(fightLosses);
+    builder.setWaitingForFight(waitingForFightStart != null);
+    builder.setChampionTime(championTime);
+
+    builder.setAvailablePerks(resourcesService.availablePerks(builder));
+    return builder.build();
   }
 
   InMemoryZoo(String name, String password, ResourcesService gameResources, Timer timer) {
@@ -66,6 +81,7 @@ public class InMemoryZoo {
     this.money = money;
   }
 
+  @Override
   public double getMoney() {
     return money;
   }
@@ -74,6 +90,7 @@ public class InMemoryZoo {
     return id;
   }
 
+  @Override
   public String getName() {
     return name;
   }
@@ -82,16 +99,37 @@ public class InMemoryZoo {
     return password;
   }
 
-  public double getIncome() {
-    return income;
-  }
-
+  @Override
   public int getFightWins() {
     return fightWins;
   }
 
+  @Override
   public int getFightLosses() {
     return fightLosses;
+  }
+
+  @Override
+  public List<Perk> getPerks() {
+    return perks;
+  }
+
+  @Override
+  public double getBaseIncome() {
+    return baseIncome;
+  }
+  
+  public double getPerkIncome(){
+    return perkIncome;
+  }
+  
+  public double getMoneyIncome(){
+    return baseIncome + perkIncome;
+  }
+
+  @Override
+  public ZooBuildings animal(String animal) {
+    return buildingsMap.get(animal).toDTO();
   }
 
   public long getLastMoneyUpdate() {
@@ -99,7 +137,8 @@ public class InMemoryZoo {
   }
 
   private void computeIncome() {
-    income = buildings.stream().mapToDouble(InMemoryZooBuildings::getIncome).sum();
+    baseIncome = buildings.stream().mapToDouble(InMemoryZooBuildings::getIncome).sum();
+    perkIncome = StreamEx.of(perks).mapToDouble(perk -> perk.perkIncome(this)).sum();
   }
 
   public boolean isWaitingForFight() {
@@ -118,6 +157,7 @@ public class InMemoryZoo {
     waitingForFightStart = null;
   }
 
+  @Override
   public long getChampionTime() {
     if (isWaitingForFight()) {
       long now = timer.now();
@@ -127,8 +167,9 @@ public class InMemoryZoo {
     }
   }
 
-  public List<InMemoryZooBuildings> getBuildings() {
-    return buildings;
+  @Override
+  public List<ZooBuildings> getBuildings() {
+    return StreamEx.of(buildings).map(InMemoryZooBuildings::toDTO).toList();
   }
 
   public Map<String, InMemoryZooBuildings> getBuildingsMap() {
@@ -138,8 +179,22 @@ public class InMemoryZoo {
   // Logic
   public synchronized InMemoryZoo updateMoney() {
     long now = timer.now();
-    money += (now - lastMoneyUpdate) * income;
+    money += (now - lastMoneyUpdate) * baseIncome;
+    money += (now - lastMoneyUpdate) * perkIncome;
     lastMoneyUpdate = now;
+    return this;
+  }
+
+  public synchronized InMemoryZoo buyPerk(String perkName, ResourcesService resourcesService) {
+    Perk perk = resourcesService.perk(perkName);
+    if (money < perk.getCost()
+        || !perk.isAvailable(this)
+        || perks.contains(perk)) {
+      return this;
+    }
+    money -= perk.getCost();
+    perks.add(perk);
+    computeIncome();
     return this;
   }
 

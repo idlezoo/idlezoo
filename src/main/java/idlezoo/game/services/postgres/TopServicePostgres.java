@@ -33,7 +33,7 @@ public class TopServicePostgres implements TopService {
 				+ " from animal"
 				+ " where animal_type=?"
 				+ " order by count desc"
-				+ " limit 10", INTEGER_TOP_MAPPER, resourcesService.index(building));
+				+ " limit 10", INTEGER_TOP_MAPPER, resourcesService.animalIndex(building));
 	}
 
 	@Override

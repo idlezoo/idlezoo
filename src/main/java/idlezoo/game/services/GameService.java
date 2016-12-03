@@ -9,4 +9,6 @@ public interface GameService {
   Zoo buy(Integer userId, String animal);
 
   Zoo upgrade(Integer userId, String animal);
+  
+  Zoo buyPerk(Integer userId, String perk);
 }

@@ -41,7 +41,7 @@ public class TopServiceInMemory implements TopService {
   @Override
   public List<TopEntry<Double>> income() {
     return EntryStream.of(storage.getZoos())
-        .mapValues(InMemoryZoo::getIncome)
+        .mapValues(InMemoryZoo::getMoneyIncome)
         .reverseSorted(comparingDouble(Map.Entry::getValue))
         .limit(10)
         .map(TopEntry::of)

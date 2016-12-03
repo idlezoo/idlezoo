@@ -90,7 +90,11 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
 			String animal = payload.substring("upgrade/".length());
 			Zoo zoo = gameService.upgrade(userId, animal);
 			sendStateToPlayer(session, zoo);
-		} else {
+		} else if (payload.startsWith("buyPerk/")) {
+		  String perk = payload.substring("buyPerk/".length());
+		  Zoo zoo = gameService.buyPerk(userId, perk);
+		  sendStateToPlayer(session, zoo);
+		}else {
 			throw new IllegalStateException("Unkown message " + payload);
 		}
 

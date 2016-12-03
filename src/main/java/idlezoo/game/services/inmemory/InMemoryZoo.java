@@ -136,7 +136,7 @@ public class InMemoryZoo implements ZooInfo {
     return lastMoneyUpdate;
   }
 
-  private void computeIncome() {
+  public void computeIncome() {
     baseIncome = buildings.stream().mapToDouble(InMemoryZooBuildings::getIncome).sum();
     perkIncome = StreamEx.of(perks).mapToDouble(perk -> perk.perkIncome(this)).sum();
   }
@@ -171,6 +171,11 @@ public class InMemoryZoo implements ZooInfo {
   public List<ZooBuildings> getBuildings() {
     return StreamEx.of(buildings).map(InMemoryZooBuildings::toDTO).toList();
   }
+  
+  public List<InMemoryZooBuildings> getInMemoryBuildings() {
+    return buildings;
+  }
+  
 
   public Map<String, InMemoryZooBuildings> getBuildingsMap() {
     return buildingsMap;

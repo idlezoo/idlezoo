@@ -26,6 +26,10 @@ idlezoo.controller('home', function($rootScope, $scope, $interval, $http) {
 			socket.send('upgrade/' + $buildingName);
 		};
 		
+		$scope.buyPerk = function($perkName) {
+			socket.send('buyPerk/' + $perkName);
+		};
+		
 		$scope.fight = function(){
 			socket.send('fight');
 		};

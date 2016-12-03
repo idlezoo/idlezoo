@@ -19,6 +19,14 @@
 		</tr>
 	</tbody>
 	</table>
+	<h2>Your perks:</h2>
+	<div ng-repeat="perk in controller.zoo.perks">
+		<button type="button" class="btn btn-default" title="{{perk.description}}" ng-disabled="true">{{perk.name}}</button>
+	</div>
+	<h2>Available perks:</h2>
+	<div ng-repeat="perk in controller.zoo.availablePerks">
+		<button type="button" class="btn btn-default" ng-click="buyPerk(perk.name)" title="{{perk.description}}" ng-disabled="perk.cost > controller.zoo.money">{{perk.name}}</button>
+	</div>
 </div>
 <div  ng-show="!authenticated">
 	<p>Login to see your animals in your zoo!</p>

@@ -29,18 +29,20 @@ public class TopServicePostgres implements TopService {
 
 	@Override
 	public List<TopEntry<Integer>> building(String building) {
-		return template.query("select username, count as topvalue"
-				+ " from animal"
-				+ " where animal_type=?"
-				+ " order by count desc"
+		return template.query("select u.username, a.count as topvalue"
+				+ " from animal a"
+		    + " join users u"
+		    + " on a.user_id=u.id"
+				+ " where a.animal_type=?"
+				+ " order by a.count desc"
 				+ " limit 10", INTEGER_TOP_MAPPER, resourcesService.animalIndex(building));
 	}
 
 	@Override
 	public List<TopEntry<Double>> income() {
-		return template.query("select username, income as topvalue"
+		return template.query("select username, base_income + perk_income as topvalue"
 				+ " from users"
-				+ " order by income desc"
+				+ " order by topvalue desc"
 				+ " limit 10", DOUBLE_TOP_MAPPER);
 	}
 

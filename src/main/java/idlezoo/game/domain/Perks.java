@@ -115,15 +115,16 @@ public class Perks {
     private final String animal;
     private final double multiplier;
 
-    public AnimalIncomeMultiplier(@JsonProperty("cost") Double cost,
+    public AnimalIncomeMultiplier(@JsonProperty("cost") double cost,
         @JsonProperty("name") String name,
         @JsonProperty("description") String description,
         @JsonProperty("rules") List<Rule> rules,
         @JsonProperty("animal") String animal,
-        @JsonProperty("multiplier") Double multiplier) {
+        @JsonProperty("multiplier") double multiplier) {
       super(cost, name, description, rules);
       this.animal = Objects.requireNonNull(animal);
-      this.multiplier = Objects.requireNonNull(multiplier);
+      this.multiplier = multiplier;
+      Assert.isTrue(multiplier > 0);
     }
 
     @Override
@@ -225,6 +226,7 @@ public class Perks {
     @JsonCreator
     public MoreAllAnimals(@JsonProperty("number") int number) {
       this.number = number;
+      Assert.isTrue(number > 0);
     }
 
     @Override
@@ -240,7 +242,8 @@ public class Perks {
     @JsonCreator
     public MoreAnimals(@JsonProperty("number") int number, @JsonProperty("animal") String animal) {
       this.number = number;
-      this.animal = animal;
+      Assert.isTrue(number > 0);
+      this.animal = Objects.requireNonNull(animal);
     }
 
     @Override
@@ -258,7 +261,8 @@ public class Perks {
     public MoreLostAnimals(@JsonProperty("number") int number,
         @JsonProperty("animal") String animal) {
       this.number = number;
-      this.animal = animal;
+      Assert.isTrue(number > 0);
+      this.animal = Objects.requireNonNull(animal);
     }
 
     @Override
@@ -274,6 +278,7 @@ public class Perks {
     @JsonCreator
     public MoreAllLostAnimals(@JsonProperty("number") int number) {
       this.number = number;
+      Assert.isTrue(number > 0);
     }
 
     @Override

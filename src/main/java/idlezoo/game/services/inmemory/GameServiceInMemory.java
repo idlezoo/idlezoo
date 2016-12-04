@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import idlezoo.game.domain.Zoo;
+import idlezoo.game.domain.ZooInfo;
 import idlezoo.game.services.GameService;
 import idlezoo.game.services.ResourcesService;
 
@@ -37,6 +38,11 @@ public class GameServiceInMemory implements GameService {
   @Override
   public Zoo buyPerk(Integer userId, String perk) {
     return storage.getZoo(userId).buyPerk(perk, resources).toDTO(resources);
+  }
+
+  @Override
+  public ZooInfo showZoo(String userName) {
+    return storage.getZoo(userName);
   }
 
 }

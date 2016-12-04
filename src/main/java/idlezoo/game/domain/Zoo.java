@@ -25,7 +25,7 @@ public final class Zoo implements ZooInfo {
 
   public Zoo(String name, List<ZooBuildings> buildings,
       List<Perk> perks, List<Perk> availablePerks,
-      double baseIncome, double money,
+      double baseIncome, double perkIncome, double money,
       int fightWins, int fightLosses,
       boolean waitingForFight, long championTime) {
     assert baseIncome == buildings.stream().mapToDouble(ZooBuildings::getIncome).sum();
@@ -43,6 +43,7 @@ public final class Zoo implements ZooInfo {
     this.championTime = championTime;
     // should be last
     this.perkIncome = StreamEx.of(perks).mapToDouble(perk -> perk.perkIncome(this)).sum();
+    assert this.perkIncome == perkIncome : "Expected " + perkIncome + " but was "  + this.perkIncome;
   }
 
   private static Map<String, ZooBuildings> buildingsMap(List<ZooBuildings> buildings) {
@@ -58,7 +59,6 @@ public final class Zoo implements ZooInfo {
     return name;
   }
 
-  @Override
   public double getMoney() {
     return money;
   }
@@ -68,8 +68,14 @@ public final class Zoo implements ZooInfo {
     return baseIncome;
   }
 
+  @Override
   public double getMoneyIncome() {
     return baseIncome + perkIncome;
+  }
+
+  @Override
+  public double getPerkIncome() {
+    return perkIncome;
   }
 
   public List<ZooBuildings> getBuildings() {
@@ -117,6 +123,7 @@ public final class Zoo implements ZooInfo {
     private List<Perk> perks;
     private List<Perk> availablePerks;
     private double baseIncome;
+    private double perkIncome;
     private double money;
     private int fightWins;
     private int fightLosses;
@@ -141,6 +148,11 @@ public final class Zoo implements ZooInfo {
 
     public Builder setMoney(double money) {
       this.money = money;
+      return this;
+    }
+
+    public Builder setPerkIncome(double perkIncome) {
+      this.perkIncome = perkIncome;
       return this;
     }
 
@@ -177,8 +189,13 @@ public final class Zoo implements ZooInfo {
     public Zoo build() {
       return new Zoo(name, buildings,
           perks, availablePerks,
-          baseIncome, money,
+          baseIncome, perkIncome, money,
           fightWins, fightLosses, waitingForFight, championTime);
+    }
+
+    public ZooInfo info() {
+      return new ZooInfoSimple(name, buildings, availablePerks, baseIncome, perkIncome, fightWins,
+          fightLosses, waitingForFight, championTime);
     }
 
     @Override
@@ -201,7 +218,6 @@ public final class Zoo implements ZooInfo {
       return baseIncome;
     }
 
-    @Override
     public double getMoney() {
       return money;
     }
@@ -230,8 +246,16 @@ public final class Zoo implements ZooInfo {
     public ZooBuildings animal(String animal) {
       return buildingsMap.get(animal);
     }
-    
-    
+
+    @Override
+    public double getMoneyIncome() {
+      throw new IllegalStateException("not implemented");
+    }
+
+    @Override
+    public double getPerkIncome() {
+      throw new IllegalStateException("not implemented");
+    }
 
   }
 

@@ -13,6 +13,7 @@ import idlezoo.game.domain.Perks.Perk;
 import idlezoo.game.domain.Zoo;
 import idlezoo.game.domain.Zoo.Builder;
 import idlezoo.game.domain.ZooBuildings;
+import idlezoo.game.domain.ZooInfo;
 import idlezoo.game.services.GameService;
 import idlezoo.game.services.ResourcesService;
 import one.util.streamex.IntStreamEx;
@@ -43,6 +44,7 @@ public class GameServicePostgres implements GameService {
       builder.setFightWins(res.getInt("fights_win"));
       builder.setFightLosses(res.getInt("fights_loss"));
       builder.setBaseIncome(res.getDouble("base_income"));
+      builder.setPerkIncome(res.getDouble("perk_income"));
       builder.setMoney(res.getDouble("money"));
       long waitingFightTime = res.getLong("waiting_fight_time");
       builder.setWaitingForFight(!res.wasNull());
@@ -170,12 +172,18 @@ public class GameServicePostgres implements GameService {
         .mapToDouble(perk -> perk.perkIncome(zooBuilder)).sum();
     template.update("update users set base_income=?, perk_income=? where id=?",
         newBaseIncome, newPerkIncome, userId);
-    return zooBuilder;
+    return zooBuilder.setPerkIncome(newPerkIncome);
   }
 
   public Zoo updateIncomeAndGetZoo(Integer userId) {
     Builder builder = updateIncome(userId, getBuildings(userId));
     builder.setAvailablePerks(resourcesService.availablePerks(builder));
     return builder.build();
+  }
+
+  @Override
+  public ZooInfo showZoo(String userName) {
+    // TODO Auto-generated method stub
+    return null;
   }
 }

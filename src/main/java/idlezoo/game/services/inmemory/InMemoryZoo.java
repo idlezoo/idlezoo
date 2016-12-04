@@ -55,6 +55,7 @@ public class InMemoryZoo implements ZooInfo {
     builder.setBuildings(StreamEx.of(buildings).map(InMemoryZooBuildings::toDTO).toList());
     builder.setPerks(perks);
     builder.setBaseIncome(baseIncome);
+    builder.setPerkIncome(perkIncome);
     builder.setMoney(money);
     builder.setFightWins(fightWins);
     builder.setFightLosses(fightLosses);
@@ -81,7 +82,6 @@ public class InMemoryZoo implements ZooInfo {
     this.money = money;
   }
 
-  @Override
   public double getMoney() {
     return money;
   }
@@ -118,12 +118,14 @@ public class InMemoryZoo implements ZooInfo {
   public double getBaseIncome() {
     return baseIncome;
   }
-  
-  public double getPerkIncome(){
+
+  @Override
+  public double getPerkIncome() {
     return perkIncome;
   }
-  
-  public double getMoneyIncome(){
+
+  @Override
+  public double getMoneyIncome() {
     return baseIncome + perkIncome;
   }
 
@@ -171,11 +173,10 @@ public class InMemoryZoo implements ZooInfo {
   public List<ZooBuildings> getBuildings() {
     return StreamEx.of(buildings).map(InMemoryZooBuildings::toDTO).toList();
   }
-  
+
   public List<InMemoryZooBuildings> getInMemoryBuildings() {
     return buildings;
   }
-  
 
   public Map<String, InMemoryZooBuildings> getBuildingsMap() {
     return buildingsMap;

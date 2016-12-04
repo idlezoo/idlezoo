@@ -270,15 +270,15 @@ public class InMemoryZoo implements ZooInfo {
         if (thisBuildings.getNumber() >= otherBuildings.getNumber()) {
           thisWins++;
           thisBuildings.setNumber(thisBuildings.getNumber() - otherBuildings.getNumber());
-          otherBuildings.setNumber(0);
           thisBuildings.lost(otherBuildings.getNumber());
           otherBuildings.lost(otherBuildings.getNumber());
+          otherBuildings.setNumber(0);
         } else {
           otherWins++;
           otherBuildings.setNumber(otherBuildings.getNumber() - thisBuildings.getNumber());
-          thisBuildings.setNumber(0);
           thisBuildings.lost(thisBuildings.getNumber());
           otherBuildings.lost(thisBuildings.getNumber());
+          thisBuildings.setNumber(0);
         }
       }
       computeIncome();

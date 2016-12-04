@@ -71,9 +71,12 @@ public abstract class AbstractFightServiceTest extends AbstractServiceTest {
     Zoo zoo1 = gameService.getZoo(zoo1Id);
     assertEquals(1, zoo1.getFightWins());
     assertEquals(0, zoo1.getBuildings().get(0).getNumber());
+    assertEquals(1, zoo1.getBuildings().get(0).getLost());
 
     Zoo zoo2 = gameService.getZoo(zoo2Id);
     assertEquals(0, zoo2.getFightWins());
+    assertEquals(0, zoo2.getBuildings().get(0).getNumber());
+    assertEquals(1, zoo2.getBuildings().get(0).getLost());
   }
 
   @Test

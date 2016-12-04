@@ -11,7 +11,9 @@
 			<td>
 			<img height="60px" ng-src="/images/{{building.name}}.png"/>
 			</td>
-			<td>{{building.number}} {{building.name}}s (Level {{building.level}}) produce {{building.income | numeraljs:'0.000a'}} money ({{(building.income / controller.zoo.moneyIncome * 100).toFixed(2)}}%)</td>
+			<td>{{building.number}} {{building.name}}s (Level {{building.level}}) produce {{building.income | numeraljs:'0.000a'}} money ({{(building.income / controller.zoo.moneyIncome * 100).toFixed(2)}}%)
+			<br />You have lost {{building.lost}}
+			</td>
 			<td>
 			  <button type="button" class="btn btn-default" ng-click="buy(building.name)" ng-disabled="building.nextCost > controller.zoo.money">Buy for {{building.nextCost | numeraljs:'0.000a'}}</button>
 			  <button type="button" class="btn btn-default" ng-click="upgrade(building.name)" ng-disabled="building.upgradeCost > controller.zoo.money">Upgrade for {{building.upgradeCost | numeraljs:'0.000a'}}</button>

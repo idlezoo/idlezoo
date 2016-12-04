@@ -67,7 +67,7 @@ public class InMemoryZooBuildings {
   }
 
   public void lost(int lost) {
-    lost += lost;
+    this.lost += lost;
   }
 
 }

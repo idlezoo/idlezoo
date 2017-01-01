@@ -10,12 +10,15 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 public class WsConfiguration implements WebSocketConfigurer {
 
-	@Autowired
-	private GameWebSocketHandler gameWebSocketHandler;
-	@Override
-	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		registry.addHandler(gameWebSocketHandler, "/game/ws").withSockJS();
+  @Autowired
+  private GameWebSocketHandler gameWebSocketHandler;
 
-	}
+  @Override
+  public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+    registry.addHandler(gameWebSocketHandler, "/game/ws")
+        .setAllowedOrigins("http://localhost:9000", "https://idlezoo.github.io")
+        .withSockJS();
+
+  }
 
 }

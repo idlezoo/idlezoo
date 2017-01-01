@@ -3,6 +3,7 @@ package idlezoo.game.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,12 +15,12 @@ import one.util.streamex.StreamEx;
 @RequestMapping("/meta")
 public class MetaController {
 
-	@Autowired
-	private ResourcesService gameResources;
+  @Autowired
+  private ResourcesService gameResources;
 
-	@RequestMapping("/buildings")
-	public List<String> buildings() {
-	  return StreamEx.of(gameResources.getAnimalsList())
-	  .map(Building::getName).toList();
-	}
+  @GetMapping("/buildings")
+  public List<String> buildings() {
+    return StreamEx.of(gameResources.getAnimalsList())
+        .map(Building::getName).toList();
+  }
 }

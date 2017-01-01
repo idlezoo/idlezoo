@@ -6,11 +6,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.net.HttpCookie;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +16,6 @@ import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -88,8 +84,7 @@ public class SecurityTests {
   public void login() throws Exception {
     usersService.addUser("testuser", "testuser");
     ResponseEntity<Void> login = loginOrRegister("testuser", "/login");
-    assertEquals("http://localhost:" + port + "/",
-        login.getHeaders().getFirst(HttpHeaders.LOCATION));
+    assertEquals(HttpStatus.OK, login.getStatusCode());
     ResponseEntity<String> user =
         user(login.getHeaders().get(HttpHeaders.SET_COOKIE).toArray(new String[0]));
 

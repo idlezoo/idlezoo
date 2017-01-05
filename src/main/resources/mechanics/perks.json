@@ -63,5 +63,74 @@
 	"description":"200% income increase for losing 25 fights",
 	"multiplier":2.0,
 	"rules":[{"type":"more-losses","losses":25}]
+},
+{	"type":"all-income",
+	"cost":1e8,
+	"name":"TODO1kLost",
+	"description":"50% income increase for 1000 animals lost",
+	"multiplier":0.5,
+	"rules":[{"type":"more-all-lost-animals","number":1000}]
+},
+{	"type":"all-income",
+	"cost":1e10,
+	"name":"TODO10kLost",
+	"description":"100% income increase for 10k animals lost",
+	"multiplier":1.0,
+	"rules":[{"type":"more-all-lost-animals","number":10000}]
+},
+{	"type":"all-income",
+	"cost":1e12,
+	"name":"TODO100kLost",
+	"description":"200% income increase for 100k animals lost",
+	"multiplier":2.0,
+	"rules":[{"type":"more-all-lost-animals","number":100000}]
+},
+{	"type":"animal-income",
+	"cost":1e6,
+	"name":"TODOGrasshopper50",
+	"animal":"Grasshopper",
+	"description":"100% income increase of Grasshoppers",
+	"multiplier":1.0,
+	"rules":[{"type":"more-animals","animal":"Grasshopper","number":50}]
+},
+{	"type":"animal-income",
+	"cost":1e8,
+	"name":"TODOGrasshopper100",
+	"animal":"Grasshopper",
+	"description":"200% income increase of Grasshoppers",
+	"multiplier":2.0,
+	"rules":[{"type":"more-animals","animal":"Grasshopper","number":100}]
+},
+{	"type":"animal-income",
+	"cost":1e10,
+	"name":"TODOGrasshopper150",
+	"animal":"Grasshopper",
+	"description":"300% income increase of Grasshoppers",
+	"multiplier":3.0,
+	"rules":[{"type":"more-animals","animal":"Grasshopper","number":150}]
+},
+{	"type":"all-income",
+	"cost":1e12,
+	"name":"Dragon rider",
+	"description":"100% income increase for buying a dragon!",
+	"multiplier":2.0,
+	"rules":[{"type":"more-animals","animal":"Dragon","number":1}]
+},
+{	"type":"animal-to-animal",
+	"cost":1e8,
+	"name":"Leopard playing with lion",
+	"animal":"Lion",
+	"perkingAnimal":"Leopard",
+	"description":"5% income increase of Lions for every Leopard",
+	"multiplier":0.05,
+	"rules":[
+		{"type":"more-animals","animal":"Leopard","number":100},
+		{"type":"more-animals","animal":"Lion","number":100}
+	]
 }
+
+
+
+
+
 ]

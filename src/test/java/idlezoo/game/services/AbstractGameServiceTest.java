@@ -64,7 +64,7 @@ public abstract class AbstractGameServiceTest extends AbstractServiceTest {
     }
     assertEquals(100, zoo1.getBuildings().get(0).getNumber());
     assertEquals(0, zoo1.getPerks().size());
-    assertEquals(1, zoo1.getAvailablePerks().size());
+    assertEquals(3, zoo1.getAvailablePerks().size());
     assertEquals(100, zoo1.getBaseIncome(), 0.0001);
     assertEquals(100, zoo1.getMoneyIncome(), 0.0001);
     
@@ -73,7 +73,7 @@ public abstract class AbstractGameServiceTest extends AbstractServiceTest {
     assertEquals(1, zoo1.getPerks().size());
     assertEquals(100, zoo1.getBaseIncome(), 0.0001);
     assertEquals(150, zoo1.getMoneyIncome(), 0.0001);
-    assertEquals(0, zoo1.getAvailablePerks().size());
+    assertEquals(2, zoo1.getAvailablePerks().size());
   }
 
 }

@@ -49,10 +49,6 @@ public class ResourcesServiceTest {
       assertEquals(perk, gameResources.perkByIndex(index));
       assertEquals(perk, gameResources.perk(perk.getName()));
     }
-
-    assertEquals(9, gameResources.getPerkList().size());
-    assertEquals(9, StreamEx.of(gameResources.getPerkList()).map(Perk::getName).toSet().size());
-
   }
 
 }

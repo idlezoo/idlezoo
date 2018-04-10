@@ -1,41 +1,33 @@
 package idlezoo.security;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-@RunWith(SpringRunner.class)
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+
+import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class SecurityTests {
+class SecurityTest {
 
     private static final String ORIGIN = "http://localhost:9000";
 
@@ -50,21 +42,21 @@ public class SecurityTests {
     private TestRestTemplate template;
 
     @Test
-    public void homePageRedirects() {
+    void homePageRedirects() {
         ResponseEntity<String> response = template.getForEntity("/", String.class);
         assertEquals(HttpStatus.FOUND, response.getStatusCode());
         assertEquals("https://idlezoo.github.io", response.getHeaders().getFirst(HttpHeaders.LOCATION));
     }
 
     @Test
-    public void userEndpoint() {
+    void userEndpoint() {
         ResponseEntity<String> response = template.getForEntity("/user", String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNull(response.getBody());
     }
 
     @Test
-    public void cors() throws Exception {
+    void cors() throws Exception {
         user();
     }
 
@@ -74,30 +66,33 @@ public class SecurityTests {
     }
 
     @Test
-    public void register() throws Exception {
+    void register() throws Exception {
         loginOrRegister("testregister", "/createuser");
         verify(usersService).addUser(eq("testregister"), anyString());
     }
 
     @Test
-    public void login() throws Exception {
+    void login() throws Exception {
         when(usersService.loadUserByUsername("testuser"))
                 .thenReturn(
                         new IdUser(0, "testuser", passwordEncoder.encode("testuser"))
                 );
         ResponseEntity<Void> login = loginOrRegister("testuser", "/login");
         assertEquals(HttpStatus.OK, login.getStatusCode());
+        List<String> cookies = login.getHeaders().get(HttpHeaders.SET_COOKIE);
+        assertNotNull(cookies);
         ResponseEntity<String> user =
-                user(login.getHeaders().get(HttpHeaders.SET_COOKIE).toArray(new String[0]));
+                user(cookies.toArray(new String[0]));
 
+        assertNotNull(user.getBody());
         assertTrue(user.getBody().contains("testuser"));
     }
 
-    private ResponseEntity<String> user(String... coockies) throws URISyntaxException {
+    private ResponseEntity<String> user(String... cookies) throws URISyntaxException {
         RequestEntity<Void> request =
                 RequestEntity.get(new URI("http://localhost:" + port + "/user"))
                         .header(HttpHeaders.ORIGIN, ORIGIN)
-                        .header(HttpHeaders.COOKIE, coockies)
+                        .header(HttpHeaders.COOKIE, cookies)
                         .build();
 
         ResponseEntity<String> response = template.exchange(request, String.class);
@@ -115,12 +110,12 @@ public class SecurityTests {
         ResponseEntity<String> response = template.exchange(request, String.class);
         assertCors(response);
 
-        MultiValueMap<String, String> form = new LinkedMultiValueMap<String, String>();
+        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
         form.set("username", user);
         form.set("password", user);
         HttpHeaders headers = new HttpHeaders();
 
-        headers.put(HttpHeaders.ORIGIN, asList(ORIGIN));
+        headers.put(HttpHeaders.ORIGIN, singletonList(ORIGIN));
         RequestEntity<MultiValueMap<String, String>> loginOrRegister = new RequestEntity<>(
                 form, headers, HttpMethod.POST, URI.create("http://localhost:" + port + uri));
         ResponseEntity<Void> result = template.exchange(loginOrRegister, Void.class);

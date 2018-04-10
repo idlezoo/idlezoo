@@ -1,49 +1,47 @@
 package idlezoo.game.services;
 
-import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-@RunWith(SpringRunner.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-public class TopServiceTest {
+class TopServiceTest {
+    @Autowired
+    private TopService topService;
+    @Autowired
+    private ResourcesService resourcesService;
 
-  @Autowired
-  private TopService topService;
+    @Test
+    void testBuilding() {
+        String startingAnimal = resourcesService.startingAnimal().getName();
+        assertEquals(0, topService.building(startingAnimal).size());
+    }
 
-  @Autowired
-  private ResourcesService resourcesService;
+    @Test
+    void testChampionTime() {
+        assertEquals(0, topService.championTime().size());
+    }
 
-  @Test
-  public void testBuilding() {
-    String startingAnimal = resourcesService.startingAnimal().getName();
-    assertEquals(0, topService.building(startingAnimal).size());
-  }
+    @Test
+    void testIncome() {
+        assertEquals(0, topService.income().size());
+    }
 
-  @Test
-  public void testChampionTime() {
-    assertEquals(0, topService.championTime().size());
-  }
+    @Test
+    void testWins() {
+        assertEquals(0, topService.wins().size());
+    }
 
-  @Test
-  public void testIncome() {
-    assertEquals(0, topService.income().size());
-  }
-
-  @Test
-  public void testWins() {
-    assertEquals(0, topService.wins().size());
-  }
-
-  @Test
-  public void testLosses() {
-    assertEquals(0, topService.losses().size());
-  }
-
+    @Test
+    void testLosses() {
+        assertEquals(0, topService.losses().size());
+    }
 }

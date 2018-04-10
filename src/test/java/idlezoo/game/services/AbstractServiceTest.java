@@ -3,19 +3,22 @@ package idlezoo.game.services;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import idlezoo.security.UsersService;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-public abstract class AbstractServiceTest {
+ abstract class AbstractServiceTest {
 
     static final String ZOO1 = "1";
     Integer zoo1Id;
@@ -27,7 +30,7 @@ public abstract class AbstractServiceTest {
     @Autowired
     ResourcesService resourcesService;
 
-    @Before
+    @BeforeEach
     public void setup() {
         assertTrue(usersService.addUser(ZOO1, ""));
         zoo1Id = getZooId(ZOO1);

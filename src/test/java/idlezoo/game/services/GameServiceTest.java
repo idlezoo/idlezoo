@@ -1,24 +1,22 @@
 package idlezoo.game.services;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import idlezoo.game.domain.Building;
 import idlezoo.game.domain.Zoo;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
-public class GameServiceTest extends AbstractServiceTest {
+class GameServiceTest extends AbstractServiceTest {
 
     @Autowired
     private GameService gameService;
 
 
     @Test
-    public void testGetZoo() {
+    void testGetZoo() {
         Zoo zoo1 = gameService.getZoo(zoo1Id);
         assertEquals(0, zoo1.getFightWins());
         assertEquals(1, zoo1.getBuildings().size());
@@ -29,7 +27,7 @@ public class GameServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void testBuy() {
+    void testBuy() {
         String animalType = resourcesService.firstName();
         Zoo zoo1 = gameService.buy(zoo1Id, animalType);
         Building type = resourcesService.type(animalType);
@@ -42,7 +40,7 @@ public class GameServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void testUpgrade() {
+    void testUpgrade() {
         setMoney(zoo1Id, 100);
 
         String animalType = resourcesService.firstName();
@@ -54,9 +52,8 @@ public class GameServiceTest extends AbstractServiceTest {
         assertEquals(1, zoo1.getBuildings().get(0).getLevel());
     }
 
-
     @Test
-    public void testBuyPerk() {
+    void testBuyPerk() {
         setMoney(zoo1Id, 1000_000_000);
         String animal = resourcesService.firstName();
         Zoo zoo1 = null;
@@ -76,5 +73,4 @@ public class GameServiceTest extends AbstractServiceTest {
         assertEquals(150, zoo1.getMoneyIncome(), 0.0001);
         assertEquals(2, zoo1.getAvailablePerks().size());
     }
-
 }

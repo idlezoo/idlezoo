@@ -1,11 +1,18 @@
 package idlezoo.game;
 
-import org.junit.Test;
 
-public class AssertTest {
+import org.junit.jupiter.api.Test;
 
-  @Test(expected=AssertionError.class)
-  public void testAssert() {
-    assert false;
-  }
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+class AssertTest {
+
+    @Test
+    void testAssert() {
+        assertThrows(AssertionError.class,
+                () -> {
+                    assert false;
+                }
+        );
+    }
 }

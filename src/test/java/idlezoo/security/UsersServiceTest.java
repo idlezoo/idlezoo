@@ -1,35 +1,34 @@
 package idlezoo.security;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import idlezoo.security.UsersService;
+import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-public class UsersServiceTest {
+ class UsersServiceTest {
 
 	@Autowired
 	private UsersService usersService;
 
-	@Test(expected = UsernameNotFoundException.class)
-	public void testNotFound() {
-		usersService.loadUserByUsername("no_such_user");
+	@Test
+	 void testNotFound() {
+		assertThrows(UsernameNotFoundException.class,
+				() -> usersService.loadUserByUsername("no_such_user")
+		)
+		;
 	}
 
 	@Test
-	public void testAddUser() {
+	 void testAddUser() {
 		assertTrue(usersService.addUser("1", ""));
 		assertNotNull(usersService.loadUserByUsername("1"));
 		assertFalse(usersService.addUser("1", ""));

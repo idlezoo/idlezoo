@@ -28,11 +28,11 @@ public class Perks {
 
     public Perk(double cost, String name, String description, List<Rule> rules) {
       this.cost = cost;
-      Assert.isTrue(cost > 0.0);
+      Assert.isTrue(cost > 0.0, "Perk cost must be > 0");
       this.name = Objects.requireNonNull(name);
       this.description = Objects.requireNonNull(description);
       this.rules = Objects.requireNonNull(rules);
-      Assert.isTrue(!rules.isEmpty());
+      Assert.isTrue(!rules.isEmpty(), "Perk must have some rules");
     }
 
     public double getCost() {
@@ -71,7 +71,7 @@ public class Perks {
       super(cost, name, description, rules);
 
       this.multiplier = multiplier;
-      Assert.isTrue(multiplier > 0);
+      Assert.isTrue(multiplier > 0, "Perk multiplier must be > 0");
     }
 
     @Override
@@ -97,7 +97,7 @@ public class Perks {
       this.animal = Objects.requireNonNull(animal);
       this.perkingAnimal = Objects.requireNonNull(perkingAnimal);
       this.multiplier = multiplier;
-      Assert.isTrue(multiplier > 0);
+      Assert.isTrue(multiplier > 0, "Perk multiplier must be > 0");
     }
 
     @Override
@@ -124,7 +124,7 @@ public class Perks {
       super(cost, name, description, rules);
       this.animal = Objects.requireNonNull(animal);
       this.multiplier = multiplier;
-      Assert.isTrue(multiplier > 0);
+      Assert.isTrue(multiplier > 0, "Perk multiplier must be > 0");
     }
 
     @Override
@@ -158,7 +158,7 @@ public class Perks {
     @JsonCreator
     public MoreWins(@JsonProperty("wins") int wins) {
       this.wins = wins;
-      Assert.isTrue(wins > 0);
+      Assert.isTrue(wins > 0, "Wins in rule must be > 0");
     }
 
     @Override
@@ -173,7 +173,7 @@ public class Perks {
     @JsonCreator
     public MoreLosses(@JsonProperty("losses") int losses) {
       this.losses = losses;
-      Assert.isTrue(losses > 0);
+      Assert.isTrue(losses > 0, "Losses in rule must be > 0");
     }
 
     @Override
@@ -190,7 +190,7 @@ public class Perks {
     public AnimalLevel(@JsonProperty("level") int level,
         @JsonProperty("animal") String animal) {
       this.level = level;
-      Assert.isTrue(level > 0);
+      Assert.isTrue(level > 0, "Level in rule must be > 0");
       this.animal = Objects.requireNonNull(animal);
     }
 
@@ -209,7 +209,7 @@ public class Perks {
     public LessAnimals(@JsonProperty("number") int number,
         @JsonProperty("animal") String animal) {
       this.number = number;
-      Assert.isTrue(number > 0);
+      Assert.isTrue(number > 0, "Animal number in rule must be > 0");
       this.animal = Objects.requireNonNull(animal);
     }
 
@@ -226,7 +226,7 @@ public class Perks {
     @JsonCreator
     public MoreAllAnimals(@JsonProperty("number") int number) {
       this.number = number;
-      Assert.isTrue(number > 0);
+      Assert.isTrue(number > 0, "Animal number in rule must be > 0");
     }
 
     @Override
@@ -242,7 +242,7 @@ public class Perks {
     @JsonCreator
     public MoreAnimals(@JsonProperty("number") int number, @JsonProperty("animal") String animal) {
       this.number = number;
-      Assert.isTrue(number > 0);
+      Assert.isTrue(number > 0, "Animal number in rule must be > 0");
       this.animal = Objects.requireNonNull(animal);
     }
 
@@ -261,7 +261,7 @@ public class Perks {
     public MoreLostAnimals(@JsonProperty("number") int number,
         @JsonProperty("animal") String animal) {
       this.number = number;
-      Assert.isTrue(number > 0);
+      Assert.isTrue(number > 0, "Animal number in rule must be > 0");
       this.animal = Objects.requireNonNull(animal);
     }
 
@@ -278,7 +278,7 @@ public class Perks {
     @JsonCreator
     public MoreAllLostAnimals(@JsonProperty("number") int number) {
       this.number = number;
-      Assert.isTrue(number > 0);
+      Assert.isTrue(number > 0, "Animal number in rule must be > 0");
     }
 
     @Override

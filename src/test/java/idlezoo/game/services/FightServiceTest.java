@@ -10,18 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import idlezoo.game.domain.Zoo;
 import idlezoo.game.services.FightService.Outcome;
 import idlezoo.game.services.FightService.OutcomeContainer;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 
-public abstract class AbstractFightServiceTest extends AbstractServiceTest {
+public class FightServiceTest extends AbstractServiceTest {
   private static final String ZOO2 = "2";
   private int zoo2Id;
 
   @Autowired
   private FightService fightService;
-
   @Autowired
   private GameService gameService;
-
 
   @Before
   @Override
@@ -33,6 +32,8 @@ public abstract class AbstractFightServiceTest extends AbstractServiceTest {
 
     setMoney(zoo1Id, 1000_000);
     setMoney(zoo2Id, 1000_000);
+
+    template.update("update arena set waiting_user_id=null");
   }
 
 

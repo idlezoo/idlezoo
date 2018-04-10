@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public abstract class AbstractTopServiceTest {
+public class TopServiceTest {
 
   @Autowired
   private TopService topService;

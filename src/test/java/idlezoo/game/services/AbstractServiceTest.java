@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,24 +17,28 @@ import idlezoo.security.UsersService;
 @Transactional
 public abstract class AbstractServiceTest {
 
-  protected static final String ZOO1 = "1";
-	protected Integer zoo1Id;
+    static final String ZOO1 = "1";
+    Integer zoo1Id;
 
-	@Autowired
-	protected UsersService usersService;
+    @Autowired
+    JdbcTemplate template;
+    @Autowired
+    UsersService usersService;
+    @Autowired
+    ResourcesService resourcesService;
 
-	@Autowired
-	protected ResourcesService resourcesService;
+    @Before
+    public void setup() {
+        assertTrue(usersService.addUser(ZOO1, ""));
+        zoo1Id = getZooId(ZOO1);
+    }
 
-	@Before
-	public void setup() {
-		assertTrue(usersService.addUser(ZOO1, ""));
-		zoo1Id = getZooId(ZOO1);
-	}
+    int getZooId(String zooName) {
+        return template.queryForObject("select id from users where username=?", Integer.class, zooName);
+    }
 
-
-	protected abstract int getZooId(String zooName);
-
-	protected abstract void setMoney(int zooId, double value);
+    void setMoney(int zooId, double value) {
+        template.update("update users set money=? where id=?", value, zooId);
+    }
 
 }

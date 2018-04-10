@@ -1,4 +1,4 @@
-package idlezoo.security.postgres;
+package idlezoo.security;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -18,8 +18,7 @@ import idlezoo.security.UsersService;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-@ActiveProfiles({ "postgres", "local" })
-public class UsersServicePostgresTest {
+public class UsersServiceTest {
 
 	@Autowired
 	private UsersService usersService;

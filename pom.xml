@@ -17,6 +17,7 @@
 
     <properties>
         <java.version>9</java.version>
+        <flyway.version>3.2.1</flyway.version>
     </properties>
 
     <dependencies>

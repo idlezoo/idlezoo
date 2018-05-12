@@ -1,6 +1,7 @@
 package idlezoo.game.services;
 
 import static org.junit.Assert.assertTrue;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE;
 
 import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import idlezoo.security.UsersService;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = NONE)
 @Transactional
  abstract class AbstractServiceTest {
 

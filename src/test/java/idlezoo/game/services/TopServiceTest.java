@@ -15,10 +15,14 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = NONE)
 @Transactional
 class TopServiceTest {
+    private final TopService topService;
+    private final ResourcesService resourcesService;
+
     @Autowired
-    private TopService topService;
-    @Autowired
-    private ResourcesService resourcesService;
+    TopServiceTest(TopService topService, ResourcesService resourcesService) {
+        this.topService = topService;
+        this.resourcesService = resourcesService;
+    }
 
     @Test
     void testBuilding() {

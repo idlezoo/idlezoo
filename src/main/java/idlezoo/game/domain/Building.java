@@ -24,6 +24,8 @@ public interface Building {
     double getBaseCost();
 
     double getBaseIncome();
+
     double getBaseUpgrade();
+
     String getName();
 }

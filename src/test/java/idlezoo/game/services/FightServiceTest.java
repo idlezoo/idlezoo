@@ -3,21 +3,29 @@ package idlezoo.game.services;
 import idlezoo.game.domain.Zoo;
 import idlezoo.game.services.FightService.Outcome;
 import idlezoo.game.services.FightService.OutcomeContainer;
+import idlezoo.security.UsersService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
- class FightServiceTest extends AbstractServiceTest {
+class FightServiceTest extends AbstractServiceTest {
     private static final String ZOO2 = "2";
     private int zoo2Id;
 
+    private final FightService fightService;
+    private final GameService gameService;
+
     @Autowired
-    private FightService fightService;
-    @Autowired
-    private GameService gameService;
+    FightServiceTest(JdbcTemplate template, UsersService usersService, ResourcesService resourcesService,
+                     FightService fightService, GameService gameService) {
+        super(template, usersService, resourcesService);
+        this.fightService = fightService;
+        this.gameService = gameService;
+    }
 
     @BeforeEach
     @Override

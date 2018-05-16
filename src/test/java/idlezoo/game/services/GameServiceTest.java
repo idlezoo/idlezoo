@@ -2,17 +2,23 @@ package idlezoo.game.services;
 
 import idlezoo.game.domain.Building;
 import idlezoo.game.domain.Zoo;
+import idlezoo.security.UsersService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-
 class GameServiceTest extends AbstractServiceTest {
+    private final GameService gameService;
 
     @Autowired
-    private GameService gameService;
+    GameServiceTest(JdbcTemplate template, UsersService usersService, ResourcesService resourcesService,
+                    GameService gameService) {
+        super(template, usersService, resourcesService);
+        this.gameService = gameService;
+    }
 
 
     @Test

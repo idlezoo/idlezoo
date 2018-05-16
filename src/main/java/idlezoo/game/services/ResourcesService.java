@@ -85,15 +85,15 @@ public class ResourcesService implements InitializingBean {
         animalIndexes = unmodifiableMap(animalIndexes);
     }
 
-    public double startingMoney() {
+    double startingMoney() {
         return startingMoney;
     }
 
-    public Building startingAnimal() {
+    Building startingAnimal() {
         return startingAnimal;
     }
 
-    public String firstName() {
+    String firstName() {
         return startingAnimal.getName();
     }
 

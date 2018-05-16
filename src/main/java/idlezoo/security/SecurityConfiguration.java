@@ -1,7 +1,6 @@
 
 package idlezoo.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +15,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -25,11 +23,13 @@ import java.io.IOException;
 @Order(SecurityProperties.BASIC_AUTH_ORDER - 2)
 @ConditionalOnWebApplication
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+    private final UsersService usersService;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UsersService usersService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public SecurityConfiguration(UsersService usersService, PasswordEncoder passwordEncoder) {
+        this.usersService = usersService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -60,7 +60,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         @Override
         public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                            Authentication authentication) throws IOException, ServletException {
+                                            Authentication authentication) throws IOException {
             // This is actually not an error, but an OK message. It is sent to avoid redirects.
             response.sendError(HttpServletResponse.SC_OK);
         }

@@ -15,9 +15,12 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = NONE)
 class ResourcesServiceTest {
+    private final ResourcesService gameResources;
 
     @Autowired
-    private ResourcesService gameResources;
+    ResourcesServiceTest(ResourcesService gameResources) {
+        this.gameResources = gameResources;
+    }
 
     @Test
     void testAnimals() {

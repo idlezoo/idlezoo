@@ -1,6 +1,5 @@
 package idlezoo.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,11 +20,11 @@ import java.sql.Statement;
 @Transactional
 public class UsersService implements UserDetailsService {
     private final JdbcTemplate template;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsersService(JdbcTemplate template) {
+    public UsersService(JdbcTemplate template, PasswordEncoder passwordEncoder) {
         this.template = template;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -61,6 +60,4 @@ public class UsersService implements UserDetailsService {
             return false;
         }
     }
-
-
 }

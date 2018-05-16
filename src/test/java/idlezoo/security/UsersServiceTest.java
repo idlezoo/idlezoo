@@ -14,23 +14,26 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
- class UsersServiceTest {
+class UsersServiceTest {
+    private final UsersService usersService;
 
-	@Autowired
-	private UsersService usersService;
+    @Autowired
+    UsersServiceTest(UsersService usersService) {
+        this.usersService = usersService;
+    }
 
-	@Test
-	 void testNotFound() {
-		assertThrows(UsernameNotFoundException.class,
-				() -> usersService.loadUserByUsername("no_such_user")
-		)
-		;
-	}
+    @Test
+    void testNotFound() {
+        assertThrows(UsernameNotFoundException.class,
+                () -> usersService.loadUserByUsername("no_such_user")
+        )
+        ;
+    }
 
-	@Test
-	 void testAddUser() {
-		assertTrue(usersService.addUser("1", ""));
-		assertNotNull(usersService.loadUserByUsername("1"));
-		assertFalse(usersService.addUser("1", ""));
-	}
+    @Test
+    void testAddUser() {
+        assertTrue(usersService.addUser("1", ""));
+        assertNotNull(usersService.loadUserByUsername("1"));
+        assertFalse(usersService.addUser("1", ""));
+    }
 }

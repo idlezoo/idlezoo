@@ -28,18 +28,21 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class SecurityTest {
-
     private static final String ORIGIN = "http://localhost:9000";
+
+    private final PasswordEncoder passwordEncoder;
+    private final TestRestTemplate template;
+    private final int port;
 
     @MockBean
     private UsersService usersService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
-    @LocalServerPort
-    private int port;
     @Autowired
-    private TestRestTemplate template;
+    SecurityTest(PasswordEncoder passwordEncoder, @LocalServerPort int port, TestRestTemplate template) {
+        this.passwordEncoder = passwordEncoder;
+        this.port = port;
+        this.template = template;
+    }
 
     @Test
     void homePageRedirects() {

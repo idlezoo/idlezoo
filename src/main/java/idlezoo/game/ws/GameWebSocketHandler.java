@@ -1,11 +1,14 @@
 package idlezoo.game.ws;
 
-import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import idlezoo.game.domain.Zoo;
+import idlezoo.game.services.FightService;
+import idlezoo.game.services.FightService.Outcome;
+import idlezoo.game.services.FightService.OutcomeContainer;
+import idlezoo.game.services.GameService;
+import idlezoo.security.IdUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -13,14 +16,8 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import idlezoo.game.domain.Zoo;
-import idlezoo.game.services.FightService;
-import idlezoo.game.services.GameService;
-import idlezoo.game.services.FightService.Outcome;
-import idlezoo.game.services.FightService.OutcomeContainer;
-import idlezoo.security.IdUser;
+import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class GameWebSocketHandler extends TextWebSocketHandler {

@@ -47,11 +47,11 @@ public class Perks {
       return description;
     }
 
-    public boolean isAvailable(ZooInfo zoo) {
+    public boolean isAvailable(Zoo zoo) {
       return StreamEx.of(rules).allMatch(rule -> rule.isAvailable(zoo));
     }
 
-    public abstract double perkIncome(ZooInfo zoo);
+    public abstract double perkIncome(Zoo zoo);
 
     @Override
     public String toString() {
@@ -75,7 +75,7 @@ public class Perks {
     }
 
     @Override
-    public double perkIncome(ZooInfo zoo) {
+    public double perkIncome(Zoo zoo) {
       return multiplier * zoo.getBaseIncome();
     }
   }
@@ -101,7 +101,7 @@ public class Perks {
     }
 
     @Override
-    public double perkIncome(ZooInfo zoo) {
+    public double perkIncome(Zoo zoo) {
       ZooBuildings perkingBuilding = zoo.animal(perkingAnimal);
       ZooBuildings building = zoo.animal(animal);
       if (perkingBuilding == null || building == null) {
@@ -128,7 +128,7 @@ public class Perks {
     }
 
     @Override
-    public double perkIncome(ZooInfo zoo) {
+    public double perkIncome(Zoo zoo) {
       ZooBuildings building = zoo.animal(animal);
       if (building != null) {
         return building.getIncome() * multiplier;
@@ -149,7 +149,7 @@ public class Perks {
       @Type(value = MoreAllLostAnimals.class, name = "more-all-lost-animals"),
   })
   public interface Rule {
-    boolean isAvailable(ZooInfo zoo);
+    boolean isAvailable(Zoo zoo);
   }
 
   public static class MoreWins implements Rule {
@@ -162,7 +162,7 @@ public class Perks {
     }
 
     @Override
-    public boolean isAvailable(ZooInfo zoo) {
+    public boolean isAvailable(Zoo zoo) {
       return zoo.getFightWins() >= wins;
     }
   }
@@ -177,7 +177,7 @@ public class Perks {
     }
 
     @Override
-    public boolean isAvailable(ZooInfo zoo) {
+    public boolean isAvailable(Zoo zoo) {
       return zoo.getFightLosses() >= losses;
     }
   }
@@ -195,7 +195,7 @@ public class Perks {
     }
 
     @Override
-    public boolean isAvailable(ZooInfo zoo) {
+    public boolean isAvailable(Zoo zoo) {
       ZooBuildings building = zoo.animal(animal);
       return building != null && building.getLevel() >= level;
     }
@@ -214,7 +214,7 @@ public class Perks {
     }
 
     @Override
-    public boolean isAvailable(ZooInfo zoo) {
+    public boolean isAvailable(Zoo zoo) {
       ZooBuildings building = zoo.animal(animal);
       return building == null || building.getNumber() <= number;
     }
@@ -230,7 +230,7 @@ public class Perks {
     }
 
     @Override
-    public boolean isAvailable(ZooInfo zoo) {
+    public boolean isAvailable(Zoo zoo) {
       return number <= StreamEx.of(zoo.getBuildings()).mapToInt(ZooBuildings::getNumber).sum();
     }
   }
@@ -247,7 +247,7 @@ public class Perks {
     }
 
     @Override
-    public boolean isAvailable(ZooInfo zoo) {
+    public boolean isAvailable(Zoo zoo) {
       ZooBuildings building = zoo.animal(animal);
       return building != null && building.getNumber() >= number;
     }
@@ -266,7 +266,7 @@ public class Perks {
     }
 
     @Override
-    public boolean isAvailable(ZooInfo zoo) {
+    public boolean isAvailable(Zoo zoo) {
       ZooBuildings building = zoo.animal(animal);
       return building != null && building.getLost() >= number;
     }
@@ -282,7 +282,7 @@ public class Perks {
     }
 
     @Override
-    public boolean isAvailable(ZooInfo zoo) {
+    public boolean isAvailable(Zoo zoo) {
       return StreamEx.of(zoo.getBuildings())
           .mapToInt(ZooBuildings::getLost)
           .sum() >= number;

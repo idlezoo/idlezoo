@@ -1,55 +1,33 @@
 package idlezoo.game.domain;
 
-public class ZooBuildings {
-  private final String name;
-  private final Building building;
-  private final int level;
-  private final int number;
-  private final int lost;
+import org.immutables.value.Value;
 
-  public ZooBuildings(Building building, int level, int number, int lost) {
-    this.name = building.getName();
-    this.building = building;
-    this.level = level;
-    this.number = number;
-    this.lost = lost;
-  }
+@Value.Immutable
+public interface ZooBuildings {
+    // Getters for JSON
+    String getName();
 
-  // Getters for JSON
+    default double getIncome() {
+        return getBuilding().income(getLevel()) * getNumber();
+    }
 
-  public String getName() {
-    return name;
-  }
+    default double getNextCost() {
+        return getBuilding().buildCost(getNumber());
+    }
 
-  public double getIncome() {
-    return building.income(level) * number;
-  }
+    default double getUpgradeCost() {
+        return getBuilding().upgradeCost(getNumber());
+    }
 
-  public double getNextCost() {
-    return building.buildCost(number);
-  }
+    default boolean first() {
+        return getNumber() == 1;
+    }
 
-  public double getUpgradeCost() {
-    return building.upgradeCost(level);
-  }
+    int getLevel();
 
-  public int getLevel() {
-    return level;
-  }
+    int getNumber();
 
-  public int getNumber() {
-    return number;
-  }
+    int getLost();
 
-  public int getLost() {
-    return lost;
-  }
-
-  public boolean first() {
-    return number == 1;
-  }
-
-  public Building getBuilding() {
-    return building;
-  }
+    Building getBuilding();
 }

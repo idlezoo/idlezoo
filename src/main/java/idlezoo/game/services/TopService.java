@@ -78,7 +78,7 @@ public class TopService {
 
         @Override
         public TopEntry<T> mapRow(ResultSet res, int rowNum) throws SQLException {
-            return new TopEntry<T>(res.getString("username"), res.getObject("topvalue", valueClass));
+            return new TopEntry<>(res.getString("username"), res.getObject("topvalue", valueClass));
         }
     }
 }

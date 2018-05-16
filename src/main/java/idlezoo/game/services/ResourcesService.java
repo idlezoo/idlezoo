@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
 import idlezoo.game.domain.Building;
-import idlezoo.game.domain.ZooInfo;
+import idlezoo.game.domain.Zoo;
 import idlezoo.game.domain.Perks.Perk;
 import one.util.streamex.StreamEx;
 
@@ -137,7 +137,7 @@ public class ResourcesService implements InitializingBean {
         return animalIndexes.get(animalName);
     }
 
-    public List<Perk> availablePerks(ZooInfo zoo) {
+    public List<Perk> availablePerks(Zoo zoo) {
         List<Perk> result = new ArrayList<>(perkList);
         result.removeAll(zoo.getPerks());
         return StreamEx.of(result)

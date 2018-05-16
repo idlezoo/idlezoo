@@ -2,29 +2,20 @@ package idlezoo.game.domain;
 
 import java.util.Map;
 
-public class TopEntry<V> {
-  private final String name;
-  private final V value;
+public final class TopEntry<V> {
+    private final String name;
+    private final V value;
 
-  public static <V> TopEntry<V> of(Map.Entry<String, V> entry) {
-    return new TopEntry<>(entry);
-  }
+    public TopEntry(String name, V value) {
+        this.name = name;
+        this.value = value;
+    }
 
-  public TopEntry(Map.Entry<String, V> entry) {
-    this.name = entry.getKey();
-    this.value = entry.getValue();
-  }
+    public String getName() {
+        return name;
+    }
 
-  public TopEntry(String name, V value) {
-    this.name = name;
-    this.value = value;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public V getValue() {
-    return value;
-  }
+    public V getValue() {
+        return value;
+    }
 }

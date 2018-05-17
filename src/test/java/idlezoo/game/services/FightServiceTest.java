@@ -29,7 +29,7 @@ class FightServiceTest extends AbstractServiceTest {
 
     @BeforeEach
     @Override
-    public void setup() {
+    void setup() {
         assertTrue(usersService.addUser(ZOO1, ""));
         assertTrue(usersService.addUser(ZOO2, ""));
         zoo1Id = getZooId(ZOO1);

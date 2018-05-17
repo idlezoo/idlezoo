@@ -5,8 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class RootRedirectController {
+    private static final String ROOT_REDIRECT = "redirect:https://idlezoo.github.io";
+
     @GetMapping("/")
     public String index() {
-        return "redirect:https://idlezoo.github.io";
+        return ROOT_REDIRECT;
     }
 }

@@ -5,7 +5,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -25,14 +24,14 @@ abstract class AbstractServiceTest {
     final UsersService usersService;
     final ResourcesService resourcesService;
 
-    protected AbstractServiceTest(JdbcTemplate template, UsersService usersService, ResourcesService resourcesService) {
+    AbstractServiceTest(JdbcTemplate template, UsersService usersService, ResourcesService resourcesService) {
         this.template = template;
         this.usersService = usersService;
         this.resourcesService = resourcesService;
     }
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         assertTrue(usersService.addUser(ZOO1, ""));
         zoo1Id = getZooId(ZOO1);
     }

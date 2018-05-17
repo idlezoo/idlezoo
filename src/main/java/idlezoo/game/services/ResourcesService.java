@@ -23,10 +23,10 @@ import one.util.streamex.StreamEx;
 
 @Service
 public class ResourcesService implements InitializingBean {
+    private static final double STARTING_MONEY = 50D;
 
     private final ObjectMapper mapper;
 
-    private double startingMoney = 50D;
     private List<Building> animalsList;
     private List<Perk> perkList;
     private Map<String, Integer> animalIndexes = new HashMap<>();
@@ -86,7 +86,7 @@ public class ResourcesService implements InitializingBean {
     }
 
     double startingMoney() {
-        return startingMoney;
+        return STARTING_MONEY;
     }
 
     Building startingAnimal() {

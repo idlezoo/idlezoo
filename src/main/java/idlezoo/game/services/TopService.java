@@ -72,7 +72,7 @@ public class TopService {
 
         private final Class<T> valueClass;
 
-        public TopEntryRowMapper(Class<T> valueClass) {
+        TopEntryRowMapper(Class<T> valueClass) {
             this.valueClass = valueClass;
         }
 

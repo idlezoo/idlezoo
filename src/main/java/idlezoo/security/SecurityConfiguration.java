@@ -56,7 +56,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and().csrf().disable();
     }
 
-    public static class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+    static class MyAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         @Override
         public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

@@ -1,7 +1,5 @@
 package idlezoo.game.domain;
 
-import java.util.Map;
-
 public final class TopEntry<V> {
     private final String name;
     private final V value;

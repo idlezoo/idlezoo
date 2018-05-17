@@ -63,11 +63,11 @@ public class Perks {
         private final double multiplier;
 
         @JsonCreator
-        public AllIncomeMultiplier(@JsonProperty("cost") Double cost,
-                                   @JsonProperty("name") String name,
-                                   @JsonProperty("description") String description,
-                                   @JsonProperty("rules") List<Rule> rules,
-                                   @JsonProperty("multiplier") double multiplier) {
+        AllIncomeMultiplier(@JsonProperty("cost") Double cost,
+                            @JsonProperty("name") String name,
+                            @JsonProperty("description") String description,
+                            @JsonProperty("rules") List<Rule> rules,
+                            @JsonProperty("multiplier") double multiplier) {
             super(cost, name, description, rules);
 
             this.multiplier = multiplier;
@@ -86,13 +86,13 @@ public class Perks {
         private final double multiplier;
 
         @JsonCreator
-        public AnimalToAnimalPerk(@JsonProperty("cost") double cost,
-                                  @JsonProperty("name") String name,
-                                  @JsonProperty("description") String description,
-                                  @JsonProperty("rules") List<Rule> rules,
-                                  @JsonProperty("animal") String animal,
-                                  @JsonProperty("perkingAnimal") String perkingAnimal,
-                                  @JsonProperty("multiplier") double multiplier) {
+        AnimalToAnimalPerk(@JsonProperty("cost") double cost,
+                           @JsonProperty("name") String name,
+                           @JsonProperty("description") String description,
+                           @JsonProperty("rules") List<Rule> rules,
+                           @JsonProperty("animal") String animal,
+                           @JsonProperty("perkingAnimal") String perkingAnimal,
+                           @JsonProperty("multiplier") double multiplier) {
             super(cost, name, description, rules);
             this.animal = Objects.requireNonNull(animal);
             this.perkingAnimal = Objects.requireNonNull(perkingAnimal);
@@ -115,12 +115,12 @@ public class Perks {
         private final String animal;
         private final double multiplier;
 
-        public AnimalIncomeMultiplier(@JsonProperty("cost") double cost,
-                                      @JsonProperty("name") String name,
-                                      @JsonProperty("description") String description,
-                                      @JsonProperty("rules") List<Rule> rules,
-                                      @JsonProperty("animal") String animal,
-                                      @JsonProperty("multiplier") double multiplier) {
+        AnimalIncomeMultiplier(@JsonProperty("cost") double cost,
+                               @JsonProperty("name") String name,
+                               @JsonProperty("description") String description,
+                               @JsonProperty("rules") List<Rule> rules,
+                               @JsonProperty("animal") String animal,
+                               @JsonProperty("multiplier") double multiplier) {
             super(cost, name, description, rules);
             this.animal = Objects.requireNonNull(animal);
             this.multiplier = multiplier;
@@ -148,7 +148,7 @@ public class Perks {
             @Type(value = MoreLostAnimals.class, name = "more-lost-animals"),
             @Type(value = MoreAllLostAnimals.class, name = "more-all-lost-animals"),
     })
-    public interface Rule {
+    interface Rule {
         boolean isAvailable(Zoo zoo);
     }
 
@@ -156,7 +156,7 @@ public class Perks {
         private final int wins;
 
         @JsonCreator
-        public MoreWins(@JsonProperty("wins") int wins) {
+        MoreWins(@JsonProperty("wins") int wins) {
             this.wins = wins;
             Assert.isTrue(wins > 0, "Wins in rule must be > 0");
         }
@@ -171,7 +171,7 @@ public class Perks {
         private final int losses;
 
         @JsonCreator
-        public MoreLosses(@JsonProperty("losses") int losses) {
+        MoreLosses(@JsonProperty("losses") int losses) {
             this.losses = losses;
             Assert.isTrue(losses > 0, "Losses in rule must be > 0");
         }
@@ -187,8 +187,8 @@ public class Perks {
         private final String animal;
 
         @JsonCreator
-        public AnimalLevel(@JsonProperty("level") int level,
-                           @JsonProperty("animal") String animal) {
+        AnimalLevel(@JsonProperty("level") int level,
+                    @JsonProperty("animal") String animal) {
             this.level = level;
             Assert.isTrue(level > 0, "Level in rule must be > 0");
             this.animal = Objects.requireNonNull(animal);
@@ -224,7 +224,7 @@ public class Perks {
         private final int number;
 
         @JsonCreator
-        public MoreAllAnimals(@JsonProperty("number") int number) {
+        MoreAllAnimals(@JsonProperty("number") int number) {
             this.number = number;
             Assert.isTrue(number > 0, "Animal number in rule must be > 0");
         }
@@ -240,7 +240,7 @@ public class Perks {
         private final String animal;
 
         @JsonCreator
-        public MoreAnimals(@JsonProperty("number") int number, @JsonProperty("animal") String animal) {
+        MoreAnimals(@JsonProperty("number") int number, @JsonProperty("animal") String animal) {
             this.number = number;
             Assert.isTrue(number > 0, "Animal number in rule must be > 0");
             this.animal = Objects.requireNonNull(animal);
@@ -258,8 +258,8 @@ public class Perks {
         private final String animal;
 
         @JsonCreator
-        public MoreLostAnimals(@JsonProperty("number") int number,
-                               @JsonProperty("animal") String animal) {
+        MoreLostAnimals(@JsonProperty("number") int number,
+                        @JsonProperty("animal") String animal) {
             this.number = number;
             Assert.isTrue(number > 0, "Animal number in rule must be > 0");
             this.animal = Objects.requireNonNull(animal);
@@ -276,7 +276,7 @@ public class Perks {
         private final int number;
 
         @JsonCreator
-        public MoreAllLostAnimals(@JsonProperty("number") int number) {
+        MoreAllLostAnimals(@JsonProperty("number") int number) {
             this.number = number;
             Assert.isTrue(number > 0, "Animal number in rule must be > 0");
         }

@@ -107,7 +107,7 @@ public class FightService {
         return new OutcomeContainer(outcome, gameService.updateIncomeAndGetZoo(waitingFighter));
     }
 
-    public static <K, T> Predicate<T> compose(Function<T, K> fn, Predicate<K> pred) {
+    private static <K, T> Predicate<T> compose(Function<T, K> fn, Predicate<K> pred) {
         return t -> pred.test(fn.apply(t));
     }
 
@@ -115,20 +115,12 @@ public class FightService {
         private final Outcome outcome;
         private final Zoo waitingFighter;
 
-        public OutcomeContainer(Outcome outcome, Zoo waitingFighter) {
+        OutcomeContainer(Outcome outcome, Zoo waitingFighter) {
             this.outcome = outcome;
             this.waitingFighter = waitingFighter;
         }
 
-        public static final OutcomeContainer WAITING = new OutcomeContainer(Outcome.WAITING, null);
-
-        public static OutcomeContainer win(Zoo waitingFighter) {
-            return new OutcomeContainer(Outcome.WIN, waitingFighter);
-        }
-
-        public static OutcomeContainer loss(Zoo waitingFighter) {
-            return new OutcomeContainer(Outcome.LOSS, waitingFighter);
-        }
+        static final OutcomeContainer WAITING = new OutcomeContainer(Outcome.WAITING, null);
 
         public Outcome getOutcome() {
             return outcome;
@@ -140,6 +132,6 @@ public class FightService {
     }
 
     public enum Outcome {
-        WIN, LOSS, WAITING;
+        WIN, LOSS, WAITING
     }
 }

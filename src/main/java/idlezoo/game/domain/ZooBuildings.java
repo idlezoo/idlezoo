@@ -16,11 +16,7 @@ public interface ZooBuildings {
     }
 
     default double getUpgradeCost() {
-        return getBuilding().upgradeCost(getNumber());
-    }
-
-    default boolean first() {
-        return getNumber() == 1;
+        return getBuilding().upgradeCost(getLevel());
     }
 
     int getLevel();

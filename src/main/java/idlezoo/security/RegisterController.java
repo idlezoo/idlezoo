@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RegisterController {
 
-	private final UsersService usersService;
+    private final UsersService usersService;
 
-	public RegisterController(UsersService usersService) {
-		this.usersService = usersService;
-	}
+    public RegisterController(UsersService usersService) {
+        this.usersService = usersService;
+    }
 
-	@PostMapping("/createuser")
-	public ResponseEntity<String> user(@RequestParam String username, @RequestParam String password) {
-		if (usersService.addUser(username, password)) {
-			return new ResponseEntity<>(HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-		}
-	}
+    @PostMapping("/createuser")
+    public ResponseEntity<String> user(@RequestParam String username, @RequestParam String password) {
+        if (usersService.addUser(username, password)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
 }

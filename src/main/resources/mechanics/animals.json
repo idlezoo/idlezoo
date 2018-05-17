@@ -1,15 +1,80 @@
 [
-{"name":"Grasshopper", "baseCost":10, "baseIncome":1,"baseUpgrade":100},
-{"name":"Monkey", "baseCost":50, "baseIncome":3,"baseUpgrade":600},
-{"name":"Panda", "baseCost":100, "baseIncome":5,"baseUpgrade":1e3},
-{"name":"Leopard", "baseCost":1e3, "baseIncome":10,"baseUpgrade":1e5},
-{"name":"Lion", "baseCost":5e3, "baseIncome":25,"baseUpgrade":1e7},
-{"name":"Alligator", "baseCost":1e4, "baseIncome":50,"baseUpgrade":1e9},
-{"name":"Rhino", "baseCost":1e5, "baseIncome":100,"baseUpgrade":1e11},
-{"name":"Polarbear", "baseCost":1e6, "baseIncome":250,"baseUpgrade":1e13},
-{"name":"Brontosaurus", "baseCost":1e7, "baseIncome":500,"baseUpgrade":1e15},
-{"name":"Ttriceratops", "baseCost":1e8, "baseIncome":1000,"baseUpgrade":1e17},
-{"name":"Tyrannosaurus", "baseCost":1e9, "baseIncome":3000,"baseUpgrade":1e19},
-{"name":"Kraken", "baseCost":1e10, "baseIncome":5000,"baseUpgrade":1e21},
-{"name":"Dragon", "baseCost":1e11, "baseIncome":10000,"baseUpgrade":1e22}
+  {
+    "name": "Grasshopper",
+    "baseCost": 10,
+    "baseIncome": 1,
+    "baseUpgrade": 100
+  },
+  {
+    "name": "Monkey",
+    "baseCost": 50,
+    "baseIncome": 3,
+    "baseUpgrade": 600
+  },
+  {
+    "name": "Panda",
+    "baseCost": 100,
+    "baseIncome": 5,
+    "baseUpgrade": 1e3
+  },
+  {
+    "name": "Leopard",
+    "baseCost": 1e3,
+    "baseIncome": 10,
+    "baseUpgrade": 1e5
+  },
+  {
+    "name": "Lion",
+    "baseCost": 5e3,
+    "baseIncome": 25,
+    "baseUpgrade": 1e7
+  },
+  {
+    "name": "Alligator",
+    "baseCost": 1e4,
+    "baseIncome": 50,
+    "baseUpgrade": 1e9
+  },
+  {
+    "name": "Rhino",
+    "baseCost": 1e5,
+    "baseIncome": 100,
+    "baseUpgrade": 1e11
+  },
+  {
+    "name": "Polarbear",
+    "baseCost": 1e6,
+    "baseIncome": 250,
+    "baseUpgrade": 1e13
+  },
+  {
+    "name": "Brontosaurus",
+    "baseCost": 1e7,
+    "baseIncome": 500,
+    "baseUpgrade": 1e15
+  },
+  {
+    "name": "Ttriceratops",
+    "baseCost": 1e8,
+    "baseIncome": 1000,
+    "baseUpgrade": 1e17
+  },
+  {
+    "name": "Tyrannosaurus",
+    "baseCost": 1e9,
+    "baseIncome": 3000,
+    "baseUpgrade": 1e19
+  },
+  {
+    "name": "Kraken",
+    "baseCost": 1e10,
+    "baseIncome": 5000,
+    "baseUpgrade": 1e21
+  },
+  {
+    "name": "Dragon",
+    "baseCost": 1e11,
+    "baseIncome": 10000,
+    "baseUpgrade": 1e22
+  }
 ]

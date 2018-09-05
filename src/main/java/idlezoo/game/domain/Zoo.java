@@ -1,11 +1,16 @@
 package idlezoo.game.domain;
 
-import java.util.*;
-
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import idlezoo.game.domain.Perks.Perk;
 import org.immutables.value.Value;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Value.Immutable
+@JsonPropertyOrder(alphabetic = true)
 public abstract class Zoo {
 
     private Map<String, ZooBuildings> buildingsMap;

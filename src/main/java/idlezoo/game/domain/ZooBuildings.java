@@ -1,8 +1,10 @@
 package idlezoo.game.domain;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.immutables.value.Value;
 
 @Value.Immutable
+@JsonPropertyOrder(alphabetic = true)
 public interface ZooBuildings {
     // Getters for JSON
     String getName();

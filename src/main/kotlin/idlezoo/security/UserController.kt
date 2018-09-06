@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class UserController {
     @GetMapping("/user")
-    fun user(user: Principal?): Principal? {
-        return user
-    }
+    fun user(user: Principal?): Principal? = user
+
 }

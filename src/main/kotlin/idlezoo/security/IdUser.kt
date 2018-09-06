@@ -5,10 +5,4 @@ import java.util.Collections
 
 import org.springframework.security.core.userdetails.User
 
-class IdUser(val id: Int?, username: String, password: String) : User(username, password, emptyList<GrantedAuthority>()) {
-    companion object {
-
-        private val serialVersionUID = 1L
-    }
-
-}
+class IdUser(val id: Int?, username: String, password: String) : User(username, password, emptyList<GrantedAuthority>())

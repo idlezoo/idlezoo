@@ -17,11 +17,15 @@ import java.sql.Statement
 @Transactional
 class UsersService(private val template: JdbcTemplate, private val passwordEncoder: PasswordEncoder) : UserDetailsService {
 
-    @Throws(UsernameNotFoundException::class)
     override fun loadUserByUsername(username: String): UserDetails? {
         try {
             return template.queryForObject("select id, username, password from users where lower(username)=lower(?)",
-                    USER_ROW_MAPPER, username)!!
+                    RowMapper { res, _ ->
+                        IdUser(res.getInt("id"),
+                                res.getString("username"),
+                                res.getString("password")
+                        )
+                    }, username)!!
         } catch (empty: EmptyResultDataAccessException) {
             throw UsernameNotFoundException("User $username not found")
         }
@@ -46,13 +50,4 @@ class UsersService(private val template: JdbcTemplate, private val passwordEncod
 
     }
 
-    companion object {
-
-        private val USER_ROW_MAPPER = RowMapper { res, _ ->
-            IdUser(res.getInt("id"),
-                    res.getString("username"),
-                    res.getString("password")
-            )
-        }
-    }
 }

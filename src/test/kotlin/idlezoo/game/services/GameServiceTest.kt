@@ -61,7 +61,7 @@ class GameServiceTest @Autowired constructor(template: JdbcTemplate, usersServic
         assertEquals(100.0, zoo1.baseIncome, 0.0001)
         assertEquals(100.0, zoo1.getMoneyIncome(), 0.0001)
 
-        zoo1 = gameService.buyPerk(zoo1Id, resourcesService.perkList!![0].name)
+        zoo1 = gameService.buyPerk(zoo1Id, resourcesService.perkList[0].name)
         assertEquals(100, zoo1.buildings[0].number)
         assertEquals(1, zoo1.perks.size)
         assertEquals(100.0, zoo1.baseIncome, 0.0001)

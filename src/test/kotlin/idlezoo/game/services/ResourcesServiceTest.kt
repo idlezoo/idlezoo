@@ -16,9 +16,9 @@ class ResourcesServiceTest(@Autowired val gameResources: ResourcesService) {
     @Test
     fun testAnimals() {
         assertNotNull(gameResources.startingAnimal())
-        assertSame(gameResources.startingAnimal(), gameResources.animalsList!![0])
+        assertSame(gameResources.startingAnimal(), gameResources.animalsList[0])
         var previous = gameResources.startingAnimal()
-        for (creature in gameResources.animalsList!!) {
+        for (creature in gameResources.animalsList) {
             if (creature === previous) {
                 continue
             }
@@ -31,10 +31,10 @@ class ResourcesServiceTest(@Autowired val gameResources: ResourcesService) {
 
     @Test
     fun testPerks() {
-        assertEquals("TODO100", gameResources.perkList!![0].name)
-        assertEquals(1e7, gameResources.perkList!![0].cost, 0.0001)
+        assertEquals("TODO100", gameResources.perkList[0].name)
+        assertEquals(1e7, gameResources.perkList[0].cost, 0.0001)
 
-        for (perk in gameResources.perkList!!) {
+        for (perk in gameResources.perkList) {
             val index = gameResources.perkIndex(perk.name)
             assertEquals(perk, gameResources.perkByIndex(index!!))
             assertEquals(perk, gameResources.perk(perk.name))

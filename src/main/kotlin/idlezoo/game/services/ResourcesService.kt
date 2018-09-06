@@ -9,19 +9,18 @@ import org.springframework.beans.factory.InitializingBean
 import org.springframework.stereotype.Service
 import java.util.*
 import java.util.Collections.unmodifiableList
-import java.util.Collections.unmodifiableMap
 
 @Service
 class ResourcesService(private val mapper: ObjectMapper) : InitializingBean {
 
-    var animalsList: List<Building>? = null
-    var perkList: List<Perk>? = null
-    private var animalIndexes: MutableMap<String, Int> = HashMap()
-    private var animalTypes: MutableMap<String, Building> = HashMap()
-    private var nextAnimals: MutableMap<String, Building> = HashMap()
-    private var perkIndexes: MutableMap<String, Int> = HashMap()
-    private var perkNames: MutableMap<String, Perk> = HashMap()
-    private var startingAnimal: Building? = null
+    lateinit var animalsList: List<Building>
+    lateinit var perkList: List<Perk>
+    private lateinit var animalIndexes: Map<String, Int>
+    private lateinit var animalTypes: Map<String, Building>
+    private lateinit var nextAnimals: Map<String, Building>
+    private lateinit var perkIndexes: Map<String, Int>
+    private lateinit var perkNames: Map<String, Perk>
+    private lateinit var startingAnimal: Building
 
     override fun afterPropertiesSet() {
         initAnimals()
@@ -29,42 +28,47 @@ class ResourcesService(private val mapper: ObjectMapper) : InitializingBean {
     }
 
     private fun initPerks() {
+        val perkIndexesBuilder = mutableMapOf<String, Int>()
+        val perkNamesBuilder = mutableMapOf<String, Perk>()
         ResourcesService::class.java.getResourceAsStream(
                 "/mechanics/perks.json").use { perks ->
             val type = mapper.typeFactory.constructCollectionType(List::class.java, Perk::class.java)
             perkList = unmodifiableList(mapper.readValue(perks, type))
-            for (i in perkList!!.indices) {
-                val perk = perkList!![i]
-                perkIndexes[perk.name] = i
-                perkNames[perk.name] = perk
+            for (i in perkList.indices) {
+                val perk = perkList[i]
+                perkIndexesBuilder[perk.name] = i
+                perkNamesBuilder[perk.name] = perk
             }
-            perkIndexes = unmodifiableMap(perkIndexes)
-            perkNames = unmodifiableMap(perkNames)
         }
+        perkIndexes = perkIndexesBuilder
+        perkNames = perkNamesBuilder
     }
 
     private fun initAnimals() {
+        val animalTypesBuilder = mutableMapOf<String, Building>()
+        val nextAnimalsBuilder = mutableMapOf<String, Building>()
+        val animalIndexesBuilder = mutableMapOf<String, Int>()
         ResourcesService::class.java.getResourceAsStream(
                 "/mechanics/animals.json").use { creatures ->
             val type = mapper.typeFactory.constructCollectionType(List::class.java,
                     Building::class.java)
             animalsList = unmodifiableList(mapper.readValue(creatures, type))
-            startingAnimal = animalsList!![0]
+            startingAnimal = animalsList[0]
 
             var prev: Building? = null
-            for (i in animalsList!!.indices) {
-                val animal = animalsList!![i]
-                animalIndexes[animal.name] = i
-                animalTypes[animal.name] = animal
+            for (i in animalsList.indices) {
+                val animal = animalsList[i]
+                animalIndexesBuilder[animal.name] = i
+                animalTypesBuilder[animal.name] = animal
                 if (prev != null) {
-                    nextAnimals[prev.name] = animal
+                    nextAnimalsBuilder[prev.name] = animal
                 }
                 prev = animal
             }
         }
-        animalTypes = unmodifiableMap(animalTypes)
-        nextAnimals = unmodifiableMap(nextAnimals)
-        animalIndexes = unmodifiableMap(animalIndexes)
+        animalTypes = animalTypesBuilder
+        nextAnimals = nextAnimalsBuilder
+        animalIndexes = animalIndexesBuilder
     }
 
     internal fun startingMoney(): Double {
@@ -76,7 +80,7 @@ class ResourcesService(private val mapper: ObjectMapper) : InitializingBean {
     }
 
     internal fun firstName(): String {
-        return startingAnimal!!.name
+        return startingAnimal.name
     }
 
     fun secondName(): String {
@@ -92,7 +96,7 @@ class ResourcesService(private val mapper: ObjectMapper) : InitializingBean {
     }
 
     fun perkByIndex(index: Int): Perk {
-        return perkList!![index]
+        return perkList[index]
     }
 
     fun perk(name: String): Perk {
@@ -104,7 +108,7 @@ class ResourcesService(private val mapper: ObjectMapper) : InitializingBean {
     }
 
     fun animalByIndex(index: Int): Building {
-        return animalsList!![index]
+        return animalsList[index]
     }
 
     fun animalIndex(animalName: String): Int? {
@@ -112,7 +116,7 @@ class ResourcesService(private val mapper: ObjectMapper) : InitializingBean {
     }
 
     fun availablePerks(zoo: Zoo): List<Perk> {
-        val result = ArrayList(perkList!!)
+        val result = ArrayList(perkList)
         result.removeAll(zoo.perks)
         return StreamEx.of(result)
                 .filter { perk -> perk.isAvailable(zoo) }

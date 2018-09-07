@@ -6,17 +6,59 @@ import idlezoo.game.domain.ZooBuildings
 import one.util.streamex.IntStreamEx
 import one.util.streamex.StreamEx
 import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.jdbc.core.RowMapper
+import org.springframework.jdbc.core.query
+import org.springframework.jdbc.core.queryForObject
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional
 class GameService(private val template: JdbcTemplate, private val resourcesService: ResourcesService) {
-    private val zooBuildingMapper: RowMapper<ZooBuildings>
+    private fun updateMoney(userId: Int) {
+        template.update(UPDATE_MONEY, userId)
+    }
 
-    init {
-        zooBuildingMapper = RowMapper { res, _ ->
+    private fun updateAndGetMoney(userId: Int): Double {
+        return template.queryForObject("$UPDATE_MONEY returning money", arrayOf(userId))!!
+    }
+
+    fun getZoo(userId: Int): Zoo {
+        updateMoney(userId)
+        return getZooNoUpdate(userId)
+    }
+
+    private fun getZooNoUpdate(userId: Int): Zoo {
+        val zoo = getZooNoAvailablePerks(userId, getBuildings(userId))
+        return zoo.copy(availablePerks = resourcesService.availablePerks(zoo))
+    }
+
+    private fun getZooNoAvailablePerks(userId: Int, buildings: List<ZooBuildings>): Zoo {
+        return template.queryForObject("select *,"
+                + " EXTRACT(EPOCH FROM now() - waiting_for_fight_start)::bigint as waiting_fight_time"
+                + " from users where id=?",
+                userId) { res, _ ->
+            val waitingFightTime = res.getLong("waiting_fight_time")
+            val waitingForFight = !res.wasNull()
+            Zoo(
+                    buildings,
+                    res.getString("username"),
+                    res.getDouble("money"),
+                    res.getDouble("perk_income"),
+                    IntStreamEx.of(res.getArray("perks").getArray() as Array<Int>)
+                            .mapToObj<Perks.Perk> { resourcesService.perkByIndex(it) }.toList(),
+                    listOf(),
+                    res.getInt("fights_win"),
+                    res.getInt("fights_loss"),
+                    waitingForFight,
+                    res.getLong("champion_time") + waitingFightTime,
+                    res.getDouble("base_income")
+            )
+        }!!
+    }
+
+    private fun getBuildings(userId: Int): List<ZooBuildings> {
+        return template.query("select * from animal where user_id=? order by animal_type", userId)
+        { res, _ ->
             val building = resourcesService.animalByIndex(res.getInt("animal_type"))
             ZooBuildings(
                     res.getInt("level"),
@@ -27,53 +69,6 @@ class GameService(private val template: JdbcTemplate, private val resourcesServi
         }
     }
 
-    private fun updateMoney(userId: Int) {
-        template.update(UPDATE_MONEY, userId)
-    }
-
-    private fun updateAndGetMoney(userId: Int): Double {
-        return template.queryForObject("$UPDATE_MONEY returning money", Double::class.java, userId)
-    }
-
-    fun getZoo(userId: Int): Zoo {
-        updateMoney(userId)
-        return getZooNoUpdate(userId)
-    }
-
-    private fun getZooNoUpdate(userId: Int): Zoo {
-        val zoo = getZooBuilder(userId, getBuildings(userId))
-        return zoo.copy(availablePerks = resourcesService.availablePerks(zoo))
-    }
-
-    private fun getZooBuilder(userId: Int, buildings: List<ZooBuildings>): Zoo {
-        return template.queryForObject<Zoo>("select *,"
-                + " EXTRACT(EPOCH FROM now() - waiting_for_fight_start)::bigint as waiting_fight_time"
-                + " from users where id=?",
-                RowMapper { res, _ ->
-                    val waitingFightTime = res.getLong("waiting_fight_time")
-                    val waitingForFight = !res.wasNull()
-                    Zoo(
-                            buildings,
-                            res.getString("username"),
-                            res.getDouble("money"),
-                            res.getDouble("perk_income"),
-                            IntStreamEx.of(res.getArray("perks").getArray() as Array<Int>)
-                                    .mapToObj<Perks.Perk> { resourcesService.perkByIndex(it) }.toList(),
-                            listOf(),
-                            res.getInt("fights_win"),
-                            res.getInt("fights_loss"),
-                            waitingForFight,
-                            res.getLong("champion_time") + waitingFightTime,
-                            res.getDouble("base_income")
-                    )
-                }, userId)!!
-    }
-
-    private fun getBuildings(userId: Int): List<ZooBuildings> {
-        return template.query("select * from animal where user_id=? order by animal_type",
-                zooBuildingMapper, userId)
-    }
-
     fun buyPerk(userId: Int, perkName: String): Zoo {
         val perk = resourcesService.perk(perkName)
         val money = updateAndGetMoney(userId)
@@ -81,7 +76,7 @@ class GameService(private val template: JdbcTemplate, private val resourcesServi
             return getZooNoUpdate(userId)
         }
 
-        val zoo = getZooBuilder(userId, getBuildings(userId))
+        val zoo = getZooNoAvailablePerks(userId, getBuildings(userId))
         val availablePerks = resourcesService.availablePerks(zoo)
         if (!availablePerks.contains(perk)) {
             return getZooNoUpdate(userId)
@@ -140,7 +135,7 @@ class GameService(private val template: JdbcTemplate, private val resourcesServi
 
     private fun updateIncome(userId: Int, buildings: List<ZooBuildings>): Zoo {
         val newBaseIncome = buildings.stream().mapToDouble { it.getIncome() }.sum()
-        val zoo = getZooBuilder(userId, buildings).copy(baseIncome = newBaseIncome)
+        val zoo = getZooNoAvailablePerks(userId, buildings).copy(baseIncome = newBaseIncome)
         val newPerkIncome = StreamEx.of<Perks.Perk>(zoo.perks)
                 .mapToDouble { perk -> perk.perkIncome(zoo) }.sum()
         template.update("update users set base_income=?, perk_income=? where id=?",

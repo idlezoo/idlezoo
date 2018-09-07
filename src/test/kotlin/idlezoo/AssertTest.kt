@@ -1,4 +1,4 @@
-package idlezoo.game
+package idlezoo
 
 
 import org.junit.jupiter.api.Test

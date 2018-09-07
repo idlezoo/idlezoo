@@ -1,12 +1,7 @@
-package idlezoo.game
+package idlezoo
 
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import idlezoo.game.domain.Zoo
-import idlezoo.game.services.FightService
-import idlezoo.game.services.FightService.Outcome
-import idlezoo.game.services.GameService
-import idlezoo.security.IdUser
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.core.Authentication
@@ -63,11 +58,11 @@ class GameWebSocketHandler(private val gameService: GameService, private val fig
                 sendFightOutcome(session, outcome.outcome)
                 sendStateToPlayer(session, gameService.getZoo(userId))
                 when (outcome.outcome) {
-                    FightService.Outcome.LOSS -> {
+                    Outcome.LOSS -> {
                         sendStateToPlayer(outcome.waitingFighter!!)
                         sendFightOutcome(outcome.waitingFighter, Outcome.WIN)
                     }
-                    FightService.Outcome.WIN -> {
+                    Outcome.WIN -> {
                         sendStateToPlayer(outcome.waitingFighter!!)
                         sendFightOutcome(outcome.waitingFighter, Outcome.LOSS)
                     }

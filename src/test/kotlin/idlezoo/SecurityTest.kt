@@ -1,29 +1,33 @@
-package idlezoo.security
+package idlezoo
 
 import com.nhaarman.mockito_kotlin.whenever
-import org.junit.jupiter.api.Assertions.*
+import org.junit.Assert
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.anyString
-import org.mockito.ArgumentMatchers.eq
-import org.mockito.Mockito.verify
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.*
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import java.net.URI
 
+const val ORIGIN = "http://localhost:9000"
+
 @ExtendWith(SpringExtension::class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SecurityTest(@Autowired val passwordEncoder: PasswordEncoder,
                    @Autowired val template: TestRestTemplate
 ) {
+
 
     @MockBean
     private lateinit var usersService: UsersService
@@ -31,15 +35,15 @@ class SecurityTest(@Autowired val passwordEncoder: PasswordEncoder,
     @Test
     fun homePageRedirects() {
         val response = template.getForEntity("/", String::class.java)
-        assertEquals(HttpStatus.FOUND, response.statusCode)
-        assertEquals("https://idlezoo.github.io", response.headers.getFirst(HttpHeaders.LOCATION))
+        Assertions.assertEquals(HttpStatus.FOUND, response.statusCode)
+        Assertions.assertEquals("https://idlezoo.github.io", response.headers.getFirst(HttpHeaders.LOCATION))
     }
 
     @Test
     fun userEndpoint() {
         val response = template.getForEntity("/user", String::class.java)
-        assertEquals(HttpStatus.OK, response.statusCode)
-        assertNull(response.body)
+        Assertions.assertEquals(HttpStatus.OK, response.statusCode)
+        Assertions.assertNull(response.body)
     }
 
     @Test
@@ -48,14 +52,14 @@ class SecurityTest(@Autowired val passwordEncoder: PasswordEncoder,
     }
 
     private fun <T> assertCors(response: ResponseEntity<T>) {
-        assertTrue(response.headers.accessControlAllowCredentials)
-        assertEquals(ORIGIN, response.headers.accessControlAllowOrigin)
+        Assertions.assertTrue(response.headers.accessControlAllowCredentials)
+        Assertions.assertEquals(ORIGIN, response.headers.accessControlAllowOrigin)
     }
 
     @Test
     fun register() {
         loginOrRegister("testregister", "/createuser")
-        verify(usersService).addUser(eq("testregister"), anyString())
+        Mockito.verify(usersService).addUser(ArgumentMatchers.eq("testregister"), ArgumentMatchers.anyString())
     }
 
     @Test
@@ -65,13 +69,13 @@ class SecurityTest(@Autowired val passwordEncoder: PasswordEncoder,
                         IdUser(0, "testuser", passwordEncoder.encode("testuser"))
                 )
         val login = loginOrRegister("testuser", "/login")
-        assertEquals(HttpStatus.OK, login.statusCode)
+        Assertions.assertEquals(HttpStatus.OK, login.statusCode)
         val cookies = login.headers[HttpHeaders.SET_COOKIE]
-        assertNotNull(cookies)
+        Assertions.assertNotNull(cookies)
         val user = user(*cookies!!.toTypedArray())
 
-        assertNotNull(user.body)
-        assertTrue(user.body!!.contains("testuser"))
+        Assertions.assertNotNull(user.body)
+        Assertions.assertTrue(user.body!!.contains("testuser"))
     }
 
     private fun user(vararg cookies: String): ResponseEntity<String> {
@@ -81,7 +85,7 @@ class SecurityTest(@Autowired val passwordEncoder: PasswordEncoder,
                 .build()
 
         val response = template.exchange(request, String::class.java)
-        assertEquals(HttpStatus.OK, response.statusCode)
+        Assertions.assertEquals(HttpStatus.OK, response.statusCode)
         assertCors(response)
         return response
     }
@@ -105,9 +109,22 @@ class SecurityTest(@Autowired val passwordEncoder: PasswordEncoder,
         assertCors(result)
         return result
     }
+}
 
-    companion object {
-        private val ORIGIN = "http://localhost:9000"
+@ExtendWith(SpringExtension::class)
+@SpringBootTest
+@Transactional
+class UsersServiceTest(@Autowired val usersService: UsersService) {
+
+    @Test
+    fun testNotFound() {
+        Assertions.assertThrows(UsernameNotFoundException::class.java) { usersService.loadUserByUsername("no_such_user") }
     }
 
+    @Test
+    fun testAddUser() {
+        Assert.assertTrue(usersService.addUser("1", ""))
+        Assert.assertNotNull(usersService.loadUserByUsername("1"))
+        Assert.assertFalse(usersService.addUser("1", ""))
+    }
 }

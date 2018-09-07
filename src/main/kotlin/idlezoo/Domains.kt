@@ -1,21 +1,61 @@
-package idlezoo.game.domain
+package idlezoo
 
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonSubTypes
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type
-import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.annotation.*
 import one.util.streamex.StreamEx
 import org.springframework.util.Assert
 import java.util.*
+
+data class TopEntry<V>(val name: String, val value: V)
+
+@JsonPropertyOrder(alphabetic = true)
+data class Building(val baseCost: Double, val baseIncome: Double, val baseUpgrade: Double, val name: String) {
+    fun income(level: Int): Double = baseIncome + baseIncome * level * level
+    fun upgradeCost(level: Int): Double = baseUpgrade * Math.pow(2.0, level.toDouble())
+    fun buildCost(index: Int): Double = baseCost * Math.pow(1.15, index.toDouble())
+}
+
+@JsonPropertyOrder(alphabetic = true)
+data class ZooBuildings(val level: Int, val number: Int, val lost: Int, val building: Building) {
+    fun getIncome(): Double = building.income(level) * number
+    fun getNextCost(): Double = building.buildCost(number)
+    fun getUpgradeCost(): Double = building.upgradeCost(level)
+    fun getName(): String = building.name
+}
+
+@JsonPropertyOrder(alphabetic = true)
+data class Zoo(
+        val buildings: List<ZooBuildings>,
+        val name: String,
+        val money: Double,
+        val perkIncome: Double,
+        val perks: List<Perks.Perk>,
+        val availablePerks: List<Perks.Perk>,
+        val fightWins: Int,
+        val fightLosses: Int,
+        val waitingForFight: Boolean,
+        val championTime: Long,
+        val baseIncome: Double
+) {
+
+    private val buildingsMap: Map<String, ZooBuildings>
+
+    init {
+        buildingsMap = mutableMapOf()
+        buildings.forEach { buildingsMap.put(it.getName(), it) }
+    }
+
+    fun getMoneyIncome(): Double = baseIncome + perkIncome
+    fun animal(animal: String): ZooBuildings? = buildingsMap[animal]
+
+}
 
 class Perks {
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
     @JsonSubTypes(
-            Type(value = AllIncomeMultiplier::class, name = "all-income"),
-            Type(value = AnimalIncomeMultiplier::class, name = "animal-income"),
-            Type(value = AnimalToAnimalPerk::class, name = "animal-to-animal")
+            JsonSubTypes.Type(value = AllIncomeMultiplier::class, name = "all-income"),
+            JsonSubTypes.Type(value = AnimalIncomeMultiplier::class, name = "animal-income"),
+            JsonSubTypes.Type(value = AnimalToAnimalPerk::class, name = "animal-to-animal")
     )
     abstract class Perk(val cost: Double, val name: String, val description: String, val rules: List<Rule>) {
         init {
@@ -102,7 +142,7 @@ class Perks {
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-    @JsonSubTypes(Type(value = MoreAllAnimals::class, name = "more-all-animals"), Type(value = MoreLosses::class, name = "more-losses"), Type(value = MoreWins::class, name = "more-wins"), Type(value = AnimalLevel::class, name = "animal-level"), Type(value = MoreAnimals::class, name = "more-animals"), Type(value = MoreLostAnimals::class, name = "more-lost-animals"), Type(value = MoreAllLostAnimals::class, name = "more-all-lost-animals"))
+    @JsonSubTypes(JsonSubTypes.Type(value = MoreAllAnimals::class, name = "more-all-animals"), JsonSubTypes.Type(value = MoreLosses::class, name = "more-losses"), JsonSubTypes.Type(value = MoreWins::class, name = "more-wins"), JsonSubTypes.Type(value = AnimalLevel::class, name = "animal-level"), JsonSubTypes.Type(value = MoreAnimals::class, name = "more-animals"), JsonSubTypes.Type(value = MoreLostAnimals::class, name = "more-lost-animals"), JsonSubTypes.Type(value = MoreAllLostAnimals::class, name = "more-all-lost-animals"))
     interface Rule {
         fun isAvailable(zoo: Zoo): Boolean
     }

@@ -3,8 +3,7 @@ package idlezoo
 import idlezoo.Outcome.*
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -46,8 +45,8 @@ class FightServiceTest @Autowired constructor(template: JdbcTemplate, usersServi
 
     @BeforeEach
     override fun setup() {
-        Assertions.assertTrue(usersService.addUser(ZOO1, ""))
-        Assertions.assertTrue(usersService.addUser(ZOO2, ""))
+        assertTrue(usersService.addUser(ZOO1, ""))
+        assertTrue(usersService.addUser(ZOO2, ""))
         zoo1Id = getZooId(ZOO1)
         zoo2Id = getZooId(ZOO2)
 
@@ -233,14 +232,14 @@ class ResourcesServiceTest(@Autowired val gameResources: ResourcesService) {
 
     @Test
     fun testAnimals() {
-        Assertions.assertNotNull(gameResources.startingAnimal())
-        Assertions.assertSame(gameResources.startingAnimal(), gameResources.animalsList[0])
+        assertNotNull(gameResources.startingAnimal())
+        assertSame(gameResources.startingAnimal(), gameResources.animalsList[0])
         var previous = gameResources.startingAnimal()
         for (creature in gameResources.animalsList) {
             if (creature === previous) {
                 continue
             }
-            assertTrue(previous!!.baseCost < creature.baseCost)
+            assertTrue(previous.baseCost < creature.baseCost)
             assertTrue(previous.baseIncome < creature.baseIncome)
             assertTrue(previous.baseUpgrade < creature.baseUpgrade)
             previous = creature

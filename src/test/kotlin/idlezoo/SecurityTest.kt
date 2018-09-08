@@ -1,8 +1,7 @@
 package idlezoo
 
 import com.nhaarman.mockito_kotlin.whenever
-import org.junit.Assert
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers
@@ -35,15 +34,15 @@ class SecurityTest(@Autowired val passwordEncoder: PasswordEncoder,
     @Test
     fun homePageRedirects() {
         val response = template.getForEntity("/", String::class.java)
-        Assertions.assertEquals(HttpStatus.FOUND, response.statusCode)
-        Assertions.assertEquals("https://idlezoo.github.io", response.headers.getFirst(HttpHeaders.LOCATION))
+        assertEquals(HttpStatus.FOUND, response.statusCode)
+        assertEquals("https://idlezoo.github.io", response.headers.getFirst(HttpHeaders.LOCATION))
     }
 
     @Test
     fun userEndpoint() {
         val response = template.getForEntity("/user", String::class.java)
-        Assertions.assertEquals(HttpStatus.OK, response.statusCode)
-        Assertions.assertNull(response.body)
+        assertEquals(HttpStatus.OK, response.statusCode)
+        assertNull(response.body)
     }
 
     @Test
@@ -52,8 +51,8 @@ class SecurityTest(@Autowired val passwordEncoder: PasswordEncoder,
     }
 
     private fun <T> assertCors(response: ResponseEntity<T>) {
-        Assertions.assertTrue(response.headers.accessControlAllowCredentials)
-        Assertions.assertEquals(ORIGIN, response.headers.accessControlAllowOrigin)
+        assertTrue(response.headers.accessControlAllowCredentials)
+        assertEquals(ORIGIN, response.headers.accessControlAllowOrigin)
     }
 
     @Test
@@ -69,13 +68,13 @@ class SecurityTest(@Autowired val passwordEncoder: PasswordEncoder,
                         IdUser(0, "testuser", passwordEncoder.encode("testuser"))
                 )
         val login = loginOrRegister("testuser", "/login")
-        Assertions.assertEquals(HttpStatus.OK, login.statusCode)
+        assertEquals(HttpStatus.OK, login.statusCode)
         val cookies = login.headers[HttpHeaders.SET_COOKIE]
-        Assertions.assertNotNull(cookies)
+        assertNotNull(cookies)
         val user = user(*cookies!!.toTypedArray())
 
-        Assertions.assertNotNull(user.body)
-        Assertions.assertTrue(user.body!!.contains("testuser"))
+        assertNotNull(user.body)
+        assertTrue(user.body!!.contains("testuser"))
     }
 
     private fun user(vararg cookies: String): ResponseEntity<String> {
@@ -85,7 +84,7 @@ class SecurityTest(@Autowired val passwordEncoder: PasswordEncoder,
                 .build()
 
         val response = template.exchange(request, String::class.java)
-        Assertions.assertEquals(HttpStatus.OK, response.statusCode)
+        assertEquals(HttpStatus.OK, response.statusCode)
         assertCors(response)
         return response
     }
@@ -118,13 +117,13 @@ class UsersServiceTest(@Autowired val usersService: UsersService) {
 
     @Test
     fun testNotFound() {
-        Assertions.assertThrows(UsernameNotFoundException::class.java) { usersService.loadUserByUsername("no_such_user") }
+        assertThrows(UsernameNotFoundException::class.java) { usersService.loadUserByUsername("no_such_user") }
     }
 
     @Test
     fun testAddUser() {
-        Assert.assertTrue(usersService.addUser("1", ""))
-        Assert.assertNotNull(usersService.loadUserByUsername("1"))
-        Assert.assertFalse(usersService.addUser("1", ""))
+        assertTrue(usersService.addUser("1", ""))
+        assertNotNull(usersService.loadUserByUsername("1"))
+        assertFalse(usersService.addUser("1", ""))
     }
 }
